@@ -163,11 +163,6 @@
       ]
     }
     </script>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
   </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col">
 <!-- TopAppBar -->
@@ -193,7 +188,7 @@
 </div>
 </header>
 <!-- Mobile Drawer (Hidden by default) -->
-<div aria-hidden="true" aria-label="Menú de navegación móvil" class="fixed inset-0 z-40 bg-surface-container-highest/80 backdrop-blur-sm hidden flex-col justify-start items-start" id="mobile-drawer" role="dialog">
+<div aria-hidden="true" aria-label="Menú de navegación móvil" aria-modal="true" class="fixed inset-0 z-40 bg-surface-container-highest/80 backdrop-blur-sm hidden flex-col justify-start items-start" id="mobile-drawer" role="dialog" tabindex="-1">
 <div class="bg-surface-container dark:bg-surface-container-high h-full w-72 rounded-r-xl shadow-md flex flex-col gap-base p-md transition-all duration-200 ease-in-out">
 <div class="py-md border-b border-surface-container-highest">
 <h2 class="font-headline-md text-headline-md font-bold text-on-surface">TrackFlow</h2>
@@ -379,14 +374,14 @@
 </section>
 </main>
 <!-- Footer -->
-<footer class="bg-primary-container dark:bg-on-background w-full border-t border-outline-variant dark:border-outline">
+<footer class="bg-primary-container w-full border-t border-outline-variant">
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-lg px-margin-mobile md:px-margin-desktop w-full max-w-7xl mx-auto gap-md">
 <div class="flex flex-col gap-xs">
-<span class="font-headline-md text-headline-md text-on-primary-fixed">TrackFlow</span>
-<span class="font-body-sm text-body-sm text-on-primary-container dark:text-on-primary-fixed-variant">© 2025 TrackFlow. Todos los derechos reservados.</span>
+<span class="font-headline-md text-headline-md text-on-primary">TrackFlow</span>
+<span class="font-body-sm text-body-sm text-primary-fixed-dim">© 2025 TrackFlow. Todos los derechos reservados.</span>
 </div>
 <div class="flex gap-md font-body-sm text-body-sm">
-<a class="text-on-primary-container dark:text-on-primary-fixed-variant hover:text-primary-fixed dark:hover:text-primary-fixed-dim underline transition-all" href="https://linkedin.com/company/trackflow">LinkedIn</a>
+<a class="text-primary-fixed-dim hover:text-on-primary underline transition-all" href="https://linkedin.com/company/trackflow">LinkedIn</a>
 </div>
 </div>
 </footer>
@@ -397,6 +392,7 @@
 
         const mobileMenuButton = document.getElementById('mobile-menu-btn');
         const mobileDrawer = document.getElementById('mobile-drawer');
+        const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
         function setMobileDrawerOpen(isOpen, shouldReturnFocus = true) {
             mobileDrawer.classList.toggle('hidden', !isOpen);
@@ -426,6 +422,27 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && !mobileDrawer.classList.contains('hidden')) {
                 setMobileDrawerOpen(false);
+            }
+
+            if (e.key === 'Tab' && !mobileDrawer.classList.contains('hidden')) {
+                const focusableElements = Array.from(mobileDrawer.querySelectorAll(focusableSelector));
+
+                if (focusableElements.length === 0) {
+                    e.preventDefault();
+                    mobileDrawer.focus();
+                    return;
+                }
+
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (e.shiftKey && document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement.focus();
+                } else if (!e.shiftKey && document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement.focus();
+                }
             }
         });
     </script>
