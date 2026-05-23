@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function validateComments() {
     const val = document.getElementById('comments').value;
     if (val.length > 500) {
-      const remaining = 500 - val.length;
+      const remaining = Math.max(0, 500 - val.length);
       showError('comments', 'Los comentarios no pueden exceder 500 caracteres (quedan ' + remaining + ')');
       return false;
     }

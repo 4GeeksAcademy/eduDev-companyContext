@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>TrackFlow - Solicitud B2B</title>
+<meta content="Formulario B2B para solicitar información sobre servicios logísticos de TrackFlow en Estados Unidos y España." name="description"/>
 <!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -114,26 +115,7 @@
           font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-        /* Custom scrollbar for textarea — no Tailwind equivalent */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: theme('colors.surface-container-lowest');
-        }
-        ::-webkit-scrollbar-thumb {
-            background: theme('colors.outline-variant');
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: theme('colors.outline');
-        }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
   </head>
 <body class="bg-surface text-on-surface min-h-screen flex flex-col items-center py-xl px-margin-mobile md:px-margin-desktop antialiased">
 
@@ -301,9 +283,9 @@
 <div class="flex flex-col gap-xs">
 <label class="font-label-md text-label-md text-on-surface flex justify-between" for="comments">
 <span>Comentarios o necesidades específicas</span>
-<span class="text-outline font-normal" id="char-count">0/500</span>
+<span class="text-outline font-normal" id="char-count" aria-live="polite">0/500</span>
 </label>
-<textarea class="min-h-[100px] p-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors resize-y" id="comments" maxlength="500" name="comments" placeholder="Cuéntenos más sobre sus necesidades específicas..." aria-describedby="error-comments"></textarea>
+<textarea class="min-h-[100px] p-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors resize-y" id="comments" name="comments" placeholder="Cuéntenos más sobre sus necesidades específicas..." aria-describedby="error-comments char-count"></textarea>
 <div id="error-comments" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
 </div>
 </div>
@@ -324,7 +306,7 @@
 <button class="px-md py-sm rounded border border-outline text-on-surface hover:bg-surface-container hover:text-primary transition-colors font-body-sm text-body-sm font-semibold" id="btn-reset" type="button">
                         Limpiar
                     </button>
-<button class="px-md py-sm rounded bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-body-sm text-body-sm font-semibold flex items-center justify-center gap-xs" id="btn-submit" type="submit">
+<button class="px-md py-sm rounded bg-primary-container text-on-primary hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-body-sm text-body-sm font-semibold flex items-center justify-center gap-xs" id="btn-submit" type="submit">
                         Enviar Solicitud
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
