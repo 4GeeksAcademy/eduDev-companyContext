@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TrackFlow - Solicitud B2B</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#005236",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "primary-fixed": "#dae2fd",
+                    "secondary": "#505f76",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed-dim": "#bec6e0",
+                    "inverse-primary": "#bec6e0",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-container": "#002113",
+                    "on-surface-variant": "#45464d",
+                    "on-background": "#191c1e",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "surface-tint": "#565e74",
+                    "on-secondary-container": "#54647a",
+                    "on-tertiary-fixed": "#002113",
+                    "secondary-container": "#d0e1fb",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface": "#f7f9fb",
+                    "outline": "#76777d",
+                    "surface-container-low": "#f2f4f6",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#eceef0",
+                    "tertiary": "#000000",
+                    "background": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "primary-container": "#131b2e",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "tertiary-fixed": "#6ffbbe",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary-container": "#009668",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c6c6cd",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#7c839b",
+                    "surface-variant": "#e0e3e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "64px",
+                    "margin-desktop": "48px",
+                    "sm": "12px",
+                    "lg": "40px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "base": "8px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "code": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "code": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom scrollbar for textarea — no Tailwind equivalent */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container-lowest');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center py-xl px-margin-mobile md:px-margin-desktop antialiased">
+
+<!-- Header / Nav linking to index.html -->
+<header class="w-full max-w-[800px] mb-lg">
+  <nav role="navigation" class="flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-sm text-primary hover:text-primary/80 transition-colors">
+      <span class="material-symbols-outlined text-[28px]">local_shipping</span>
+      <span class="font-headline-md text-headline-md font-bold">TrackFlow</span>
+    </a>
+    <a href="index.html" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs">
+      <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+      Volver al inicio
+    </a>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<main class="w-full max-w-[800px] relative z-10" role="main">
+
+<!-- Form Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-lg md:p-xl transition-all duration-500 ease-in-out" id="form-container">
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Evaluación B2B</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Complete el formulario para solicitar una propuesta personalizada de servicios logísticos.</p>
+</div>
+
+<!-- Low Volume Warning Banner (Hidden by default) -->
+<div class="hidden items-start gap-sm bg-yellow-50 border border-yellow-200 rounded-lg p-sm mb-lg" id="volume-warning" role="alert">
+  <span class="material-symbols-outlined text-yellow-600 mt-[2px]">warning</span>
+  <p class="font-body-sm text-body-sm text-on-surface">Para volúmenes menores a 100 envíos mensuales, nuestros servicios podrían no ser la solución más eficiente. ¿Seguro que quieres continuar?</p>
+</div>
+
+<form class="space-y-gutter" id="lead-form" novalidate="">
+
+<!-- Fieldset 1: Información de la Empresa -->
+<fieldset class="border-0 p-0 m-0">
+<legend class="font-headline-md text-headline-md text-on-surface mb-md">Información de la Empresa</legend>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Empresa -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="company">Nombre de la empresa <span class="text-error">*</span></label>
+<input class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-outline" id="company" name="company" type="text" required aria-describedby="error-company"/>
+<div id="error-company" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Contacto -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="contact">Persona de contacto <span class="text-error">*</span></label>
+<input class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-outline" id="contact" name="contact" type="text" required aria-describedby="error-contact"/>
+<div id="error-contact" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Email -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="email">Email corporativo <span class="text-error">*</span></label>
+<input class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-outline" id="email" name="email" type="email" required aria-describedby="error-email"/>
+<div id="error-email" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Teléfono -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="phone">Teléfono <span class="text-error">*</span></label>
+<input class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-outline" id="phone" name="phone" type="tel" required aria-describedby="error-phone"/>
+<div id="error-phone" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Sitio Web -->
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface" for="website">Sitio web de la empresa</label>
+<input class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-outline" id="website" name="website" placeholder="https://" type="url" aria-describedby="error-website"/>
+<div id="error-website" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+</div>
+</fieldset>
+
+<hr class="border-t border-outline-variant/50"/>
+
+<!-- Fieldset 2: Detalles Operativos -->
+<fieldset class="border-0 p-0 m-0">
+<legend class="font-headline-md text-headline-md text-on-surface mb-md">Detalles Operativos</legend>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- País -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="country">País de operación principal <span class="text-error">*</span></label>
+<select class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2376777d%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] bg-[length:16px]" id="country" name="country" required aria-describedby="error-country">
+<option disabled="" selected="" value="">Seleccione una opción</option>
+<option value="us">Estados Unidos</option>
+<option value="es">España</option>
+<option value="both">Ambos</option>
+<option value="other">Otro</option>
+</select>
+<div id="error-country" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Tipo de Producto -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="product_type">Tipo de producto <span class="text-error">*</span></label>
+<select class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2376777d%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] bg-[length:16px]" id="product_type" name="product_type" required aria-describedby="error-product_type">
+<option disabled="" selected="" value="">Seleccione una opción</option>
+<option value="fashion">Moda</option>
+<option value="electronics">Electrónica</option>
+<option value="cosmetics">Cosmética</option>
+<option value="food">Alimentación</option>
+<option value="other">Otro</option>
+</select>
+<div id="error-product_type" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Volumen -->
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface" for="volume">Volumen mensual estimado de envíos <span class="text-error">*</span></label>
+<select class="h-10 px-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2376777d%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] bg-[length:16px]" id="volume" name="volume" required aria-describedby="error-volume">
+<option disabled="" selected="" value="">Seleccione una opción</option>
+<option value="0-100">0 - 100</option>
+<option value="101-500">101 - 500</option>
+<option value="501-2000">501 - 2,000</option>
+<option value="2000+">Más de 2,000</option>
+<option value="unsure">No estoy seguro</option>
+</select>
+<div id="error-volume" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+</div>
+</fieldset>
+
+<hr class="border-t border-outline-variant/50"/>
+
+<!-- Fieldset 3: Servicios y Contexto -->
+<fieldset class="border-0 p-0 m-0">
+<legend class="font-headline-md text-headline-md text-on-surface mb-md">Servicios y Contexto</legend>
+<div class="flex flex-col gap-md">
+<!-- Servicios (Checkboxes) -->
+<div class="flex flex-col gap-sm">
+<span class="font-label-md text-label-md text-on-surface" id="services-label">Servicios de interés (Seleccione al menos uno) <span class="text-error">*</span></span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-sm" id="services-group" role="group" aria-labelledby="services-label" aria-describedby="error-services" aria-required="true">
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="w-4 h-4 text-primary-container border-outline-variant rounded focus:ring-primary-container cursor-pointer" name="services" type="checkbox" value="storage"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Almacenaje</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="w-4 h-4 text-primary-container border-outline-variant rounded focus:ring-primary-container cursor-pointer" name="services" type="checkbox" value="last_mile"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Última milla</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="w-4 h-4 text-primary-container border-outline-variant rounded focus:ring-primary-container cursor-pointer" name="services" type="checkbox" value="reverse_logistics"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Logística inversa</span>
+</label>
+</div>
+<div id="error-services" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- 3PL Actual (Radios) -->
+<div class="flex flex-col gap-sm">
+<span class="font-label-md text-label-md text-on-surface" id="current-3pl-label">¿Actualmente trabajas con otro 3PL? <span class="text-error">*</span></span>
+<div class="flex flex-col md:flex-row gap-sm md:gap-lg" id="current-3pl-group" role="radiogroup" aria-labelledby="current-3pl-label" aria-describedby="error-current_3pl" aria-required="true">
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="w-4 h-4 text-primary-container border-outline-variant focus:ring-primary-container cursor-pointer" name="current_3pl" type="radio" value="yes" required/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Sí</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="w-4 h-4 text-primary-container border-outline-variant focus:ring-primary-container cursor-pointer" name="current_3pl" type="radio" value="no"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">No</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="w-4 h-4 text-primary-container border-outline-variant focus:ring-primary-container cursor-pointer" name="current_3pl" type="radio" value="evaluating"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Estoy evaluando opciones</span>
+</label>
+</div>
+<div id="error-current_3pl" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+<!-- Comentarios -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface flex justify-between" for="comments">
+<span>Comentarios o necesidades específicas</span>
+<span class="text-outline font-normal" id="char-count">0/500</span>
+</label>
+<textarea class="min-h-[100px] p-sm border border-outline-variant rounded bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors resize-y" id="comments" maxlength="500" name="comments" placeholder="Cuéntenos más sobre sus necesidades específicas..." aria-describedby="error-comments"></textarea>
+<div id="error-comments" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+</div>
+</div>
+</fieldset>
+
+<!-- Fieldset 4: Privacidad y Envío -->
+<fieldset class="border-0 p-0 m-0">
+<legend class="sr-only">Privacidad y envío</legend>
+<div class="flex flex-col gap-lg mt-md">
+<label class="flex items-start gap-sm cursor-pointer group">
+<input class="w-4 h-4 mt-1 text-primary-container border-outline-variant rounded focus:ring-primary-container cursor-pointer" id="privacy" name="privacy" type="checkbox" required aria-describedby="error-privacy"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+                        Acepto la <a class="text-primary-container underline hover:text-primary transition-colors" href="#">política de privacidad</a> y el tratamiento de mis datos corporativos para la gestión de esta solicitud. <span class="text-error">*</span>
+</span>
+</label>
+<div id="error-privacy" class="error-msg text-error text-body-sm min-h-[20px]" aria-live="polite"></div>
+<div class="flex flex-col-reverse md:flex-row justify-end gap-sm md:gap-md pt-sm border-t border-outline-variant/50">
+<button class="px-md py-sm rounded border border-outline text-on-surface hover:bg-surface-container hover:text-primary transition-colors font-body-sm text-body-sm font-semibold" id="btn-reset" type="button">
+                        Limpiar
+                    </button>
+<button class="px-md py-sm rounded bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-body-sm text-body-sm font-semibold flex items-center justify-center gap-xs" id="btn-submit" type="submit">
+                        Enviar Solicitud
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</fieldset>
+
+</form>
+</div>
+
+<!-- Success Message (Hidden by default) -->
+<div class="hidden bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-xl text-center flex-col items-center justify-center gap-md min-h-[400px]" id="success-container" role="alert">
+<div class="w-16 h-16 bg-tertiary-fixed-dim rounded-full flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-on-tertiary-container text-[32px]">check_circle</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">¡Gracias por tu interés en TrackFlow!</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[480px]">Hemos recibido tu solicitud. Nuestro equipo comercial revisará tu información y te contactará en las próximas 24-48 horas para agendar una llamada y conocer tus necesidades logísticas en detalle.</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Si tienes alguna consulta urgente, escríbenos directamente a <a class="text-primary-container underline hover:text-primary transition-colors" href="mailto:comercial@trackflow.com">comercial@trackflow.com</a></p>
+<button class="mt-lg px-md py-sm rounded border border-outline text-on-surface hover:bg-surface-container transition-colors font-body-sm text-body-sm font-semibold" onclick="window.location.href='index.html'">
+                Volver al inicio
+            </button>
+</div>
+
+</main>
+
+<!-- External Validation Script -->
+<script>
+  document.querySelectorAll('.material-symbols-outlined').forEach(function(icon) {
+    icon.setAttribute('aria-hidden', 'true');
+  });
+</script>
+<script src="validation.js" defer></script>
+</body></html>
