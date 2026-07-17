@@ -64,6 +64,21 @@ ai-engineering-company-project-monorepo/
 
 ---
 
+## Running locally
+
+The TrackFlow public site (Hito 1) is a static HTML/CSS/JS application served from the repository root. No build step is required.
+
+```bash
+npx http-server . -p 3000 -a 0.0.0.0
+```
+
+Then open:
+
+- Landing page: `http://localhost:3000/index.html`
+- B2B lead form: `http://localhost:3000/application.html`
+
+---
+
 ## Milestones (reference)
 
 | Milestone | Focus        | Typical deliverables                        |
