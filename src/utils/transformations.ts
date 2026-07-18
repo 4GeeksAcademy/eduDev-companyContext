@@ -13,7 +13,7 @@ const priorityMultipliers: Record<Shipment["priority"], number> = {
 };
 
 function roundToTwoDecimals(value: number): number {
-  return Math.round(value * 100) / 100;
+  return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
 export function calculateShippingCost(

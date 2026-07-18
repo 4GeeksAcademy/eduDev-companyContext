@@ -1,9 +1,9 @@
-# Proyecto de Compañía - Ingeniería de IA — Plantilla para estudiantes
+# TrackFlow — Proyecto de Ingeniería de IA
 
 [![4Geeks Academy](https://img.shields.io/badge/4Geeks-Academy-blue)](https://4geeksacademy.com)
 [![AI Engineering](https://img.shields.io/badge/track-AI%20Engineering-green)](https://4geeksacademy.com/es/programas-de-carrera/ingenieria-ia)
 
-_Plantilla base para proyectos transversales del Programa de Carrera en Ingeniería de IA — 4Geeks Academy._
+_Proyecto transversal del Programa de Carrera en Ingeniería de IA de 4Geeks Academy._
 
 _Las instrucciones están [disponibles en inglés](./README.md)._
 
@@ -11,56 +11,82 @@ _Las instrucciones están [disponibles en inglés](./README.md)._
 
 ## Propósito
 
-Este repositorio es la **plantilla de inicio** para los proyectos transversales. Trabajarás con escenarios de empresas reales (Brasaland, TrackFlow, Nexova) construyendo entregables que se corresponden con los hitos del curso (Web, Programación, Backend, Telemetría, RAG, Agentes, Workflows, Tiempo real).
+Este repositorio contiene los entregables de TrackFlow para los primeros hitos del curso:
 
-- Crea una plantilla a partir de este repositorio.
-- Reemplaza el `CONTEXT.md` placeholder por el contexto de tu empresa asignada.
-- Usa `skills/` y los `README.md` por carpeta como guía de trabajo.
+- **Hito 1:** sitio web público y formulario B2B.
+- **Hito 2:** utilidades TypeScript para inventario, envíos y transportistas.
 
 ---
 
-## Estado actual de la plantilla
+## Estado actual
 
-Actualmente el repositorio ofrece una **estructura base de carpetas y documentación**, pero todavía no incluye aplicaciones ejecutables ni scripts globales en la raíz.
+El proyecto incluye el frontend estático de TrackFlow y la lógica de negocio del Hito 2 conectada a un centro de operaciones.
 
-- `CONTEXT.md` es un placeholder y debe sustituirse por el contexto de la empresa asignada.
-- No existe todavía un `AGENTS.md` en la raíz.
-- Existe metadata del paquete compartido en `packages/shared/package.json` (`@repo/shared-types`), pero aún no hay runner de workspace en raíz.
+- `CONTEXT.md` contiene el contexto activo del Hito 2.
+- `CONTEXT-hito-1.md` conserva el contexto anterior.
+- `package.json` incluye comandos para validar, compilar, ejecutar la demo y servir el frontend.
+- `operations.html` permite probar las funciones TypeScript desde el navegador.
+
+## Funcionalidades del Hito 2
+
+- Interfaces tipadas para productos, envíos, transportistas y movimientos de inventario.
+- Filtros, ordenamientos, búsqueda lineal y búsqueda binaria.
+- Cálculo de costos, puntuación y selección de transportistas.
+- Reportes agregados de inventario y envíos.
+- Validaciones de negocio con listas de errores.
+- Demo ejecutable con comprobaciones de casos normales y casos límite.
 
 ---
 
 ## Estructura del repositorio
 
 ```text
-ai-engineering-company-project-monorepo/
-├── README.md
-├── README.es.md
-├── CONTEXT.md                # Placeholder a reemplazar con el contexto asignado
-├── agents/                   # Patrones/plantillas de agentes y documentación de tools
-├── data/                     # raw, process, pipelines, eval
-├── docs/                     # Documentación de proyecto y arquitectura
-├── infra/                    # Docker, Terraform, configuraciones de despliegue
-├── internal/                 # CLIs, scripts de migración empaquetados, utilidades internas
-├── mcps/                     # Servidores Model Context Protocol (MCP)
-├── packages/
-│   └── shared/               # Paquete compartido (@repo/shared-types)
-├── scripts/                  # Convenciones/documentación de scripts
-├── services/                 # APIs y workers en segundo plano
-├── shared/                   # Recursos/convenciones compartidas a nivel repo
-├── skills/                   # Skills reutilizables para agentes
-├── uis/                      # Interfaces de usuario (React, Next.js, Streamlit, HTML)
-└── workflows/                # Documentación de automatizaciones/orquestación
+├── index.html
+├── application.html
+├── operations.html
+├── validation.js
+├── src/
+│   ├── data/sampleData.ts
+│   ├── types/models.ts
+│   ├── utils/collections.ts
+│   ├── utils/search.ts
+│   ├── utils/transformations.ts
+│   ├── utils/validations.ts
+│   ├── demo.ts
+│   └── operations.ts
+├── package.json
+└── tsconfig.json
 ```
 
 ---
 
-## Cómo empezar
+## Instalación y validación
 
-1. **Usa este repositorio como plantilla** y crea tu propio repo de proyecto.
-2. **Clona** tu repositorio (o ábrelo en Codespaces).
-3. **Reemplaza** `CONTEXT.md` con el contexto completo de tu empresa asignada.
-4. **Revisa** los `README.md` de cada carpeta raíz para entender responsabilidades (`uis/`, `services/`, `data/`, `skills/`, etc.).
-5. **Empieza a implementar** entregables por hito en `uis/` y `services/`, reutilizando `packages/shared/` y `data/` según corresponda.
+Instala las dependencias:
+
+```bash
+npm install
+```
+
+Valida y ejecuta las utilidades TypeScript:
+
+```bash
+npm run typecheck
+npm run build
+npm run demo
+```
+
+Sirve el frontend:
+
+```bash
+npm run serve
+```
+
+Luego abre:
+
+- Landing: `http://localhost:3000/index.html`
+- Formulario B2B: `http://localhost:3000/application.html`
+- Centro de operaciones: `http://localhost:3000/operations.html`
 
 ---
 
