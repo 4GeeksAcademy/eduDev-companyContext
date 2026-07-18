@@ -72,13 +72,24 @@ console.log("Carrier selection", { shippingCost, carrierScore, selected: bestCar
 const shipments = [sampleShipment, ...additionalSampleShipments];
 const categoryCounts = countProductsByCategory(sampleProducts);
 const inventoryValue = calculateTotalInventoryValue(sampleProducts);
+const decimalBoundaryInventoryValue = calculateTotalInventoryValue([
+  { ...sampleProducts[0]!, stockQuantity: 1, unitCostUSD: 1.005 },
+]);
 const averageDistance = calculateAverageShipmentDistance(shipments);
 const statusGroups = groupShipmentsByStatus(shipments);
 const topCarriers = findTopCarriers(shipments, 2);
 
 assert(calculateAverageShipmentDistance([]) === 0, "empty shipment averages should be zero");
+assert(decimalBoundaryInventoryValue === 1.01, "decimal values should round to two places");
 assert(findTopCarriers([], 2).length === 0, "empty carrier reports should be empty");
-console.log("Reports", { categoryCounts, inventoryValue, averageDistance, delivered: statusGroups.Delivered.length, topCarriers });
+console.log("Reports", {
+  categoryCounts,
+  inventoryValue,
+  decimalBoundaryInventoryValue,
+  averageDistance,
+  delivered: statusGroups.Delivered.length,
+  topCarriers,
+});
 
 const invalidProduct = validateProduct({ ...laptop, weightKg: 0 });
 const shipmentValidation = validateShipment(sampleShipment);
