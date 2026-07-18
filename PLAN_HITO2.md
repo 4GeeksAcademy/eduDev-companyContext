@@ -266,10 +266,10 @@ npm run serve
 - [x] Revisar que solo estén incluidos los archivos del Hito 2.
 - [x] Crear commits descriptivos y pequeños por fase.
 - [x] Subir la rama `hito-2-fundamentos-programacion`.
-- [ ] Abrir un Pull Request hacia `main`.
-- [ ] Documentar funcionalidades, dificultades y soluciones en el PR.
-- [ ] Incluir capturas de `operations.html`.
-- [ ] Entregar el enlace del Pull Request en 4Geeks.
+- [x] Abrir un Pull Request hacia `main`.
+- [x] Documentar funcionalidades, dificultades y soluciones en el PR.
+- [ ] Incluir capturas de `operations.html` (opcional; no incluidas).
+- [ ] Entregar el enlace del Pull Request en 4Geeks (acción manual del estudiante).
 
 ## Referencias oficiales
 
