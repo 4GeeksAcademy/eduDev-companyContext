@@ -265,7 +265,7 @@ npm run serve
 
 - [x] Revisar que solo estén incluidos los archivos del Hito 2.
 - [x] Crear commits descriptivos y pequeños por fase.
-- [ ] Subir la rama `hito-2-fundamentos-programacion`.
+- [x] Subir la rama `hito-2-fundamentos-programacion`.
 - [ ] Abrir un Pull Request hacia `main`.
 - [ ] Documentar funcionalidades, dificultades y soluciones en el PR.
 - [ ] Incluir capturas de `operations.html`.
