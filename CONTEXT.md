@@ -1,218 +1,251 @@
-# CONTEXT.md — TrackFlow
+# CONTEXTO — TrackFlow
 
-## Hito 1: Sitio Web Público de tu Empresa
-
-_These instructions are [available in English](./CONTEXT-trackflow.md)._
-
-> Este documento describe tu empresa y la situación concreta para la que estás construyendo este hito. Léelo completo antes de escribir ningún código. Todo lo que construyas debe reflejar este contexto.
-
----
-
-## Tu empresa
-
-**TrackFlow** es una empresa de gestión de almacenes y entregas de última milla fundada en 2009 en Los Ángeles, Estados Unidos. Opera en dos mercados —Estados Unidos (Los Ángeles) y España (Zaragoza)— y ofrece tres servicios: gestión de almacenes para marcas de e-commerce, entregas de última milla (el último tramo desde el almacén hasta el cliente final), y logística inversa (devoluciones y reacondicionamiento de productos). Tiene aproximadamente 130 empleados y genera alrededor de 9 millones de euros en facturación anual. Sus clientes son marcas medianas de moda, electrónica y cosmética que venden en línea.
+**Hito 2: Fundamentos de Programación**
+**Empresa:** TrackFlow — Gestión de Última Milla y Almacenes
+**Tu Rol:** Ingeniero de IA Junior, Equipo TrackFlow Tech
+**Responsable del Proyecto:** Ana Whitfield, Directora de Operaciones de Almacén
 
 ---
 
-## Tu departamento y el problema que debes resolver
+## Acerca de TrackFlow
 
-Trabajas en la unidad **TrackFlow Tech**, reportando directamente al CTO Andrés Kim. El sitio web corporativo actual de TrackFlow fue construido hace años por una agencia externa y está completamente desactualizado. No refleja que la empresa opera en dos países, no explica claramente los servicios, y no hay forma de que empresas interesadas soliciten información de manera estructurada. Miguel Torres (Director Comercial) necesita un sitio web profesional que presente los servicios de TrackFlow y capture leads de empresas potenciales que quieran externalizar su logística.
-
----
-
-## Tu stakeholder
-
-**Miguel Torres**, Director Comercial
-
-> Hola,
->
-> Necesitamos un nuevo sitio web que presente TrackFlow como lo que somos: un operador logístico serio con presencia en Estados Unidos y España. Debe explicar nuestros tres servicios principales: gestión de almacenes, última milla, y logística inversa. También necesito una página con un formulario para que empresas interesadas puedan solicitar información. Actualmente nos llegan consultas muy vagas por email y perdemos mucho tiempo calificando si son clientes reales o no. Quiero capturar: datos de la empresa, tipo de producto que manejan, volumen mensual estimado de envíos, países donde operan, y qué servicios les interesan. El sitio debe ser responsive, accesible, y optimizado para SEO. Usa Tailwind y asegúrate de que el formulario tenga validación completa.
+TrackFlow es una empresa de gestión de última milla y almacenes que opera en Estados Unidos (Los Ángeles) y España (Zaragoza). La empresa gestiona almacenes para marcas de e-commerce y maneja la entrega final a los clientes finales. Eres parte de TrackFlow Tech, la unidad interna que lidera la transformación digital de la empresa.
 
 ---
 
-## Alcance de idioma
+## Tu Asignación
 
-- El soporte multiidioma es **opcional pero altamente recomendado** por la operación de TrackFlow en Estados Unidos y España.
-- Debes escoger un **idioma base** para toda la experiencia del sitio y del formulario.
-- Si implementas un segundo idioma, trátalo como una mejora (sin reducir la calidad/completitud del idioma base).
+Ana Whitfield necesita que construyas la lógica central de procesamiento de datos para los sistemas de gestión de almacenes y transportistas de TrackFlow. Actualmente, los gerentes de almacén y coordinadores logísticos manejan todo manualmente — rastreando inventario, puntuando transportistas, calculando costos de envío, y gestionando cumplimiento de pedidos. Este hito se enfoca en construir las funciones TypeScript que alimentarán el control de inventario y la selección de transportistas.
 
-## Contenido de la landing page
-
-Tu landing page debe incluir las siguientes secciones, en este orden:
-
-### Header
-
-- Logo o nombre "TrackFlow"
-- Navegación: Inicio | Servicios | Cobertura | Contacto
-
-### Hero
-
-- **Titular:** "Logística que escala con tu e-commerce"
-- **Subtítulo:** "Gestión de almacenes, entregas de última milla y logística inversa en Estados Unidos y España. Más de 15 años ayudando a marcas de moda, electrónica y cosmética a crecer sin preocuparse por la operación."
-- **Call to action:** Botón "Solicitar información" que enlace al formulario
-
-### Servicios (3 columnas)
-
-1. **Gestión de Almacenes**
-   - Almacenamiento, picking y packing
-   - Inventario en tiempo real
-   - Operamos almacenes en Los Ángeles y Zaragoza
-
-2. **Entregas de Última Milla**
-   - Red de carriers certificados en ambos países
-   - Seguimiento unificado de envíos
-   - Gestión de incidencias y devoluciones
-
-3. **Logística Inversa**
-   - Gestión completa de devoluciones
-   - Inspección y reacondicionamiento
-   - Integración con tu plataforma de ventas
-
-### Cobertura (2 columnas)
-
-- **Estados Unidos**
-  - Almacén en Los Ángeles
-  - Cobertura nacional
-  - Carriers: UPS, FedEx, DHL
-
-- **España**
-  - Almacén en Zaragoza
-  - Cobertura peninsular e islas
-  - Carriers: MRW, SEUR, DHL
-
-### Por qué TrackFlow (4 beneficios)
-
-- **Operación binacional:** El único operador con infraestructura propia en Estados Unidos y España
-- **+130 profesionales** dedicados a tu logística
-- **Tecnología propia** para visibilidad total de tu inventario
-- **Especialización e-commerce** en moda, electrónica y cosmética
-
-### Contacto
-
-- Email: <comercial@trackflow.com>
-- Los Ángeles: +1 213 555 0147
-- Zaragoza: +34 976 123 456
-
-### Footer
-
-- © 2025 TrackFlow. Todos los derechos reservados.
-- LinkedIn
+Esto es programación pura — sin IA, sin prompting. Ana necesita código confiable que no se rompa al procesar miles de pedidos por día.
 
 ---
 
-## Campos del formulario de solicitud de información
+## Lo que Estás Construyendo
 
-Tu formulario debe capturar la siguiente información:
+Implementarás un conjunto de utilidades TypeScript para:
 
-| Campo                                     | Tipo     | Validación                                               | Obligatorio |
-| ----------------------------------------- | -------- | -------------------------------------------------------- | ----------- |
-| **Nombre de la empresa**                  | text     | Mínimo 2 caracteres                                      | Sí          |
-| **Persona de contacto**                   | text     | Mínimo 2 palabras (nombre y apellido)                    | Sí          |
-| **Email corporativo**                     | email    | Formato válido de email                                  | Sí          |
-| **Teléfono**                              | tel      | Formato: +[código país] [número]                         | Sí          |
-| **Sitio web de la empresa**               | url      | Formato URL válido                                       | No          |
-| **País de operación principal**           | select   | Estados Unidos / España / Ambos / Otro                   | Sí          |
-| **Tipo de producto**                      | select   | Moda / Electrónica / Cosmética / Alimentación / Otro     | Sí          |
-| **Volumen mensual estimado de envíos**    | select   | 0-100 / 101-500 / 501-2000 / 2000+ / No estoy seguro     | Sí          |
-| **Servicios de interés**                  | checkbox | Almacenaje / Última milla / Logística inversa (múltiple) | Sí          |
-| **¿Actualmente trabajas con otro 3PL?**   | radio    | Sí / No / Estoy evaluando opciones                       | Sí          |
-| **Comentarios o necesidades específicas** | textarea | Máximo 500 caracteres                                    | No          |
-| **Acepto política de privacidad**         | checkbox | Debe estar marcado para enviar                           | Sí          |
+1. **Modelar datos de envíos, inventario y transportistas** usando interfaces
+2. **Filtrar y buscar inventario** por SKU, ubicación y niveles de stock
+3. **Puntuar transportistas** basado en costo, velocidad y confiabilidad
+4. **Calcular costos de envío** basados en peso, distancia y tarifas de transportista
+5. **Generar reportes de almacén** con métricas agregadas
+6. **Validar datos** antes de procesar pedidos
 
 ---
 
-## Validaciones específicas
+## Entidades de Negocio
 
-1. **Nombre de empresa:** Mínimo 2 caracteres
-2. **Persona de contacto:** Debe contener al menos nombre y apellido
-3. **Email:** Debe ser formato válido (contener @ y dominio)
-4. **Teléfono:** Debe comenzar con + seguido del código de país
-5. **Sitio web:** Si se proporciona, debe ser URL válida (comenzar con http:// o https://)
-6. **Servicios de interés:** Al menos uno debe estar seleccionado
-7. **Comentarios:** Limitar a 500 caracteres con contador visible
-8. **Política de privacidad:** El checkbox debe estar marcado para poder enviar
+### Producto (Product)
 
----
+Representa un producto almacenado en los almacenes de TrackFlow.
 
-## Mensajes de error esperados
+**Interfaz: `Product`**
 
-Cuando un campo no cumpla la validación, muestra estos mensajes específicos:
+```typescript
+interface Product {
+  sku: string;
+  name: string;
+  category: ProductCategory;
+  weightKg: number;
+  dimensions: Dimensions;
+  warehouse: WarehouseLocation;
+  stockQuantity: number;
+  minStockThreshold: number;
+  unitCostUSD: number;
+  isFragile: boolean;
+  status: ProductStatus;
+}
 
-- **Nombre de empresa:** "El nombre de la empresa debe tener al menos 2 caracteres"
-- **Persona de contacto:** "Ingresa nombre y apellido del contacto"
-- **Email:** "Ingresa un email corporativo válido (ejemplo: <nombre@empresa.com>)"
-- **Teléfono:** "El teléfono debe incluir código de país (ejemplo: +1 213 555 0147)"
-- **Sitio web:** "Si incluyes sitio web, debe ser una URL válida"
-- **País:** "Selecciona el país de operación principal"
-- **Tipo de producto:** "Selecciona el tipo de producto que manejas"
-- **Volumen mensual:** "Selecciona el volumen mensual estimado"
-- **Servicios de interés:** "Selecciona al menos un servicio de interés"
-- **3PL actual:** "Indica si actualmente trabajas con otro proveedor logístico"
-- **Comentarios:** "Los comentarios no pueden exceder 500 caracteres (quedan X)"
-- **Política de privacidad:** "Debes aceptar la política de privacidad para continuar"
+interface Dimensions {
+  lengthCm: number;
+  widthCm: number;
+  heightCm: number;
+}
 
----
+type ProductCategory =
+  | "Fashion"
+  | "Electronics"
+  | "Cosmetics"
+  | "Home"
+  | "Other";
+type WarehouseLocation = "Los Angeles" | "Zaragoza";
+type ProductStatus = "Active" | "Low stock" | "Out of stock" | "Discontinued";
+```
 
-## Mensaje de éxito
+**Reglas de Validación:**
 
-Cuando el formulario se valide correctamente (simular envío), mostrar:
+- `sku` no debe estar vacío
+- `weightKg` debe ser > 0 y <= 100
+- Todas las dimensiones deben ser > 0 y <= 200
+- `stockQuantity` debe ser >= 0
+- `minStockThreshold` debe ser >= 0
+- `unitCostUSD` debe ser > 0
 
-> **¡Gracias por tu interés en TrackFlow!**
->
-> Hemos recibido tu solicitud. Nuestro equipo comercial revisará tu información y te contactará en las próximas 24-48 horas para agendar una llamada y conocer tus necesidades logísticas en detalle.
->
-> Si tienes alguna consulta urgente, escríbenos directamente a <comercial@trackflow.com>
+### Envío (Shipment)
 
----
+Representa un pedido de entrega que necesita ser enviado a un cliente.
 
-## Restricción específica
+**Interfaz: `Shipment`**
 
-El formulario está diseñado para **empresas de e-commerce que buscan externalizar su logística**, no para consumidores finales que quieren rastrear un paquete o hacer una devolución. Si detectas que el volumen seleccionado es "0-100 envíos/mes" Y el campo "Tipo de producto" es relevante, incluir un mensaje de advertencia: "Para volúmenes menores a 100 envíos mensuales, nuestros servicios podrían no ser la solución más eficiente. ¿Seguro que quieres continuar?"
+```typescript
+interface Shipment {
+  id: string;
+  sku: string;
+  quantity: number;
+  origin: WarehouseLocation;
+  destination: Destination;
+  priority: ShipmentPriority;
+  declaredValueUSD: number;
+  carrier: string | null;
+  status: ShipmentStatus;
+  createdAt: Date;
+}
 
----
+interface Destination {
+  city: string;
+  country: Country;
+  postalCode: string;
+  distanceKm: number;
+}
 
-## Schema.org markup requerido
+type Country = "United States" | "Spain";
+type ShipmentPriority = "Standard" | "Express" | "Same-day";
+type ShipmentStatus =
+  | "Pending"
+  | "Assigned"
+  | "In transit"
+  | "Delivered"
+  | "Failed";
+```
 
-Implementa el siguiente marcado Schema.org en tu landing page:
+**Reglas de Validación:**
 
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "TrackFlow",
-  "description": "Gestión de almacenes y entregas de última milla para e-commerce",
-  "url": "https://trackflow.com",
-  "foundingDate": "2009",
-  "address": [
-    {
-      "@type": "PostalAddress",
-      "addressCountry": "US",
-      "addressLocality": "Los Ángeles",
-      "addressRegion": "California"
-    },
-    {
-      "@type": "PostalAddress",
-      "addressCountry": "ES",
-      "addressLocality": "Zaragoza",
-      "addressRegion": "Aragón"
-    }
-  ],
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+1-213-555-0147",
-    "contactType": "sales",
-    "availableLanguage": ["Spanish", "English"]
-  },
-  "sameAs": ["https://linkedin.com/company/trackflow"],
-  "areaServed": [
-    {
-      "@type": "Country",
-      "name": "Estados Unidos"
-    },
-    {
-      "@type": "Country",
-      "name": "Spain"
-    }
-  ]
+- `quantity` debe ser > 0
+- `declaredValueUSD` debe ser > 0
+- `distanceKm` debe ser >= 0
+
+### Transportista (Carrier)
+
+Representa un transportista de entregas con el que TrackFlow trabaja.
+
+**Interfaz: `Carrier`**
+
+```typescript
+interface Carrier {
+  id: string;
+  name: string;
+  operatesIn: Country[];
+  baseRateUSD: number;
+  ratePerKgUSD: number;
+  ratePerKmUSD: number;
+  avgDeliveryDays: number;
+  onTimeRate: number;
+  maxWeightKg: number;
+  handlesFragile: boolean;
+  acceptsPriority: ShipmentPriority[];
 }
 ```
+
+**Reglas de Validación:**
+
+- `baseRateUSD`, `ratePerKgUSD`, `ratePerKmUSD` deben ser todos >= 0
+- `avgDeliveryDays` debe ser > 0
+- `onTimeRate` debe estar entre 0 y 100
+- `maxWeightKg` debe ser > 0
+- `operatesIn` debe contener al menos 1 país
+
+### Movimiento de Inventario (InventoryMovement)
+
+Rastrea cambios en el inventario (entrada o salida).
+
+**Interfaz: `InventoryMovement`**
+
+```typescript
+interface InventoryMovement {
+  id: string;
+  sku: string;
+  warehouse: WarehouseLocation;
+  type: MovementType;
+  quantity: number;
+  reason: string;
+  timestamp: Date;
+}
+
+type MovementType = "Inbound" | "Outbound" | "Transfer" | "Adjustment";
+```
+
+---
+
+## Funciones Requeridas
+
+### Operaciones de Colecciones (`src/utils/collections.ts`)
+
+- `filterProductsByWarehouse(products: Product[], warehouse: WarehouseLocation): Product[]`
+- `filterProductsByCategory(products: Product[], category: ProductCategory): Product[]`
+- `filterLowStockProducts(products: Product[]): Product[]`
+- `sortProductsByStock(products: Product[], order: "asc" | "desc"): Product[]`
+- `sortCarriersByReliability(carriers: Carrier[], order: "asc" | "desc"): Carrier[]`
+
+### Operaciones de Búsqueda (`src/utils/search.ts`)
+
+- `findProductBySKU(products: Product[], sku: string): Product | null`
+- `findShipmentById(shipments: Shipment[], id: string): Shipment | null`
+- `binarySearchProductByWeight(sortedProducts: Product[], targetWeight: number): number`
+
+### Scoring de Transportista y Cálculo de Costos (`src/utils/transformations.ts`)
+
+- `calculateShippingCost(shipment: Shipment, product: Product, carrier: Carrier): number`
+- `scoreCarrierForShipment(carrier: Carrier, shipment: Shipment, product: Product): number`
+- `selectBestCarrier(carriers: Carrier[], shipment: Shipment, product: Product): { carrier: Carrier; score: number; cost: number } | null`
+
+El costo incluye tarifa base, peso, distancia y recargo por prioridad: Standard 0%, Express 30% y Same-day 60%.
+
+El puntaje incluye cobertura del país (20), peso (20), prioridad (15), fragilidad (15) y confiabilidad (30). `selectBestCarrier` descarta puntajes menores a 50 y elige el carrier adecuado de menor costo.
+
+### Agregaciones y Reportes (`src/utils/transformations.ts`)
+
+- `countProductsByCategory(products: Product[]): Record<ProductCategory, number>`
+- `calculateTotalInventoryValue(products: Product[]): number`
+- `calculateAverageShipmentDistance(shipments: Shipment[]): number`
+- `groupShipmentsByStatus(shipments: Shipment[]): Record<ShipmentStatus, Shipment[]>`
+- `findTopCarriers(shipments: Shipment[], topN: number): Array<{ carrier: string; count: number }>`
+
+### Validaciones (`src/utils/validations.ts`)
+
+- `validateProduct(product: Product): { valid: boolean; errors: string[] }`
+- `validateShipment(shipment: Shipment): { valid: boolean; errors: string[] }`
+- `validateCarrier(carrier: Carrier): { valid: boolean; errors: string[] }`
+
+---
+
+## Datos de Ejemplo
+
+Los datos de ejemplo oficiales incluyen:
+
+- Productos `SHOE-BLK-42`, `LAPTOP-DELL-15` y `PERFUME-COCO-50`.
+- Carriers UPS, SEUR y DHL Express.
+- Envío `SH-2024-8821` desde Zaragoza hacia Madrid.
+
+La implementación debe usar objetos literales con estos datos para probar las funciones.
+
+---
+
+## Criterios de Aceptación
+
+1. **Type Safety:** Todas las interfaces definidas correctamente con tipos apropiados.
+2. **Corrección de Funciones:** Cada función produce el resultado esperado.
+3. **Manejo de Casos Límite:** Arrays vacíos, valores nulos y datos inválidos no rompen la ejecución.
+4. **Lógica de Validación:** Las reglas de negocio se aplican con precisión.
+5. **Organización del Código:** Las funciones están en los archivos correctos según responsabilidad.
+6. **Convenciones de Nombres:** Variables, funciones y tipos siguen las convenciones de TypeScript.
+7. **Sin Mutaciones:** Las funciones de ordenamiento y filtrado no modifican los arrays originales.
+8. **Funciones Puras:** Las funciones solo trabajan con parámetros, sin variables globales.
+
+---
+
+## Fuente oficial
+
+Este contexto corresponde a la consigna oficial de TrackFlow para el Hito 2:
+
+- https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/contexts/02-coding-fundamentals/CONTEXT-trackflow.es.md
