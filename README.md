@@ -19,13 +19,47 @@ This repository is the **starter template** for transversal projects. You will w
 
 ---
 
-## Current status of the template
+## Current project status
 
-The repository currently provides a **base folder structure and documentation skeleton**. It does not include runnable apps or global scripts yet.
+This repository contains the completed TrackFlow public website from Hito 1 and the TypeScript business utilities developed for Hito 2.
 
-- `CONTEXT.md` is a placeholder and must be replaced with your assigned company context.
-- There is no root `AGENTS.md` yet.
-- Shared package metadata exists in `packages/shared/package.json` (`@repo/shared-types`), but no workspace runner is configured at root.
+- `CONTEXT.md` contains the active TrackFlow Hito 2 context.
+- `CONTEXT-hito-1.md` preserves the previous website context.
+- Root npm scripts validate, build, demonstrate, and serve the project.
+- Shared template folders remain available for later milestones.
+
+## TrackFlow Hito 2
+
+Hito 2 adds the typed business logic used to manage TrackFlow inventory, shipments, and carriers. The implementation intentionally uses plain TypeScript and browser DOM APIs to stay within the Coding Fundamentals scope.
+
+### Implemented functionality
+
+- Typed models for products, shipments, carriers, destinations, and inventory movements.
+- Non-mutating inventory filters and sorting.
+- Linear searches by SKU and shipment ID, plus binary search by product weight.
+- Shipping-cost calculation, carrier scoring, and best-carrier selection.
+- Inventory and shipment reports using typed aggregations.
+- Business validation with complete error lists.
+- Console demo with representative assertions.
+- Responsive operations dashboard connected to the TypeScript utilities.
+
+### Hito 2 structure
+
+```text
+src/
+├── data/sampleData.ts
+├── types/models.ts
+├── utils/collections.ts
+├── utils/search.ts
+├── utils/transformations.ts
+├── utils/validations.ts
+├── demo.ts
+└── operations.ts
+
+operations.html
+```
+
+The pure business functions live under `src/utils/`. `src/demo.ts` provides a development runtime check, while `src/operations.ts` only connects those functions to `operations.html`.
 
 ---
 
@@ -76,6 +110,28 @@ Then open:
 
 - Landing page: `http://localhost:3000/index.html`
 - B2B lead form: `http://localhost:3000/application.html`
+
+### Hito 2 development commands
+
+Install the development dependencies once:
+
+```bash
+npm install
+```
+
+Validate, build, and run the TypeScript utilities:
+
+```bash
+npm run typecheck
+npm run build
+npm run demo
+```
+
+Serve the existing frontend and the operations page:
+
+```bash
+npm run serve
+```
 
 ---
 
