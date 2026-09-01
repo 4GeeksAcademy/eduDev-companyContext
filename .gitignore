@@ -3,3 +3,7 @@ node_modules/
 dist/
 .atl/
 tmp/
+.venv/
+__pycache__/
+*.py[cod]
+results.csv

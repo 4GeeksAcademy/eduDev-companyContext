@@ -3,17 +3,19 @@
 ## Decision
 
 TrackFlow's first backend should be one **FastAPI modular monolith** organized as
-a shallow layered application. It should live in this monorepo at the future path
-`services/backend/` and expose a versioned HTTP/JSON API under `/api/v1`.
+a shallow layered application. Its first implemented domain slice lives at
+`services/api/`. Future general business endpoints should expose a versioned
+HTTP/JSON API under `/api/v1`.
 
 This direction gives the small TrackFlow Tech team one application to understand,
 operate, and change while preserving clear boundaries between logistics domains.
 Domain-focused routers and services can be extracted later if measured traffic,
 reliability, or team ownership makes that extra operational cost worthwhile.
 
-> **Milestone scope:** this proposal is documentation only. It does not create
-> `services/backend/`, install FastAPI, select infrastructure, or implement a
-> backend, database, authentication, deployment pipeline, or API endpoint.
+> **Current implementation:** the Incident Analyzer milestone creates a deliberately
+> small FastAPI slice under `services/api/` with one incidents router and no database,
+> authentication, infrastructure, or deployment pipeline. The broader domain tree
+> below remains a proportional growth guide rather than implemented scope.
 
 ## Purpose and Business Drivers
 
@@ -71,7 +73,7 @@ scaling mechanisms. Those are separate decisions that need real requirements.
 The following tree is a proposal, not a description of implemented files:
 
 ```text
-services/backend/
+services/api/
 ├── README.md
 ├── app/
 │   ├── __init__.py
@@ -144,8 +146,9 @@ release cadence, load, or reliability requirements.
 
 ## Proposed API Routes
 
-All business routes use `/api/v1`. The table is representative and can be refined
-when use cases and schemas are specified; it is not an implemented contract.
+Future general business routes use `/api/v1`. The milestone-mandated Incident
+Analyzer routes currently use `/api/incidents`; the table below remains
+representative guidance for later domains, not an implemented contract.
 
 | Group | Representative endpoint | Responsibility |
 | --- | --- | --- |
@@ -257,8 +260,8 @@ deployment design require separate requirements and are not decided here.
 ## Later Implementation Sequence (Out of Scope Now)
 
 1. Confirm the first domain use case and its request, response, and error contracts.
-2. Create the minimal FastAPI application, centralized settings, CORS policy, and
-   health route under `services/backend/`.
+2. Extend the minimal FastAPI application, centralized settings, and CORS policy
+   under `services/api/`, adding a health route when runtime monitoring requires it.
 3. Implement one end-to-end domain slice with router, schemas, service, repository
    boundary, and domain tests.
 4. Add the remaining domains one at a time, introducing carrier and legacy adapters
@@ -266,8 +269,8 @@ deployment design require separate requirements and are not decided here.
 5. Connect one UI through an environment-specific API URL and verify the HTTP/JSON
    contract before expanding integration coverage.
 
-This sequence is guidance for a later coding milestone. None of these steps is part
-of the current documentation deliverable.
+This sequence is guidance for later domain growth. The incident slice implements
+only the parts required by its own milestone.
 
 ## References
 
