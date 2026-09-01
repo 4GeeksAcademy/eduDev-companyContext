@@ -36,7 +36,10 @@ body { margin: 0; line-height: 1.5; }
 .sidebar { padding: 2rem 1.2rem; color: #d8e1ee; background: var(--navy-soft); }
 .sidebar-label, .overline { margin: 0 0 0.4rem; color: var(--muted); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; }
 .sidebar-label { color: #8fa0b7; }
-.active-item { margin: 0 -0.4rem 2rem; padding: 0.7rem 0.8rem; border-radius: 0.4rem; background: #2b4261; font-size: 0.85rem; font-weight: 700; }
+.sidebar-nav { display: grid; gap: 0.35rem; margin: 0 -0.4rem 2rem; }
+.sidebar-nav a { padding: 0.7rem 0.8rem; border-radius: 0.4rem; color: #d8e1ee; font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+.sidebar-nav a:hover { background: #243b58; }
+.sidebar-nav .active-item { background: #2b4261; }
 .shift-card { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; border: 1px solid #425570; border-radius: 0.5rem; }
 .shift-card span, .shift-card small { color: #9fafc3; font-size: 0.7rem; }
 
@@ -86,12 +89,41 @@ tbody th { color: var(--blue); }
 .badge-complete { color: #0c684d; background: #dff5ed; }
 .badge-review { color: #93420f; background: #ffeadc; }
 
+.upload-panel, .results-panel { padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.55rem; background: var(--surface); box-shadow: 0 4px 18px rgba(27, 40, 57, 0.04); }
+.upload-form { display: flex; align-items: end; gap: 1rem; }
+.file-field { display: grid; flex: 1; gap: 0.4rem; color: var(--muted); font-size: 0.78rem; font-weight: 700; }
+.file-field input { width: 100%; padding: 0.7rem; border: 1px solid var(--line); border-radius: 0.4rem; background: var(--canvas); }
+.button { min-height: 2.75rem; padding: 0.65rem 1rem; border: 0; border-radius: 0.4rem; color: white; background: var(--blue); font: inherit; font-size: 0.82rem; font-weight: 800; cursor: pointer; }
+.button:hover { background: #1948bd; }
+.button:disabled { cursor: not-allowed; opacity: 0.6; }
+.button-secondary { color: var(--blue); border: 1px solid #b9c9ef; background: var(--blue-soft); }
+.button-secondary:hover { background: #dbe6ff; }
+.state { margin: 1rem 0 0; padding: 0.8rem 1rem; border-radius: 0.4rem; color: var(--muted); background: var(--canvas); font-size: 0.82rem; }
+.state-error { color: #8b1f27; border: 1px solid #e3b5b8; background: #fff1f2; }
+.invalid-notice { margin: 0 0 1rem; padding: 0.9rem 1rem; border-left: 4px solid var(--orange); color: #7e3910; background: #fff7f0; }
+.results-panel { margin-top: 1.5rem; }
+.results-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.results-actions h2 { margin: 0; }
+.analysis-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.metric-card { padding: 1rem; border: 1px solid var(--line); border-radius: 0.45rem; background: var(--canvas); }
+.metric-card h3 { margin-bottom: 0.75rem; font-size: 1rem; }
+.metric-list { display: grid; gap: 0.45rem; margin: 0; }
+.metric-list div { display: flex; justify-content: space-between; gap: 1rem; }
+.metric-list dt { color: var(--muted); font-size: 0.78rem; }
+.metric-list dd { margin: 0; font-weight: 800; }
+.metric-highlight dd { color: var(--blue); font-size: 1.2rem; }
+.full-width { grid-column: 1 / -1; }
+.hidden { display: none; }
+
 footer { padding: 1.2rem; color: #9fadc0; background: var(--navy); text-align: center; font-size: 0.75rem; }
 :focus-visible { outline: 3px solid #5790ff; outline-offset: 3px; }
 
 @media (max-width: 860px) {
   .app-shell { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
+  .sidebar { padding: 0.8rem 1rem; }
+  .sidebar-label, .sidebar .shift-card { display: none; }
+  .sidebar-nav { grid-template-columns: repeat(2, 1fr); margin: 0; }
+  .sidebar-nav a { text-align: center; }
   main { margin-inline: auto; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -102,4 +134,7 @@ footer { padding: 1.2rem; color: #9fadc0; background: var(--navy); text-align: c
   .warehouse-grid, .kpi-grid { grid-template-columns: 1fr; }
   .alert { grid-template-columns: auto 1fr; }
   .alert-status { grid-column: 2; justify-self: start; }
+  .upload-form, .results-actions { align-items: stretch; flex-direction: column; }
+  .analysis-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: auto; }
 }

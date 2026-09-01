@@ -21,12 +21,15 @@ This repository is the active **TrackFlow monorepo**. It contains the company's 
 
 ## Current project status
 
-This repository contains TrackFlow deliverables for Hitos 1 through 4: the original public website, TypeScript business utilities, talent pipeline frontend, and the AI-driven engineering setup.
+This repository contains TrackFlow deliverables for Hitos 1 through 4 plus the Incident Analyzer milestone: the original public website, TypeScript business utilities, talent pipeline frontend, AI-driven engineering setup, and private aggregate CSV analysis flow.
 
 - `CONTEXT.md` contains the official general TrackFlow company briefing.
 - `CONTEXT-hito-1.md`, `CONTEXT-hito-2.md`, and `CONTEXT-hito-3.md` preserve milestone-specific contexts.
 - `uis/talent-pipeline-tracker/` contains the Hito 3 app and its own setup README.
 - `uis/website/` and `uis/backoffice/` contain the static Hito 4 interfaces.
+- `shared/incident_analysis.py` provides canonical incident validation and aggregation for the CLI and API.
+- `scripts/analyze.py` provides the terminal incident-analysis workflow.
+- `services/api/` provides the FastAPI upload and aggregate-export endpoints.
 - `memory-bank/`, `AGENTS.md`, and `.agents/` provide the minimal Hito 4 project context and agent guidance.
 - Root npm scripts validate, build, demonstrate, and serve the project.
 - Shared template folders remain available for later milestones.
@@ -114,6 +117,30 @@ Then open:
 - B2B lead form: `http://localhost:3000/application.html`
 - Hito 4 public website: `http://localhost:3000/uis/website/`
 - Hito 4 internal backoffice: `http://localhost:3000/uis/backoffice/`
+- Incident analyzer: `http://localhost:3000/uis/backoffice/incident-analysis.html`
+
+### Incident Analyzer
+
+Create the isolated Python environment and install only the API dependencies:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r services/api/requirements.txt
+```
+
+Run the CLI from the repository root:
+
+```bash
+python3 scripts/analyze.py scripts/incidents-trackflow.csv
+```
+
+Run the API and static UI in separate terminals:
+
+```bash
+uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000
+npm run serve
+```
 
 ### Hito 2 development commands
 

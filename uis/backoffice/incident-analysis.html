@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Aggregate incident analysis for TrackFlow customer experience operations." />
+    <title>Incident Analysis · TrackFlow Control Room</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="incident-analysis.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to incident analysis</a>
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="logo" aria-hidden="true">TF</span>
+        <div><strong>TrackFlow</strong><span>Control Room</span></div>
+      </div>
+      <div class="system-state"><span aria-hidden="true"></span>Private aggregate analysis</div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Application menu">
+        <p class="sidebar-label">Workspace</p>
+        <nav class="sidebar-nav">
+          <a href="./">Operations overview</a>
+          <a class="active-item" aria-current="page" href="incident-analysis.html">Incident analysis</a>
+        </nav>
+        <div class="shift-card">
+          <span>Privacy</span>
+          <strong>Aggregate metrics only</strong>
+          <small>Uploaded source files are not stored</small>
+        </div>
+      </aside>
+
+      <main id="main-content">
+        <div class="page-heading">
+          <div>
+            <p class="overline">Customer experience</p>
+            <h1>Incident file analysis</h1>
+            <p>Validate a TrackFlow CSV, review aggregate metrics, and download a safe summary.</p>
+          </div>
+        </div>
+
+        <section class="upload-panel" aria-labelledby="upload-title">
+          <div class="section-title">
+            <div><p class="overline">Upload</p><h2 id="upload-title">Select an incident CSV</h2></div>
+          </div>
+          <form class="upload-form" id="analysis-form">
+            <label class="file-field" for="incident-file">
+              UTF-8 CSV file
+              <input id="incident-file" name="file" type="file" accept=".csv,text/csv" required />
+            </label>
+            <button class="button" id="analyze-button" type="submit">Analyze file</button>
+          </form>
+          <p class="state" id="analysis-state" role="status" aria-live="polite">No file has been analyzed.</p>
+        </section>
+
+        <section class="results-panel hidden" id="results-panel" aria-labelledby="results-title">
+          <div class="results-actions">
+            <div><p class="overline">Latest result</p><h2 id="results-title">Aggregate summary</h2></div>
+            <button class="button button-secondary" id="export-button" type="button">Download results.csv</button>
+          </div>
+          <div class="invalid-notice hidden" id="invalid-notice" role="alert"></div>
+          <div class="analysis-grid" id="analysis-results"></div>
+        </section>
+      </main>
+    </div>
+
+    <footer>TrackFlow Tech · Incident data remains inside the local analyzer</footer>
+  </body>
+</html>
