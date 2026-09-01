@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Static TrackFlow operations snapshot for two-country logistics teams." />
+    <title>TrackFlow Control Room</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="dashboard.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to operations</a>
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="logo" aria-hidden="true">TF</span>
+        <div><strong>TrackFlow</strong><span>Control Room</span></div>
+      </div>
+      <div class="system-state"><span aria-hidden="true"></span>Static operations snapshot</div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Backoffice context">
+        <p class="sidebar-label">Workspace</p>
+        <p class="active-item">Operations overview</p>
+        <div class="shift-card">
+          <span>Current view</span>
+          <strong>Global network</strong>
+          <small>Los Angeles + Zaragoza</small>
+        </div>
+      </aside>
+
+      <main id="main-content">
+        <div class="page-heading">
+          <div>
+            <p class="overline">Monday overview</p>
+            <h1>Good morning, operations team.</h1>
+            <p>One simple view of today's warehouse, shipment, carrier, and returns activity.</p>
+          </div>
+          <time datetime="2026-08-31">31 Aug 2026</time>
+        </div>
+
+        <section class="alert" aria-labelledby="alert-title">
+          <div class="alert-icon" aria-hidden="true">!</div>
+          <div>
+            <p class="overline">Attention required</p>
+            <h2 id="alert-title">Low stock reported in Zaragoza</h2>
+            <p>SKU TF-PACK-04 has 18 units remaining, below its reorder point of 25.</p>
+          </div>
+          <span class="alert-status">Open</span>
+        </section>
+
+        <section aria-labelledby="warehouse-title">
+          <div class="section-title">
+            <div><p class="overline">Inventory</p><h2 id="warehouse-title">Warehouse pulse</h2></div>
+            <p>Both operating locations</p>
+          </div>
+          <div class="warehouse-grid" id="warehouse-grid"></div>
+        </section>
+
+        <section class="snapshot" aria-labelledby="snapshot-title">
+          <div class="section-title">
+            <div><p class="overline">Today</p><h2 id="snapshot-title">Operational snapshot</h2></div>
+          </div>
+          <dl class="kpi-grid" id="kpi-grid"></dl>
+        </section>
+
+        <section class="shipments" aria-labelledby="shipment-title">
+          <div class="section-title">
+            <div><p class="overline">Last mile</p><h2 id="shipment-title">Priority shipments</h2></div>
+            <p>Sample data for this static interface</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Shipment</th><th scope="col">Route</th><th scope="col">Carrier</th><th scope="col">Status</th></tr></thead>
+              <tbody id="shipment-rows"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer>TrackFlow Tech · Internal static demonstration</footer>
+  </body>
+</html>

@@ -1,9 +1,9 @@
-# AI Engineering Company Project — Student Template
+# TrackFlow — AI Engineering Company Project
 
 [![4Geeks Academy](https://img.shields.io/badge/4Geeks-Academy-blue)](https://4geeksacademy.com)
 [![AI Engineering](https://img.shields.io/badge/track-AI%20Engineering-green)](https://4geeksacademy.com/es/programas-de-carrera/ingenieria-ia)
 
-_Base template for transversal projects in the AI Engineering Career Program — 4Geeks Academy._
+_TrackFlow's transversal project for the AI Engineering Career Program — 4Geeks Academy._
 
 > _Instrucciones disponibles en español en [README.es.md](./README.es.md)._
 
@@ -11,21 +11,23 @@ _Base template for transversal projects in the AI Engineering Career Program —
 
 ## Purpose
 
-This repository is the **starter template** for transversal projects. You will work on real company scenarios (Brasaland, TrackFlow, Nexova), building deliverables that map to course milestones (Web, Programming, Backend, Telemetry, RAG, Agents, Workflows, Real-time).
+This repository is the active **TrackFlow monorepo**. It contains the company's milestone deliverables and the shared structure for future work.
 
-- Create a template from this repository.
-- Replace the placeholder `CONTEXT.md` with your assigned company context.
-- Use `skills/` and the directory-level `README.md` files as working guidance.
+- Read the official company briefing in `CONTEXT.md` before making changes.
+- Use the memory bank and `AGENTS.md` as active project guidance.
+- Follow directory-level `README.md` files when adding milestone deliverables.
 
 ---
 
 ## Current project status
 
-This repository contains the completed TrackFlow deliverables for Hitos 1, 2, and 3: the public website, TypeScript business utilities, and talent pipeline frontend.
+This repository contains TrackFlow deliverables for Hitos 1 through 4: the original public website, TypeScript business utilities, talent pipeline frontend, and the AI-driven engineering setup.
 
-- `CONTEXT.md` contains the active TrackFlow Hito 3 context.
-- `CONTEXT-hito-1.md` and `CONTEXT-hito-2.md` preserve the previous milestone contexts.
+- `CONTEXT.md` contains the official general TrackFlow company briefing.
+- `CONTEXT-hito-1.md`, `CONTEXT-hito-2.md`, and `CONTEXT-hito-3.md` preserve milestone-specific contexts.
 - `uis/talent-pipeline-tracker/` contains the Hito 3 app and its own setup README.
+- `uis/website/` and `uis/backoffice/` contain the static Hito 4 interfaces.
+- `memory-bank/`, `AGENTS.md`, and `.agents/` provide the minimal Hito 4 project context and agent guidance.
 - Root npm scripts validate, build, demonstrate, and serve the project.
 - Shared template folders remain available for later milestones.
 
@@ -67,10 +69,10 @@ The pure business functions live under `src/utils/`. `src/demo.ts` provides a de
 ## Repository structure
 
 ```text
-ai-engineering-company-project-monorepo/
+eduDev-companyContext/
 ├── README.md
 ├── README.es.md
-├── CONTEXT.md                # Placeholder to be replaced with assigned context
+├── CONTEXT.md                # Official general TrackFlow briefing
 ├── agents/                   # Agent patterns/templates and tools docs
 ├── data/                     # raw, process, pipelines, eval
 ├── docs/                     # Project and architecture documentation
@@ -89,13 +91,12 @@ ai-engineering-company-project-monorepo/
 
 ---
 
-## How to start
+## Working in this repository
 
-1. **Use this repository as a template** and create your own project repo.
-2. **Clone** your repository (or open it in Codespaces).
-3. **Replace** `CONTEXT.md` with the full context for your assigned company.
-4. **Review** each top-level folder `README.md` to understand intended responsibilities (`uis/`, `services/`, `data/`, `skills/`, etc.).
-5. **Start implementing** milestone deliverables in `uis/` and `services/`, reusing `packages/shared/` and `data/` as needed.
+1. **Clone** this repository or open it in Codespaces.
+2. **Read** `CONTEXT.md`, `AGENTS.md`, and the three files in `memory-bank/`.
+3. **Review** each relevant folder `README.md` before adding files.
+4. **Implement** milestone deliverables in the folder defined by the repository structure.
 
 ---
 
@@ -111,6 +112,8 @@ Then open:
 
 - Landing page: `http://localhost:3000/index.html`
 - B2B lead form: `http://localhost:3000/application.html`
+- Hito 4 public website: `http://localhost:3000/uis/website/`
+- Hito 4 internal backoffice: `http://localhost:3000/uis/backoffice/`
 
 ### Hito 2 development commands
 
@@ -144,7 +147,7 @@ npm run serve
 | 1         | Web          | Corporate website, forms, SEO               |
 | 2         | Programming  | Business logic, scoring, calculations       |
 | 3         | AI-driven UI | AI-generated interfaces                     |
-| 4         | Next.js      | Portals, loyalty app, operations UI         |
+| 4         | AI engineering | Memory bank, agent rules, UI foundations  |
 | 5         | Backend      | Central API (locations, menus, sales, etc.) |
 | 6         | Telemetry    | Data pipeline, dashboards                   |
 | 7         | RAG & Memory | Semantic knowledge base, search             |
@@ -163,8 +166,8 @@ npm run serve
 
 ## Contributors
 
-This template was built as part of the 4Geeks Academy AI Engineering Career Program by [@marcogonzalo](https://www.linkedin.com/in/marcogonzalo) and [@alezanchezr](https://x.com/alesanchezr) and many other contributors. Find out more about our [AI Engineering Course](https://4geeksacademy.com/en/career-programs/ai-engineering), and [other courses](https://4geeksacademy.com/en/program-comparison).
+The original project template was built as part of the 4Geeks Academy AI Engineering Career Program by [@marcogonzalo](https://www.linkedin.com/in/marcogonzalo) and [@alezanchezr](https://x.com/alesanchezr) and many other contributors. Find out more about our [AI Engineering Course](https://4geeksacademy.com/en/career-programs/ai-engineering), and [other courses](https://4geeksacademy.com/en/program-comparison).
 
 You can find other templates and resources like this at the [4Geeks Academy GitHub page](https://github.com/4geeksacademy).
 
-_This template is maintained by 4Geeks Academy for the AI Engineering track. For exclusive use in the programme._
+_The original template is maintained by 4Geeks Academy for the AI Engineering track. For exclusive use in the programme._
