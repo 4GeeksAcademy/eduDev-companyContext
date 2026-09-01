@@ -15,15 +15,17 @@ Este repositorio contiene los entregables de TrackFlow para los primeros hitos d
 
 - **Hito 1:** sitio web público y formulario B2B.
 - **Hito 2:** utilidades TypeScript para inventario, envíos y transportistas.
+- **Hito 3:** frontend para gestionar el proceso de selección de talento.
 
 ---
 
 ## Estado actual
 
-El proyecto incluye el frontend estático de TrackFlow y la lógica de negocio del Hito 2 conectada a un centro de operaciones.
+El proyecto incluye los entregables de los Hitos 1, 2 y 3 de TrackFlow.
 
-- `CONTEXT.md` contiene el contexto activo del Hito 2.
-- `CONTEXT-hito-1.md` conserva el contexto anterior.
+- `CONTEXT.md` contiene el contexto activo del Hito 3.
+- `CONTEXT-hito-1.md` y `CONTEXT-hito-2.md` conservan los contextos anteriores.
+- `uis/talent-pipeline-tracker/` contiene la aplicación del Hito 3 y su propio README de instalación.
 - `package.json` incluye comandos para validar, compilar, ejecutar la demo y servir el frontend.
 - `operations.html` permite probar las funciones TypeScript desde el navegador.
 

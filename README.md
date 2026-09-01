@@ -21,10 +21,11 @@ This repository is the **starter template** for transversal projects. You will w
 
 ## Current project status
 
-This repository contains the completed TrackFlow public website from Hito 1 and the TypeScript business utilities developed for Hito 2.
+This repository contains the completed TrackFlow deliverables for Hitos 1, 2, and 3: the public website, TypeScript business utilities, and talent pipeline frontend.
 
-- `CONTEXT.md` contains the active TrackFlow Hito 2 context.
-- `CONTEXT-hito-1.md` preserves the previous website context.
+- `CONTEXT.md` contains the active TrackFlow Hito 3 context.
+- `CONTEXT-hito-1.md` and `CONTEXT-hito-2.md` preserve the previous milestone contexts.
+- `uis/talent-pipeline-tracker/` contains the Hito 3 app and its own setup README.
 - Root npm scripts validate, build, demonstrate, and serve the project.
 - Shared template folders remain available for later milestones.
 
