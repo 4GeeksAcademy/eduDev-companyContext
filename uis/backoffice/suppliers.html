@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="TrackFlow supplier directory for carrier and warehouse operations." />
+    <title>Supplier Directory · TrackFlow Control Room</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="suppliers.js"></script>
+  </head>
+  <body class="supplier-page">
+    <a class="skip-link" href="#main-content">Skip to supplier directory</a>
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="logo" aria-hidden="true">TF</span>
+        <div><strong>TrackFlow</strong><span>Control Room</span></div>
+      </div>
+      <div class="system-state"><span aria-hidden="true"></span>Central supplier register</div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Application menu">
+        <p class="sidebar-label">Workspace</p>
+        <nav class="sidebar-nav">
+          <a href="./">Operations overview</a>
+          <a href="incident-analysis.html">Incident analysis</a>
+          <a class="active-item" aria-current="page" href="suppliers.html">Supplier directory</a>
+        </nav>
+        <div class="shift-card">
+          <span>Markets</span>
+          <strong>USA + Spain</strong>
+          <small>One operational source of truth</small>
+        </div>
+      </aside>
+
+      <main id="main-content">
+        <div class="page-heading">
+          <div>
+            <p class="overline">Carrier operations</p>
+            <h1>Supplier directory</h1>
+            <p>Review contracts, update rates, and manage supplier availability across both markets.</p>
+          </div>
+        </div>
+
+        <section class="supplier-panel" aria-labelledby="filters-title">
+          <div class="section-title">
+            <div><p class="overline">Directory</p><h2 id="filters-title">Registered suppliers</h2></div>
+          </div>
+          <div class="supplier-filters">
+            <label>Country
+              <select id="country-filter">
+                <option value="">All countries</option>
+                <option value="USA">USA</option>
+                <option value="Spain">Spain</option>
+              </select>
+            </label>
+            <label>Category
+              <select id="category-filter">
+                <option value="">All categories</option>
+              </select>
+            </label>
+          </div>
+          <p class="state" id="directory-state" role="status" aria-live="polite">Loading suppliers…</p>
+          <div class="table-wrap">
+            <table class="supplier-table">
+              <thead>
+                <tr><th scope="col">Supplier</th><th scope="col">Country</th><th scope="col">Categories</th><th scope="col">Rate</th><th scope="col">Status</th><th scope="col">Actions</th></tr>
+              </thead>
+              <tbody id="supplier-rows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="supplier-panel" aria-labelledby="new-supplier-title">
+          <div class="section-title">
+            <div><p class="overline">Registration</p><h2 id="new-supplier-title">Add a supplier</h2></div>
+          </div>
+          <form class="supplier-form" id="supplier-form">
+            <label>Name<input name="name" type="text" required /></label>
+            <label>Country
+              <select name="country" required><option value="">Select country</option><option value="USA">USA</option><option value="Spain">Spain</option></select>
+            </label>
+            <fieldset>
+              <legend>Categories <span>(select at least one)</span></legend>
+              <div class="category-options" id="category-options"></div>
+            </fieldset>
+            <label>Rate per shipment<input name="rate_per_shipment" type="number" min="0.01" step="0.01" required /></label>
+            <label>Currency
+              <select name="currency" required><option value="">Select currency</option><option value="USD">USD</option><option value="EUR">EUR</option></select>
+            </label>
+            <label>Status
+              <select name="status" required><option value="">Select status</option><option value="active">Active</option><option value="suspended">Suspended</option></select>
+            </label>
+            <label>Service zone<input name="service_zone" type="text" /></label>
+            <label>Contact email<input name="contact_email" type="email" /></label>
+            <label class="form-wide">Notes<textarea name="notes" rows="3"></textarea></label>
+            <div class="form-wide form-actions">
+              <button class="button" type="submit">Register supplier</button>
+              <p class="state form-state" id="form-state" role="status" aria-live="polite">Required fields are marked by the browser.</p>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <footer>TrackFlow Tech · Supplier rates are managed by carrier operations</footer>
+  </body>
+</html>

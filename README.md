@@ -21,7 +21,7 @@ This repository is the active **TrackFlow monorepo**. It contains the company's 
 
 ## Current project status
 
-This repository contains TrackFlow deliverables for Hitos 1 through 4 plus the Incident Analyzer milestone: the original public website, TypeScript business utilities, talent pipeline frontend, AI-driven engineering setup, and private aggregate CSV analysis flow.
+This repository contains TrackFlow deliverables for Hitos 1 through 4 plus the Incident Analyzer and Supplier Directory milestones: the original public website, TypeScript business utilities, talent pipeline frontend, AI-driven engineering setup, private aggregate CSV analysis, and persistent supplier operations.
 
 - `CONTEXT.md` contains the official general TrackFlow company briefing.
 - `CONTEXT-hito-1.md`, `CONTEXT-hito-2.md`, and `CONTEXT-hito-3.md` preserve milestone-specific contexts.
@@ -29,7 +29,7 @@ This repository contains TrackFlow deliverables for Hitos 1 through 4 plus the I
 - `uis/website/` and `uis/backoffice/` contain the static Hito 4 interfaces.
 - `shared/incident_analysis.py` provides canonical incident validation and aggregation for the CLI and API.
 - `scripts/analyze.py` provides the terminal incident-analysis workflow.
-- `services/api/` provides the FastAPI upload and aggregate-export endpoints.
+- `services/api/` provides the incident endpoints and TinyDB-backed supplier API.
 - `memory-bank/`, `AGENTS.md`, and `.agents/` provide the minimal Hito 4 project context and agent guidance.
 - Root npm scripts validate, build, demonstrate, and serve the project.
 - Shared template folders remain available for later milestones.
@@ -118,6 +118,7 @@ Then open:
 - Hito 4 public website: `http://localhost:3000/uis/website/`
 - Hito 4 internal backoffice: `http://localhost:3000/uis/backoffice/`
 - Incident analyzer: `http://localhost:3000/uis/backoffice/incident-analysis.html`
+- Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
 
 ### Incident Analyzer
 
@@ -141,6 +142,22 @@ Run the API and static UI in separate terminals:
 uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000
 npm run serve
 ```
+
+### Supplier Directory
+
+Install the root uv project, load the 15 canonical suppliers, and start the same
+API without changing the Incident Analyzer:
+
+```bash
+uv sync
+uv run seed
+uv run uvicorn services.api.main:app --host 0.0.0.0 --port 8000
+npm run serve
+```
+
+The API persists suppliers at `services/api/data/suppliers.json` by default. Set
+`TRACKFLOW_SUPPLIERS_DB_PATH` to isolate another database. See
+`services/api/README.md` for endpoints and test commands.
 
 ### Hito 2 development commands
 

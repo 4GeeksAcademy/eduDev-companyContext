@@ -10,6 +10,7 @@
 | Local static server | `http-server` from the root development dependencies |
 | Incident analysis core and CLI | Python 3 standard library (`csv`, no pandas) |
 | Incident API | FastAPI, Uvicorn, and multipart uploads under `services/api/` |
+| Supplier Directory | Pydantic, FastAPI, and TinyDB with a static backoffice client |
 
 ## Architecture Decisions
 
@@ -19,6 +20,7 @@
 - Keep the Hito 4 operations overview on static sample data; the separate incident page calls the incident API directly.
 - Reuse `shared/incident_analysis.py` from both CLI and API; never duplicate validation or calculations.
 - Keep uploaded incident source files transient and retain only the last successful aggregate summary in process memory.
+- Keep supplier persistence small: one schema module, TinyDB helper functions, one router, and one shared idempotent seed function.
 - Preserve root Hito 1 and Hito 2 files and `uis/talent-pipeline-tracker/` as independent milestone deliverables.
 
 ## Commands
@@ -44,11 +46,22 @@ python3 -m unittest discover -s services/api/tests -v
 uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000
 ```
 
+Supplier Directory setup and checks:
+
+```bash
+uv sync
+uv run seed
+uv run python -m unittest discover -s services/api/tests -v
+uv run uvicorn services.api.main:app --host 0.0.0.0 --port 8000
+node --check uis/backoffice/suppliers.js
+```
+
 After `npm run serve`, open:
 
 - Public website: `http://localhost:3000/uis/website/`
 - Internal backoffice: `http://localhost:3000/uis/backoffice/`
 - Incident analysis: `http://localhost:3000/uis/backoffice/incident-analysis.html`
+- Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
 
 ## Constraints
 
