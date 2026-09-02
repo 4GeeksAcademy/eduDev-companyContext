@@ -9,7 +9,7 @@ Each subfolder inside `services/` must correspond to **one specific service** (f
 
 ## Implemented service
 
-- [`api/`](./api/) provides the minimal FastAPI incident analysis and aggregate
-  export endpoints for the Incident Analyzer milestone.
+- [`api/`](./api/) provides the FastAPI incident analysis endpoints and the
+  TinyDB-backed Supplier Directory API.
 
 > _Spanish version: [README.es.md](./README.es.md)._

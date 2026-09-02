@@ -61,7 +61,7 @@ h1 { margin-bottom: 0.45rem; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spaci
 .section-title h2 { margin: 0; font-size: 1.35rem; }
 .section-title > p { margin: 0; font-size: 0.75rem; }
 .warehouse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-.warehouse-card, .snapshot, .shipments { border: 1px solid var(--line); border-radius: 0.55rem; background: var(--surface); box-shadow: 0 4px 18px rgba(27, 40, 57, 0.04); }
+.warehouse-card, .snapshot, .shipments, .supplier-panel { border: 1px solid var(--line); border-radius: 0.55rem; background: var(--surface); box-shadow: 0 4px 18px rgba(27, 40, 57, 0.04); }
 .warehouse-card { padding: 1.25rem; }
 .warehouse-code { color: var(--blue); font-size: 0.68rem; font-weight: 900; letter-spacing: 0.12em; }
 .warehouse-card h3 { margin: 0.1rem 0 0; }
@@ -115,6 +115,28 @@ tbody th { color: var(--blue); }
 .full-width { grid-column: 1 / -1; }
 .hidden { display: none; }
 
+.supplier-panel { margin-bottom: 1.5rem; padding: 1.25rem; }
+.supplier-filters { display: flex; gap: 1rem; margin-bottom: 1rem; }
+.supplier-filters label, .supplier-form > label { display: grid; gap: 0.35rem; color: var(--muted); font-size: 0.75rem; font-weight: 700; }
+.supplier-filters select, .supplier-form input, .supplier-form select, .supplier-form textarea, .inline-rate-form input { min-height: 2.5rem; padding: 0.55rem 0.65rem; border: 1px solid var(--line); border-radius: 0.4rem; color: var(--ink); background: var(--surface); font: inherit; }
+.supplier-table td { white-space: normal; }
+.supplier-suspended { color: var(--muted); background: #f7f8fa; }
+.badge-active { color: #0c684d; background: #dff5ed; }
+.badge-suspended { color: #8b1f27; background: #fff1f2; }
+.inline-rate-form { display: flex; align-items: center; gap: 0.4rem; }
+.inline-rate-form input { width: 6.5rem; }
+.button-small { min-height: 2.25rem; padding: 0.45rem 0.65rem; white-space: nowrap; }
+.supplier-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.supplier-form fieldset { grid-column: 1 / -1; margin: 0; padding: 0.8rem; border: 1px solid var(--line); border-radius: 0.4rem; }
+.supplier-form legend { color: var(--muted); font-size: 0.75rem; font-weight: 700; }
+.supplier-form legend span { font-weight: 400; }
+.category-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
+.category-options label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; }
+.category-options input { min-height: auto; }
+.form-wide { grid-column: 1 / -1; }
+.form-actions { display: flex; align-items: center; gap: 1rem; }
+.form-state { flex: 1; margin: 0; }
+
 footer { padding: 1.2rem; color: #9fadc0; background: var(--navy); text-align: center; font-size: 0.75rem; }
 :focus-visible { outline: 3px solid #5790ff; outline-offset: 3px; }
 
@@ -122,7 +144,7 @@ footer { padding: 1.2rem; color: #9fadc0; background: var(--navy); text-align: c
   .app-shell { grid-template-columns: 1fr; }
   .sidebar { padding: 0.8rem 1rem; }
   .sidebar-label, .sidebar .shift-card { display: none; }
-  .sidebar-nav { grid-template-columns: repeat(2, 1fr); margin: 0; }
+  .sidebar-nav { grid-template-columns: repeat(3, 1fr); margin: 0; }
   .sidebar-nav a { text-align: center; }
   main { margin-inline: auto; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
@@ -137,4 +159,71 @@ footer { padding: 1.2rem; color: #9fadc0; background: var(--navy); text-align: c
   .upload-form, .results-actions { align-items: stretch; flex-direction: column; }
   .analysis-grid { grid-template-columns: 1fr; }
   .full-width { grid-column: auto; }
+  .sidebar-nav, .supplier-form, .category-options { grid-template-columns: 1fr; }
+  .supplier-filters, .form-actions { align-items: stretch; flex-direction: column; }
+
+  .supplier-page main, .supplier-page .supplier-panel,
+  .supplier-page .supplier-form > *, .supplier-page .supplier-filters label {
+    min-width: 0;
+  }
+  .supplier-page .supplier-filters label,
+  .supplier-page .supplier-filters select,
+  .supplier-page .supplier-form input,
+  .supplier-page .supplier-form select,
+  .supplier-page .supplier-form textarea { width: 100%; }
+  .supplier-page .supplier-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+  .supplier-page .table-wrap { overflow: visible; }
+  .supplier-page .supplier-table,
+  .supplier-page .supplier-table tbody { display: block; }
+  .supplier-page .supplier-table tr {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 0.45rem;
+  }
+  .supplier-page .supplier-table .supplier-suspended {
+    border-left: 4px solid var(--red);
+  }
+  .supplier-page .supplier-table th,
+  .supplier-page .supplier-table td {
+    display: grid;
+    min-width: 0;
+    gap: 0.2rem;
+    padding: 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+  .supplier-page .supplier-table th::before,
+  .supplier-page .supplier-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .supplier-page .supplier-table .supplier-empty { display: block; }
+  .supplier-page .supplier-table .supplier-empty::before { content: none; }
+  .supplier-page .inline-rate-form {
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  .supplier-page .inline-rate-form input {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 7rem;
+  }
+  .supplier-page .inline-rate-form .button,
+  .supplier-page .supplier-table td:last-child .button { width: 100%; }
 }

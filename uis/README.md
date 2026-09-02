@@ -14,5 +14,5 @@ Each subfolder inside `uis/` must correspond to **one specific user interface** 
 | Folder | Purpose | Local URL after `npm run serve` from the repository root |
 | --- | --- | --- |
 | `website/` | Hito 4 public corporate website | `http://localhost:3000/uis/website/` |
-| `backoffice/` | Hito 4 static operations snapshot | `http://localhost:3000/uis/backoffice/` |
+| `backoffice/` | Operations snapshot, Incident Analyzer, and Supplier Directory | `http://localhost:3000/uis/backoffice/` |
 | `talent-pipeline-tracker/` | Hito 3 talent pipeline frontend | See its local README |
