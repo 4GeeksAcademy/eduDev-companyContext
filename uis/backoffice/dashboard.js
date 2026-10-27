@@ -1,3 +1,5 @@
+import { guardSession } from './session-guard.js';
+
 const warehouses = [
   { city: "Los Angeles", code: "LAX", available: 8420, reserved: 610, fill: 74, note: "Normal activity" },
   { city: "Zaragoza", code: "ZAZ", available: 5190, reserved: 438, fill: 66, note: "1 low-stock alert" },
@@ -53,6 +55,8 @@ function renderShipments() {
   `).join("");
 }
 
-renderWarehouses();
-renderKpis();
-renderShipments();
+guardSession(() => {
+  renderWarehouses();
+  renderKpis();
+  renderShipments();
+});
