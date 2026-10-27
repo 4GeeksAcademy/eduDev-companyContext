@@ -47,10 +47,16 @@ contacts. Passwords accept 1–72 UTF-8 bytes, without extra strength requiremen
 If registration succeeds but automatic login fails, use the manual login link;
 another registration stays disabled until inputs are deliberately changed.
 
-All other routes validate `/auth/me` before mounting private content, including
-candidate components. Transient failures preserve the token and offer retry/logout.
-Private navigation includes logout; profile UI/navigation is deferred. This is a
-client-side access gate, not authorization for the separate external candidate API.
+Protected routes `/`, `/candidates/new`, `/candidates/[id]`,
+`/candidates/[id]/edit` and `/account/profile` validate `/auth/me` before mounting
+private content, including candidate components. Transient failures preserve the token and offer retry/logout.
+Private navigation includes Perfil (`/account/profile`) and logout. The profile
+page loads `/auth/me` before showing editable name, phone and address; email is
+read-only. Saving sends only profile fields to `PUT /profiles/me`, clears blank
+fields with null, and displays the returned profile. Loading failures offer retry;
+save failures preserve edits. Pending saves disable editing and duplicate submits;
+unmount aborts requests and ignores stale completions. This is a client-side access
+gate, not authorization for the separate external candidate API.
 
 ## Verification
 
@@ -74,8 +80,45 @@ npm run start
 - Status and stage updates from the detail view.
 - Candidate-only notes with add and delete actions.
 - Direct browser candidate API calls; no backend routes or database are included.
-- Identity login/registration, guarded candidate screens and logout; profile and
-  backoffice integration remain deferred. The separate public website is unchanged.
+- Identity login/registration, guarded candidate screens, profile editing and logout.
+  Static backoffice now has its own login/logout and three-page gate; see
+  [backoffice acceptance](../backoffice/README.md#runtime-acceptance--auth-bo-03).
+  Credentials share the identity API, but localStorage sessions are separate by
+  origin (including port), not SSO. Tracker owns login/register/profile pages;
+  the public website and public lead intake remain unchanged.
 - Node tests cover identity requests and form validation. JSX has no configured
   deterministic UI runner; lint/build do not replace browser or live API checks.
-  No integrated browser or real API verification is claimed.
+  AUTH-FE-04 checks: `node --test tests/*.test.mjs` passed 20/20 (16 existing,
+  four profile conversion cases); `npm run lint`, `npm run build` and repository
+  `git diff --check` passed. Node's module-type warning remains non-failing.
+  Those checks preceded runtime acceptance; lint/build were not rerun during it.
+
+### AUTH-FE-03 runtime acceptance
+
+Initial tracker scope is implemented and runtime verified at `dd0bd71` by verifier
+`mvr8xgvw-b-rbem`. After user/admin installation of Chromium system libraries,
+`ldd` was clean and cached Playwright Chromium launched/closed `about:blank`.
+All eight ephemeral browser groups passed (no permanent E2E suite added):
+
+1. Public login/register hide private navigation; all five private routes redirect missing tokens before candidate fetching.
+2. Real isolated FastAPI registration with contacts, login and localStorage; client required/email/UTF-8 >72-byte checks, duplicate email 409 and wrong password 401.
+3. Real profile read-only email, updates and null clearing persist after reload; injected save delays/errors preserve edits/session and prevent duplicate submits.
+4. Logout, storage, refresh, back navigation and private access.
+5. Real invalid/expired signed JWT 401 cleanup; injected protected 401 and guard network/500 failures with retry.
+6. Delayed login/register/profile departure cancellation prevents stale token/UI/navigation; server writes may still complete.
+7. Real registration plus injected login failure shows account-created guidance; real manual login succeeds without repeat auto-registration.
+8. Candidate list/status-stage-search/detail/notes display uses mocked external API GETs only: no Authorization, no playground requests, no candidate mutations tested.
+
+`node --test tests/*.test.mjs` passed again, 20/20. Earlier lint/build passed and
+code was unchanged; optional public-website browser smoke was not run (code untouched).
+Backoffice was deferred during this tracker run; its subsequent acceptance is
+linked above. Tracker tests/lint/build were not rerun during backoffice checks.
+Global all-application compliance is not claimed: legacy root `operations.html`
+remains outside the authorized scope, with no private/public or superseded status
+established. All work is on ONE `feature/auth-frontend` branch as sequential local
+commits. A feature-branch PR-chain strategy was selected, but no slice branches,
+PRs or publication have been created; merge is not authorized.
+
+After receiving live Tailscale URLs, the user reported “listo, probado” with no
+issues described (USER-REPORTED, not independently observed manual assertions).
+Manual servers remain running; see backoffice README for simultaneous local use.

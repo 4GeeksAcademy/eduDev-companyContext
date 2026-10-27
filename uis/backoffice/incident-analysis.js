@@ -1,12 +1,5 @@
-const requestedApiPort = new URLSearchParams(window.location.search).get("apiPort");
-const parsedApiPort = requestedApiPort !== null && /^\d+$/.test(requestedApiPort)
-  ? Number(requestedApiPort)
-  : 0;
-const apiPort = parsedApiPort >= 1 && parsedApiPort <= 65535 ? parsedApiPort : 8000;
-const apiBaseUrl = (
-  window.TRACKFLOW_API_BASE_URL
-  ?? `${window.location.protocol === "http:" || window.location.protocol === "https:" ? window.location.protocol : "http:"}//${window.location.hostname || "localhost"}:${apiPort}`
-).replace(/\/$/, "");
+import { protectedFetch } from './auth.js';
+import { guardSession } from './session-guard.js';
 
 const form = document.querySelector("#analysis-form");
 const fileInput = document.querySelector("#incident-file");
@@ -17,7 +10,12 @@ const panel = document.querySelector("#results-panel");
 const results = document.querySelector("#analysis-results");
 const invalidNotice = document.querySelector("#invalid-notice");
 
-form.addEventListener("submit", async (event) => {
+guardSession(() => {
+  form.addEventListener("submit", analyzeFile);
+  exportButton.addEventListener("click", exportResults);
+});
+
+async function analyzeFile(event) {
   event.preventDefault();
   const [file] = fileInput.files;
   if (!file) {
@@ -32,7 +30,7 @@ form.addEventListener("submit", async (event) => {
   formData.append("file", file);
 
   try {
-    const response = await fetch(`${apiBaseUrl}/api/incidents/analyze`, {
+    const response = await protectedFetch('/api/incidents/analyze', {
       method: "POST",
       body: formData,
     });
@@ -45,12 +43,12 @@ form.addEventListener("submit", async (event) => {
   } finally {
     analyzeButton.disabled = false;
   }
-});
+}
 
-exportButton.addEventListener("click", async () => {
+async function exportResults() {
   exportButton.disabled = true;
   try {
-    const response = await fetch(`${apiBaseUrl}/api/incidents/results/export`);
+    const response = await protectedFetch('/api/incidents/results/export');
     if (!response.ok) throw new Error(await responseMessage(response));
     const blob = await response.blob();
     const link = document.createElement("a");
@@ -63,7 +61,7 @@ exportButton.addEventListener("click", async () => {
   } finally {
     exportButton.disabled = false;
   }
-});
+}
 
 function renderSummary(summary) {
   results.replaceChildren(

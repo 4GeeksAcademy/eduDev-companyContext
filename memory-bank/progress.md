@@ -175,6 +175,113 @@
   inspected only: no installed DOM runner. Browser/live API checks remain pending;
   known Chromium missing `libatk-1.0.so.0` was not retried or installed.
 
+## Tracker Authentication — AUTH-FE-04
+
+- Added guarded `/account/profile` and private-only Perfil navigation. Email is
+  read-only; name, phone and address load before editing. Nullable contacts become
+  empty inputs; only trimmed profile fields are sent, with blanks cleared to null.
+- Load errors offer retry; save errors preserve edits and expose field messages.
+  Successful saves display the server response. Pending saves lock editing and
+  duplicate submission; unmount aborts requests and stale completions are ignored.
+  Auth client, session guard and original candidate requests are unchanged.
+- Test-first `node --test tests/*.test.mjs`: RED exit 1 (missing profile helper,
+  existing 16 tests passed); GREEN exit 0, 20/20 including null conversion, blank
+  clearing, trimming, identity exclusion and contact-string preservation.
+- `npm run lint`, `npm run build` and `git diff --check` passed (exit 0).
+  Existing Node module-type warnings remain non-failing. No meaningful automated
+  JSX RED is available without a DOM runner; lint/build and structural review are
+  not browser acceptance. At AUTH-FE-04, browser/live API verification was pending;
+  Chromium's missing `libatk-1.0.so.0` had not been retried or installed. Backoffice
+  remains explicitly deferred; public website and backend are untouched.
+
+## Tracker Authentication — AUTH-FE-03 Runtime Closeout
+
+- Initial tracker scope is implemented and runtime verified at `dd0bd71` by
+  verifier `mvr8xgvw-b-rbem`; the earlier browser blockers above are historical.
+  After user/admin installed Chromium system libraries, `ldd` was clean and cached
+  Playwright Chromium `about:blank` launch/close passed. Verifier installed nothing.
+- All eight ephemeral browser groups passed: public navigation/five-route gating;
+  real isolated registration/contact fields/login/localStorage and validation
+  (required/email/UTF-8 >72 bytes, duplicate 409, wrong-password 401); real profile
+  read/update/null clearing/reload with injected save delays/errors; logout/storage/
+  refresh/back/private access; real invalid/expired signed JWT 401 plus injected
+  protected 401/guard network/500 retry; delayed login/register/profile departure
+  cancellation; real registration plus injected login failure/manual real login
+  without repeat registration; mocked candidate GET-only display regression.
+- Profile errors preserve edits/session and prevent duplicate submits; departure
+  prevents stale token/UI/navigation, but server writes may still complete.
+  Candidate list/status-stage-search/detail/notes used mocked external responses:
+  no Authorization, no requests reached playground, no candidate mutations tested.
+- `node --test tests/*.test.mjs` passed again 20/20. Prior lint/build passed with
+  code unchanged; neither was rerun for this runtime run. No permanent E2E suite
+  added. Optional public website browser smoke skipped; its code stayed untouched.
+- Initial harness runs failed on redirect-abort waits, strict locators and
+  prehydration interactions; corrected reruns passed without application changes.
+  Temporary tracker copies isolated BOTH identity/supplier stores (startup seeds
+  suppliers), used ephemeral secrets and no `.env`; existing data was untouched.
+- Dev command: `npm run dev -- --webpack --hostname 127.0.0.1 --port <allocated>`;
+  backend: `.venv/bin/python -B -m uvicorn services.api.main:app --host 127.0.0.1 --port <allocated> --no-access-log`.
+  Public auth URL/CORS process environment matched temporary ports. All browsers
+  and six owned server process groups stopped; zero members/temp directories remain.
+  Verifier left Git unchanged except the preexisting parent task file.
+- Static backoffice remains explicitly deferred; global all-application README
+  compliance is not claimed. Four local source commits are on `feature/auth-frontend`.
+  The feature-branch chain is the selected future delivery strategy; slice branches
+  and PRs have not been created, and no publication has been performed.
+
+## Backoffice Authentication Expansion — AUTH-BO-01
+
+- Added standalone English login and plain-JS auth helper with origin-local token
+  storage, cancellable form login, `/auth/me`, raw bearer Response handling,
+  safe backoffice returns and existing API host/port configuration semantics.
+- Tracker runtime closeout above remains unchanged. This newly authorized static
+  expansion is separate: overview, analyzer and supplier gating/request wiring
+  remain pending AUTH-BO-02; no global authentication completion is claimed.
+- Node 24 RED exited 1 (missing auth module); GREEN passed 9/9 (exit 0), covering
+  encoding, raw multipart/blob compatibility, session failures/stale 401, abort,
+  API configuration and safe redirects. No DOM runner or live UI/API checks run.
+
+## Backoffice Authentication — AUTH-BO-02
+
+- All three private shells start hidden, including headers/sidebar/sample content.
+  Shared guard validates `/auth/me` before one-time initialization; transient errors
+  offer retry/logout. Departure cancels validation and hides content; persisted
+  restores and cross-tab token events revalidate. Sidebar apiPort is preserved.
+- Analyzer multipart/export and all supplier requests now use the existing raw
+  bearer helper. Login native fallback uses POST and departure resets pending UI.
+- RED: Node suite passed existing 9 tests, failed missing guard module. GREEN:
+  10/10 passed, including retry, cancellation, restore, 401 and missing session.
+  Browser/API acceptance and verify-trackflow-ui runtime were pending at this
+  implementation stage; subsequent AUTH-BO-03 closeout is recorded below.
+  Tracker, website, backend and historical root apps are unchanged.
+
+## Backoffice Authentication — AUTH-BO-03 Closeout
+
+- Scoped automated/runtime acceptance completed for source `8186751`, following
+  foundation `b9db58d`; evidence is summarized in `uis/backoffice/README.md`.
+  Verifiers `mvra4y7t-i-t17g` and `mvrae4y4-k-x08r` observed Node 10/10 twice,
+  six JS syntax checks and diff checks passing, real isolated auth/supplier/CSV
+  flows, session replacement/concealment, keyboard and 390/1440 error-free checks.
+  Synthetic persisted handlers passed; actual bfcache was attempted but not
+  exercised (`pageshow.persisted=false`), not an application failure.
+- Public website separately passed its skill run without auth calls/redirects.
+  Isolated browser tasks made no source edits; resources were cleaned without
+  stopping existing servers. Tracker 20/20 + lint/build were not rerun here;
+  candidate reads were mocked, no external writes tested.
+- USER-REPORTED manual completion: after live Tailscale tracker/backoffice/website/
+  API docs URLs and checklist, user said “listo, probado”; no issues described.
+  Not independently observed manual assertions. Host checks saw pages 200,
+  unauthenticated `/auth/me` 401 and CORS for both origins. Requested manual
+  servers remain running on 3000/3001/8000 with ordinary local data, no reset.
+- Route inventories and shared-identity/separate-origin session boundaries are in
+  both UI READMEs. Website/public B2B intake remain unchanged; legacy Hito 2
+  `operations.html` stays outside scope, without established private/public or
+  superseded status. No global 100% claim.
+- All work remains sequential local commits on ONE `feature/auth-frontend` branch.
+  Feature-branch PR-chain is the selected strategy only: no slice branches/PRs,
+  publication or merge. Source reviews were approved and acknowledged; this
+  passive documentation does not claim a new review outcome.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected

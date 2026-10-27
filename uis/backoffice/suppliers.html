@@ -9,6 +9,12 @@
     <script type="module" src="suppliers.js"></script>
   </head>
   <body class="supplier-page">
+    <section id="session-panel" aria-label="Session">
+      <p id="session-state" role="status">Checking your session… JavaScript is required.</p>
+      <button id="session-retry" type="button" hidden>Retry</button>
+      <button data-logout type="button">Sign out</button>
+    </section>
+    <div data-protected hidden>
     <a class="skip-link" href="#main-content">Skip to supplier directory</a>
     <header class="topbar">
       <div class="brand-block">
@@ -26,6 +32,7 @@
           <a href="incident-analysis.html">Incident analysis</a>
           <a class="active-item" aria-current="page" href="suppliers.html">Supplier directory</a>
         </nav>
+        <button data-logout type="button">Sign out</button>
         <div class="shift-card">
           <span>Markets</span>
           <strong>USA + Spain</strong>
@@ -104,5 +111,6 @@
     </div>
 
     <footer>TrackFlow Tech · Supplier rates are managed by carrier operations</footer>
+    </div>
   </body>
 </html>
