@@ -34,8 +34,8 @@ The user explicitly authorized local work-unit commits on feature/auth-api. Push
 AUTH-02 split into two cohesive units before writing to keep the security-critical changes reviewable; scope is unchanged.
 - [x] AUTH-03 Protect eight existing routes, authenticated regression tests, CORS and integration docs. Verified and committed: e522ea439b5df7eec35437b247ee35f94f7b6a39.
 - [x] AUTH-04 Independent final assignment audit and documented verification evidence. Commit: 9d5e80244b078b2967354adcc18a98cb084d3ff2; structural readback and staged diff check passed. No behavior changes, so no meaningful test-first RED or additional test rerun required for this passive documentation unit.
-- [ ] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. Status: in_progress; local .env/live HTTP passed and developer confirmed complete manual Swagger flow. Recording final documentation before closure commit.
-- [ ] AUTH-06 Publish PR against main and submit instructor link. Status: pending explicit publication authorization.
+- [x] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. PASS: real env/HTTP verification and explicit human Swagger confirmation. Evidence commit: fc0888923e50978372aa075b859ea737310d222d.
+- [ ] AUTH-06 Publish PR against main and submit instructor link. Status: in_progress; awaiting explicit publication authorization, no push/PR commands run.
 
 Final audit was separated from manual verification and publication so passing automated checks does not falsely close mandatory remaining steps.
 
@@ -148,7 +148,7 @@ Interpretations checked independently:
 - Browser tool discovery returned no matching browser/playwright tools. No manual /docs check claimed.
 
 ## Next step
-Finish passive documentation of developer-reported manual results, commit the verification record locally, and request separate publication authorization. No source/test changes, extra tests or repeated code reviews needed. Parent owns this document and Engram mirror.
+Await explicit publication authorization for feature/auth-api push and PR against main. Implementation, tests and manual acceptance are complete and committed locally; no further tests are scheduled. Parent owns this document and Engram mirror.
 
 ## Final check limitations
 - No failing automated tests; Starlette/httpx deprecation warning is pre-existing and non-failing.
@@ -158,18 +158,18 @@ Finish passive documentation of developer-reported manual results, commit the ve
 - Frontend tests skipped because no UI changes; existing static clients intentionally receive 401 without bearer tokens.
 - Native reviews are approved for all four work units, not proof of manual acceptance or publication.
 
-## Local runtime verification progress
+## Local runtime verification history
 - User requested continuing appropriate checks without unnecessary stops.
 - Confirmed .env absent, then created exclusively with os.O_EXCL and permissions 0600; JWT_SECRET_KEY generated with secrets.token_urlsafe(32), ACCESS_TOKEN_EXPIRE_MINUTES=30. Values not displayed or persisted in memory. git check-ignore confirmed .env ignored; tracked worktree was clean.
-- No callable browser tool was found, but installed browser runtime availability is being checked separately. No conclusion of total browser unavailability yet.
-- Verifier mvr3mxrq-d-9m3t will test real Uvicorn with isolated stores, using uv --env-file .env, without source changes/installations or rerunning full suites.
+- Initial discovery found no callable browser tool; installed runtime availability was subsequently checked (result below).
+- Verifier mvr3mxrq-d-9m3t tested real Uvicorn with isolated stores and uv --env-file .env, without source changes/installations or rerunning full suites.
 
 ### Live runtime result
 - Verifier mvr3mxrq-d-9m3t finished. Real Uvicorn with explicit .env and disposable databases: /docs and /openapi.json 200, registration 201, login 200, bearer /auth/me and /suppliers 200, missing/malformed token 401, cross-owner user read 403.
 - Cached Chromium exists, but fresh-profile launch fails because libatk-1.0.so.0 is missing. Combined script exit 1 occurred after successful HTTP checks. No rendered Swagger, console, screenshots or human manual verification performed; no installations attempted.
 - Temporary server PID 3035300/port44129 stopped; process absence and closed port checked. Temp artifacts remain in /tmp/trackflow-runtime-_kn85yuz/. No secrets printed.
 - Task-file modification seen by verifier was the parent's concurrent progress update; no unexplained source mutation.
-- No background verifier remains active. Next action is resolve browser OS dependency with authorization, or perform the documented flow in the developer's browser. Publication still unauthorized.
+- No background verifier remains active. The developer subsequently performed the documented flow in their own browser; no OS package installation was needed. Publication still unauthorized.
 
 ### Human-reported Swagger acceptance
 - Developer accessed Swagger from their main PC through Tailscale. Confirmed unauthenticated GET /suppliers401 and successful registration201 with safe user metadata.
