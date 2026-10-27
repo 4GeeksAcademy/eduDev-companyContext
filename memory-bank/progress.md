@@ -241,6 +241,19 @@
   encoding, raw multipart/blob compatibility, session failures/stale 401, abort,
   API configuration and safe redirects. No DOM runner or live UI/API checks run.
 
+## Backoffice Authentication — AUTH-BO-02
+
+- All three private shells start hidden, including headers/sidebar/sample content.
+  Shared guard validates `/auth/me` before one-time initialization; transient errors
+  offer retry/logout. Departure cancels validation and hides content; persisted
+  restores and cross-tab token events revalidate. Sidebar apiPort is preserved.
+- Analyzer multipart/export and all supplier requests now use the existing raw
+  bearer helper. Login native fallback uses POST and departure resets pending UI.
+- RED: Node suite passed existing 9 tests, failed missing guard module. GREEN:
+  10/10 passed, including retry, cancellation, restore, 401 and missing session.
+  Browser/API acceptance and verify-trackflow-ui runtime remain pending independent
+  verification; tracker, website, backend and historical root apps are unchanged.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected

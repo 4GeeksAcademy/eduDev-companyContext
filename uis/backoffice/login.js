@@ -10,6 +10,8 @@ window.addEventListener('pagehide', () => {
   pending = undefined;
   fields.disabled = false;
   form.removeAttribute('aria-busy');
+  form.elements.password.value = '';
+  state.textContent = 'Use your TrackFlow account.';
 });
 
 form.addEventListener('submit', async event => {

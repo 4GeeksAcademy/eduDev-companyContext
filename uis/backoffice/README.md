@@ -2,9 +2,9 @@
 
 Static internal operations interface for TrackFlow's Los Angeles and Zaragoza teams.
 The overview uses local sample data; the incident and supplier pages connect to the
-local FastAPI service. A public `login.html` and shared auth helper are now present;
-the three operational pages still await session gating and bearer-request wiring.
-The API already requires authentication, so these unchanged clients receive 401.
+local FastAPI service. Public `login.html` provides sign-in. All three private
+pages hide their complete shell until shared `/auth/me` validation succeeds;
+incident and supplier operations use bearer requests through `auth.js`.
 
 ## Run Locally
 
@@ -68,13 +68,16 @@ Callers set JSON Content-Type themselves; multipart boundaries remain automatic.
 Missing tokens/current-token 401 clear and redirect; stale 401 cannot revoke a
 newer session. Other errors preserve storage. Login 401 never redirects.
 
-Operational wiring must hide private content in HTML until `/auth/me` succeeds,
-then initialize page behavior; transient validation errors must offer retry/logout.
-That gate and all three page integrations are pending AUTH-BO-02, not delivered here.
+`guardSession(initialize)` in `session-guard.js` validates before revealing HTML
+or running the callback once. Transient failures retain the token and offer retry
+and sign-out. Departure aborts checks and hides content; persisted browser restores
+and cross-tab session changes revalidate. Sidebar links preserve validated apiPort.
+Login uses native POST fallback and unlocks canceled submissions on departure.
 Tracker registration/profile remain in the independent Next app. Different origins
 (including ports) have separate localStorage sessions: this is not SSO or token handoff.
 
 Run `node --test uis/backoffice/tests/*.test.mjs` from the repository root.
-Tests mock browser/fetch/storage behavior; login markup and cleanup are structurally
-inspected only, without a DOM runner or live browser/API acceptance in this unit.
+Tests exercise auth and gate lifecycle with minimal browser/fetch/storage fakes.
+Live browser/API acceptance (including back/forward cache, multipart and downloads)
+is pending independent verification; no skill runtime PASS is claimed.
 No build step is required.
