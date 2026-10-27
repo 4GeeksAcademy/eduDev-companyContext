@@ -42,14 +42,21 @@ and logout. Protected identity 401s clear the matching session and redirect to
 means the account exists: offer manual login, do not repeat registration.
 `AuthApiError` exposes status, validation details and field errors for forms.
 The token is browser-readable: avoid untrusted scripts and use HTTPS in production.
-Auth pages, client guards and navigation are forthcoming in AUTH-FE-02; this
-unit does not yet protect candidate screens.
+Public `/login` and `/register` forms support field errors and optional registration
+contacts. Passwords accept 1–72 UTF-8 bytes, without extra strength requirements.
+If registration succeeds but automatic login fails, use the manual login link;
+another registration stays disabled until inputs are deliberately changed.
+
+All other routes validate `/auth/me` before mounting private content, including
+candidate components. Transient failures preserve the token and offer retry/logout.
+Private navigation includes logout; profile UI/navigation is deferred. This is a
+client-side access gate, not authorization for the separate external candidate API.
 
 ## Verification
 
 ```bash
 # Node 24 native TypeScript stripping; no additional test dependencies
-node --test tests/auth.test.mjs
+node --test tests/*.test.mjs
 npm run lint
 npm run build
 ```
@@ -67,4 +74,8 @@ npm run start
 - Status and stage updates from the detail view.
 - Candidate-only notes with add and delete actions.
 - Direct browser candidate API calls; no backend routes or database are included.
-- Standalone identity/session client only; authentication UI integration is pending.
+- Identity login/registration, guarded candidate screens and logout; profile and
+  backoffice integration remain deferred. The separate public website is unchanged.
+- Node tests cover identity requests and form validation. JSX has no configured
+  deterministic UI runner; lint/build do not replace browser or live API checks.
+  No integrated browser or real API verification is claimed.

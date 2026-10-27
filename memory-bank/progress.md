@@ -141,6 +141,23 @@
   MODULE_TYPELESS_PACKAGE_JSON warning; dependencies/package files are unchanged.
 - No integrated browser/API execution or overall assignment completion claimed.
 
+## Tracker Authentication — AUTH-FE-02
+
+- Added public Spanish login/registration forms, optional registration contacts,
+  field-level errors and UTF-8 password validation. Partial registration success
+  offers manual login and prevents resubmission until deliberate input changes.
+- Root client guard validates identity before mounting private candidate content;
+  pathname-keyed sessions abort obsolete checks. Transient errors retain the token
+  with retry/logout. Public routes skip validation; private navigation adds logout.
+- Form-helper RED: `node --test tests/*.test.mjs` exited 1 (missing helper), with
+  existing nine tests passing. GREEN: same command passed 12/12 (exit 0), including
+  byte boundaries, required/email checks and normalized optional contacts.
+- `npm run lint` and `npm run build` both exited 0. JSX has no configured
+  deterministic UI runner; structural inspection confirms gating before child
+  mount, but browser/live API behavior is not verified. Existing Node module-type
+  warning is non-failing. Candidate/identity APIs remain separate and unchanged;
+  profile and backoffice remain deferred, public website untouched.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected
