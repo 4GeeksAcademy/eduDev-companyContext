@@ -229,6 +229,18 @@
   The feature-branch chain is the selected future delivery strategy; slice branches
   and PRs have not been created, and no publication has been performed.
 
+## Backoffice Authentication Expansion — AUTH-BO-01
+
+- Added standalone English login and plain-JS auth helper with origin-local token
+  storage, cancellable form login, `/auth/me`, raw bearer Response handling,
+  safe backoffice returns and existing API host/port configuration semantics.
+- Tracker runtime closeout above remains unchanged. This newly authorized static
+  expansion is separate: overview, analyzer and supplier gating/request wiring
+  remain pending AUTH-BO-02; no global authentication completion is claimed.
+- Node 24 RED exited 1 (missing auth module); GREEN passed 9/9 (exit 0), covering
+  encoding, raw multipart/blob compatibility, session failures/stale 401, abort,
+  API configuration and safe redirects. No DOM runner or live UI/API checks run.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected

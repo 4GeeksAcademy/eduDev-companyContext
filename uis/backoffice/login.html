@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in · TrackFlow Control Room</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="login.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="logo" aria-hidden="true">TF</span>
+        <div><strong>TrackFlow</strong><span>Control Room</span></div>
+      </div>
+    </header>
+    <main class="login-page">
+      <section class="supplier-panel" aria-labelledby="login-title">
+        <p class="overline">Internal operations</p>
+        <h1 id="login-title">Sign in</h1>
+        <p>Access your warehouse, incident and supplier workspace.</p>
+        <form id="login-form">
+          <fieldset class="login-fields">
+            <legend class="overline">Your account</legend>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="username" required />
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+            <button class="button" type="submit">Sign in</button>
+          </fieldset>
+          <p class="state" id="login-state" role="status" aria-live="polite">Use your TrackFlow account.</p>
+        </form>
+        <noscript>JavaScript is required to sign in.</noscript>
+      </section>
+    </main>
+    <footer>TrackFlow Tech · Internal operations</footer>
+  </body>
+</html>
