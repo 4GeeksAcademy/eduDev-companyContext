@@ -33,8 +33,8 @@ The user explicitly authorized local work-unit commits on feature/auth-api. Push
 
 AUTH-02 split into two cohesive units before writing to keep the security-critical changes reviewable; scope is unchanged.
 - [x] AUTH-03 Protect eight existing routes, authenticated regression tests, CORS and integration docs. Verified and committed: e522ea439b5df7eec35437b247ee35f94f7b6a39.
-- [ ] AUTH-04 Independent final assignment audit and documented verification evidence. Status: in_progress; audit passed implementation, recording evidence before documentation commit.
-- [ ] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. Status: pending; no callable browser tools available.
+- [x] AUTH-04 Independent final assignment audit and documented verification evidence. Commit: 9d5e80244b078b2967354adcc18a98cb084d3ff2; structural readback and staged diff check passed. No behavior changes, so no meaningful test-first RED or additional test rerun required for this passive documentation unit.
+- [ ] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. Status: in_progress; awaiting developer participation because no callable browser tools are available.
 - [ ] AUTH-06 Publish PR against main and submit instructor link. Status: pending explicit publication authorization.
 
 Final audit was separated from manual verification and publication so passing automated checks does not falsely close mandatory remaining steps.
@@ -148,7 +148,7 @@ Interpretations checked independently:
 - Browser tool discovery returned no matching browser/playwright tools. No manual /docs check claimed.
 
 ## Next step
-Commit the audit documentation, then request developer participation for the manual /docs flow. Configure a private ignored .env locally without exposing secrets; do not overwrite existing secrets or start services on occupied ports. No publication until separately authorized. Parent owns this document and Engram mirror.
+Request developer participation for the manual /docs flow; implementation and audit are committed locally. Configure a private ignored .env locally without exposing secrets; do not overwrite existing secrets or start services on occupied ports. No publication until separately authorized. Parent owns this document and Engram mirror.
 
 ## Final check limitations
 - No failing automated tests; Starlette/httpx deprecation warning is pre-existing and non-failing.
