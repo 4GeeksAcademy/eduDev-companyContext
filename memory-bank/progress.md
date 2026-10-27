@@ -90,11 +90,38 @@
 - Automated evidence covers operational A14/A15/A21 and invalid-token A20.
   Static frontend remains unchanged and now receives 401 without tokens.
   Single-worker TinyDB and process-global authenticated shared aggregate boundaries
-  are documented. Manual Swagger/browser verification, official assignment final
-  audit and PR publication remain unperformed/parent-owned. No git writes,
-  dependency changes, runtime data or task-plan edits by this writer.
+  are documented. The independent final assignment audit is recorded below.
+  Manual Swagger/browser verification and PR publication remain pending. No git
+  writes, dependency changes, runtime data or task-plan edits by this writer.
+
+## Authentication API — Final Assignment Audit
+
+- An independent verifier reread the complete current official authentication
+  README and mapped all 22 acceptance items to source and test evidence. No concrete
+  implementation noncompliance was found; delivery is not yet 100% complete.
+- Observed final checks: `uv run python -m unittest discover -s services/api/tests -v`
+  passed 41/41 in 24.499s; `uv run python -m unittest shared.test_incident_analysis -v`
+  passed 7/7 in 0.085s; `git diff --check` passed. Only the existing non-failing
+  Starlette/httpx deprecation warning remains. No frontend files changed.
+- Four implementation work units received native review approval and exact
+  acknowledgement. Authorized local commits: `b4d353c` (registration), `d1703ae`
+  (JWT), `5b0188d` (ownership/CRUD), and `e522ea4` (operational protection).
+- A19 remains pending: the required manual `/docs` register/login/authorize/protected
+  route flow was not performed. Automated HTTP/OpenAPI tests are not manual evidence.
+  No callable browser tool is available in this session.
+- A13 local setup remains unverified: no real `.env` or signing secret was created
+  or inspected. Environment configuration and error behavior are tested; local
+  ignored `.env` setup is documented in `services/api/README.md`.
+- A22 remains pending: no push, PR, instructor submission or merge was performed.
+  The user authorized local commits only. Future Supabase identity placement is a
+  documented constraint, not a migration that has already been tested.
+- Full requirement evidence, review identities and known non-blocking limitations
+  are tracked in `odd/tasks/auth-api.md`.
 
 ## Next Steps
 
-1. Complete the developer-authorized commit and delivery workflow.
-2. Attach the verified seed, filtered API, and filtered UI screenshots to the pull request.
+1. Configure an ignored local `.env` and perform the manual `/docs` authentication
+   flow with the developer; record the observed results before claiming completion.
+2. After explicit publication authorization, push `feature/auth-api` and open a PR
+   against `main` describing the eight protected routes and exact verification.
+3. Share the PR with the instructor; merge only after approval and user authorization.
