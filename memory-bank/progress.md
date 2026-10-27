@@ -45,6 +45,25 @@
   AUTH-03; user CRUD/profile routes remain AUTH-02B. No dependency changes,
   runtime identity data writes, real secrets, commits or task-plan edits.
 
+## Authentication API — AUTH-02B
+
+- Protected user directory (admin only), individual GET/PUT/DELETE (self or admin),
+  and owner-only GET/PUT `/profiles/me` implemented. Managers have no admin powers;
+  only admins may supply role, even if unchanged. Public registration is preserved.
+- Credential updates normalize email, enforce uniqueness, hash passwords and reject
+  null/unknown fields. Profile updates preserve omitted contacts and allow null
+  clearing. Safe response schemas exclude credentials. Locked single-write services
+  preserve UUIDs and delete identity/profile together; deleted tokens fail 401.
+- README includes route/response permission matrix and trusted, stopped-server
+  first-admin provisioning instructions; no bootstrap endpoint or privileged seed.
+- Test-first `uv run python -m unittest discover -s services/api/tests -p
+  'test_auth_users_profiles.py' -v`: RED 4 tests/16 failures (absent routes, 404/405);
+  GREEN 4/4 in 7.364s; expanded alternate cases 4/4 in 7.579s. Full
+  `uv run python -m unittest discover -s services/api/tests -v`: 36/36 in 15.309s.
+  Existing Starlette/httpx warning remains non-failing. No manual `/docs` claim.
+- Operational protection and CORS remain AUTH-03; no frontend/dependency changes,
+  runtime accounts, task-plan edits or git writes performed by this writer.
+
 ## Next Steps
 
 1. Complete the developer-authorized commit and delivery workflow.

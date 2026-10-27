@@ -5,8 +5,8 @@ small Pydantic + TinyDB Supplier Directory. Incident source files remain transie
 supplier records persist in an API-owned JSON database. Public user registration
 stores identities and linked profiles in a separate TinyDB file. Form login issues
 JWTs and `GET /auth/me` requires a bearer token. Existing operational endpoints
-and registration remain public; user CRUD/profile routes and operational route
-protection belong to the next units.
+and registration remain public. User CRUD and owner profile routes require bearer
+authentication; operational route protection remains AUTH-03.
 
 ## Run locally
 
@@ -93,8 +93,61 @@ private: it contains email/contact data and bcrypt hashes.
 `uv sync` installs `libpass[bcrypt]` (imported as `passlib.hash.bcrypt`, not the
 legacy passlib distribution). `python-jose[cryptography]` signs and validates JWTs.
 No JWT secret or `.env` file is required for registration; `.env` files are ignored.
-User CRUD and profile endpoints remain pending. Existing incident and supplier
-endpoints are explicitly **not protected yet**.
+Existing incident and supplier endpoints are explicitly **not protected yet**
+(until AUTH-03).
+
+## User and profile permissions
+
+| Route | Permission | Success |
+| --- | --- | --- |
+| `POST /users` | Public, always creates an ordinary user | 201 safe identity |
+| `GET /users` | Admin only (directory policy) | 200 safe identity list |
+| `GET /users/{id}` | Self or admin | 200 safe identity |
+| `PUT /users/{id}` | Self or admin; only admin may supply `role` | 200 safe identity |
+| `DELETE /users/{id}` | Self or admin | 204 empty body |
+| `GET /profiles/me` | Authenticated owner, including admins/managers | 200 own profile |
+| `PUT /profiles/me` | Authenticated owner only | 200 updated own profile |
+
+Managers have no admin privileges. Missing/invalid authentication returns **401**;
+forbidden ownership or role assignment returns **403**. Account lookup follows
+permission checks: an admin gets **404** for an unknown ID, while another user's
+ID (even nonexistent) returns **403** to ordinary users/managers. No response
+contains passwords or hashes. Deleted identities' existing tokens return **401**.
+Deletion removes both identity and linked profile in one locked storage write.
+Updates and deletion have the same single-process, non-crash-safe limits as registration.
+
+User PUT changes only supplied `email`, `password`, and/or enum `role`
+(`admin`, `manager`, `user`). Omitted fields are preserved; null credentials/role,
+invalid values and unknown fields (including profile fields and `is_active`)
+return **422** without echoing credentials. Email normalization/uniqueness matches
+registration; collisions return **409** without partial updates. Passwords are
+hashed before persistence. Non-admins cannot supply even their existing role.
+Profile PUT accepts only `name`, `phone`, `address`; omission preserves values,
+null clears them. Unknown identity/role fields return **422**. The owner comes
+only from the bearer dependency; there is intentionally no `/profiles/{id}` route.
+A missing linked profile fails closed with **500**.
+
+### Provision the first admin out of band
+
+There is no bootstrap endpoint or automatic privileged seed. A trusted local
+operator must stop **all API workers**, select an existing registered account,
+and open a local Python context with the same `TRACKFLOW_USERS_DB_PATH` as the
+server. Review the intended account privately, then use the identity services:
+
+```python
+from services.api.auth_database import get_user_by_email, update_user
+from services.api.auth_models import Role, UserUpdate
+
+account = get_user_by_email("operator@example.test")  # substitute the approved account
+assert account is not None and account.is_active
+update_user(account.id, UserUpdate(role=Role.admin))
+```
+
+This is an operator procedure, not startup code: do not commit account data,
+print hashes, or run it against an unverified database. Restart the single API
+worker afterward. These trusted services do not perform HTTP authorization;
+routers enforce permissions. Services return full internal `User` objects;
+HTTP routes filter through `UserResponse`.
 
 ## Login and current user
 
@@ -143,6 +196,12 @@ Focused token checks (temporary TinyDB, no real secret or runtime data):
 
 ```bash
 uv run python -m unittest discover -s services/api/tests -p 'test_auth_tokens.py' -v
+```
+
+Focused CRUD/profile checks use isolated identity/supplier files and real login:
+
+```bash
+uv run python -m unittest discover -s services/api/tests -p 'test_auth_users_profiles.py' -v
 ```
 
 Use **uv only** for this assignment. `services/api/requirements.txt` is a
