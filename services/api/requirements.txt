@@ -1,5 +1,7 @@
 fastapi>=0.116,<1
 httpx>=0.28,<1
+libpass[bcrypt]>=1.9.4
+python-jose[cryptography]>=3.5.0
 pydantic>=2.11,<3
 python-multipart>=0.0.20,<1
 tinydb>=4.8,<5

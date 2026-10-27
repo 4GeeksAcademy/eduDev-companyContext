@@ -6,9 +6,11 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
+from auth_helpers import register_and_login
 from services.api.app.main import app
 from services.api.database import DB_PATH_ENV, get_supplier, insert_supplier
 from services.api.seed import SUPPLIERS_SEED, seed_suppliers
@@ -30,17 +32,19 @@ VALID_SUPPLIER = {
 class SupplierApiTest(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary_directory = tempfile.TemporaryDirectory()
-        self.previous_path = os.environ.get(DB_PATH_ENV)
-        os.environ[DB_PATH_ENV] = str(Path(self.temporary_directory.name) / "suppliers.json")
+        self.addCleanup(self.temporary_directory.cleanup)
+        self.environment = patch.dict(os.environ, {
+            DB_PATH_ENV: str(Path(self.temporary_directory.name) / "suppliers.json"),
+            "TRACKFLOW_USERS_DB_PATH": str(Path(self.temporary_directory.name) / "users.json"),
+            "JWT_SECRET_KEY": "supplier-test-only-secret",
+            "ACCESS_TOKEN_EXPIRE_MINUTES": "30",
+        })
+        self.environment.start()
+        self.addCleanup(self.environment.stop)
         self.client = TestClient(app)
-
-    def tearDown(self) -> None:
-        self.client.close()
-        if self.previous_path is None:
-            os.environ.pop(DB_PATH_ENV, None)
-        else:
-            os.environ[DB_PATH_ENV] = self.previous_path
-        self.temporary_directory.cleanup()
+        self.addCleanup(self.client.close)
+        _, headers = register_and_login(self.client)
+        self.client.headers.update(headers)
 
     def create(self, **overrides: object):
         return self.client.post("/suppliers", json={**VALID_SUPPLIER, **overrides})
@@ -191,8 +195,13 @@ class SupplierPersistenceAndSeedTest(unittest.TestCase):
     def test_seed_inserts_exact_canonical_set_once(self) -> None:
         self.assertEqual(seed_suppliers(), 15)
         self.assertEqual(seed_suppliers(), 0)
-        with TestClient(app) as client:
-            suppliers = client.get("/suppliers").json()
+        with patch.dict(os.environ, {
+            "TRACKFLOW_USERS_DB_PATH": str(Path(self.temporary_directory.name) / "users.json"),
+            "JWT_SECRET_KEY": "seed-test-only-secret",
+            "ACCESS_TOKEN_EXPIRE_MINUTES": "30",
+        }), TestClient(app) as client:
+            _, headers = register_and_login(client)
+            suppliers = client.get("/suppliers", headers=headers).json()
         self.assertEqual(len(suppliers), 15)
         self.assertEqual(
             {supplier["name"] for supplier in suppliers},

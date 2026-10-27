@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import csv
 import io
+import os
 import re
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
+from auth_helpers import register_and_login
 from services.api.app.main import app
 from services.api.app.routers import incidents
 from shared.incident_analysis import REQUIRED_COLUMNS, analyze_csv_bytes
@@ -63,7 +67,20 @@ def upload(client: TestClient, content: bytes, filename: str = "incidents.csv", 
 class IncidentEndpointsTest(unittest.TestCase):
     def setUp(self) -> None:
         incidents._last_result = None
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        environment = patch.dict(os.environ, {
+            "TRACKFLOW_USERS_DB_PATH": str(Path(directory.name) / "users.json"),
+            "TRACKFLOW_SUPPLIERS_DB_PATH": str(Path(directory.name) / "suppliers.json"),
+            "JWT_SECRET_KEY": "incident-test-only-secret",
+            "ACCESS_TOKEN_EXPIRE_MINUTES": "30",
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
         self.client = TestClient(app)
+        self.addCleanup(self.client.close)
+        _, headers = register_and_login(self.client)
+        self.client.headers.update(headers)
 
     def tearDown(self) -> None:
         incidents._last_result = None

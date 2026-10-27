@@ -4,6 +4,8 @@ dist/
 .atl/
 tmp/
 .venv/
+.env
+.env.*
 __pycache__/
 *.py[cod]
 results.csv
