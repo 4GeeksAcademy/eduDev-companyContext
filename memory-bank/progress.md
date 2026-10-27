@@ -126,6 +126,21 @@
 - Full requirement evidence, review identities and known non-blocking limitations
   are tracked in `odd/tasks/auth-api.md`.
 
+## Tracker Authentication — AUTH-FE-01
+
+- Added an isolated identity/session client and nine Node 24 mocked-fetch tests.
+  Candidate API behavior is unchanged; identity uses `NEXT_PUBLIC_AUTH_API_URL`
+  (local default port 8000). Auth pages/guards remain forthcoming; backoffice is
+  deferred and the public website is untouched.
+- Observed RED: focused test command exited 1 because `services/auth.ts` did not
+  exist. GREEN: `node --test tests/auth.test.mjs` passed 9/9. Coverage includes
+  request encoding, profile nulls, field errors, registration partial success,
+  session cleanup, preserved sessions on other failures and stale-401 protection.
+- `npm run lint` passed (exit 0) after a documented standalone-navigation rule
+  exemption; `npm run build` passed (exit 0). Node reports a non-failing
+  MODULE_TYPELESS_PACKAGE_JSON warning; dependencies/package files are unchanged.
+- No integrated browser/API execution or overall assignment completion claimed.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected
