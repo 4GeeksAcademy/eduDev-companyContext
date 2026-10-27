@@ -19,7 +19,8 @@
   JWT login and `/auth/me` are delivered in AUTH-02 below; user CRUD/profile
   endpoints and operational protection are delivered in AUTH-02B/AUTH-03 below.
 - Dependencies added with `uv add "python-jose[cryptography]" "libpass[bcrypt]"`;
-  requirements mirror updated. No secrets or `.env` files created.
+  requirements mirror updated. No secrets or `.env` files created in AUTH-01;
+  subsequent local setup is recorded in the final audit below.
 - Test-first evidence: baseline API suite passed 16/16; registration RED observed
   missing-route 404 failures; focused GREEN passed 8/8 including failure consistency,
   UTF-8 bcrypt limits and UUID non-reuse. Final `uv run python -m unittest
@@ -91,14 +92,15 @@
   Static frontend remains unchanged and now receives 401 without tokens.
   Single-worker TinyDB and process-global authenticated shared aggregate boundaries
   are documented. The independent final assignment audit is recorded below.
-  Manual Swagger/browser verification and PR publication remain pending. No git
+  Manual Swagger verification was later reported passed (final audit below);
+  PR publication remains pending. No git
   writes, dependency changes, runtime data or task-plan edits by this writer.
 
 ## Authentication API — Final Assignment Audit
 
 - An independent verifier reread the complete current official authentication
   README and mapped all 22 acceptance items to source and test evidence. No concrete
-  implementation noncompliance was found; delivery is not yet 100% complete.
+  implementation noncompliance was found; publication remains outstanding.
 - Observed final checks: `uv run python -m unittest discover -s services/api/tests -v`
   passed 41/41 in 24.499s; `uv run python -m unittest shared.test_incident_analysis -v`
   passed 7/7 in 0.085s; `git diff --check` passed. Only the existing non-failing
@@ -106,12 +108,17 @@
 - Four implementation work units received native review approval and exact
   acknowledgement. Authorized local commits: `b4d353c` (registration), `d1703ae`
   (JWT), `5b0188d` (ownership/CRUD), and `e522ea4` (operational protection).
-- A19 remains pending: the required manual `/docs` register/login/authorize/protected
-  route flow was not performed. Automated HTTP/OpenAPI tests are not manual evidence.
-  No callable browser tool is available in this session.
-- A13 local setup remains unverified: no real `.env` or signing secret was created
-  or inspected. Environment configuration and error behavior are tested; local
-  ignored `.env` setup is documented in `services/api/README.md`.
+- A19 passed by human report from a PC via Tailscale `/docs`: registration 201
+  (role `user`, active, safe response), login 200 with bearer token, Swagger
+  Authorize success, `/auth/me` 200 with correct email/role/profile and no
+  credentials, `/suppliers` 200 with supplier list, and unauthenticated
+  `/suppliers` 401. These are not agent-browser observations; no manual incident
+  upload/export or expired-token check is claimed.
+- A13 local setup passed: ignored `.env` created with mode 0600; explicit loading
+  verified by real Uvicorn login without exposing secrets. No code changes.
+  Independent live HTTP checks passed registration/login/auth-me/suppliers,
+  missing/malformed-token 401 and cross-owner 403. Agent Chromium launch failed
+  on missing `libatk-1.0.so.0`; human verification resolves the manual requirement.
 - A22 remains pending: no push, PR, instructor submission or merge was performed.
   The user authorized local commits only. Future Supabase identity placement is a
   documented constraint, not a migration that has already been tested.
@@ -120,8 +127,7 @@
 
 ## Next Steps
 
-1. Configure an ignored local `.env` and perform the manual `/docs` authentication
-   flow with the developer; record the observed results before claiming completion.
-2. After explicit publication authorization, push `feature/auth-api` and open a PR
-   against `main` describing the eight protected routes and exact verification.
-3. Share the PR with the instructor; merge only after approval and user authorization.
+1. After explicit publication authorization, push `feature/auth-api` and open a PR
+   against `main` describing the eight protected routes and exact verification,
+   distinguishing human-reported manual results from agent HTTP/automated checks.
+2. Share the PR with the instructor; merge only after approval and user authorization.

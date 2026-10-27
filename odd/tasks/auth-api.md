@@ -34,7 +34,7 @@ The user explicitly authorized local work-unit commits on feature/auth-api. Push
 AUTH-02 split into two cohesive units before writing to keep the security-critical changes reviewable; scope is unchanged.
 - [x] AUTH-03 Protect eight existing routes, authenticated regression tests, CORS and integration docs. Verified and committed: e522ea439b5df7eec35437b247ee35f94f7b6a39.
 - [x] AUTH-04 Independent final assignment audit and documented verification evidence. Commit: 9d5e80244b078b2967354adcc18a98cb084d3ff2; structural readback and staged diff check passed. No behavior changes, so no meaningful test-first RED or additional test rerun required for this passive documentation unit.
-- [ ] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. Status: in_progress; awaiting developer participation because no callable browser tools are available.
+- [ ] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. Status: in_progress; local .env/live HTTP passed and developer confirmed complete manual Swagger flow. Recording final documentation before closure commit.
 - [ ] AUTH-06 Publish PR against main and submit instructor link. Status: pending explicit publication authorization.
 
 Final audit was separated from manual verification and publication so passing automated checks does not falsely close mandatory remaining steps.
@@ -42,7 +42,7 @@ Final audit was separated from manual verification and publication so passing au
 Each implementation task uses one bounded writer, tests first when deterministic, and records exact RED/GREEN/refactor commands/results. No task is complete while required checks fail. Local work-unit commits are authorized; publishing is not. Avoid oversized units; do not compress tests or readability to reduce diff size.
 
 ## Final acceptance matrix
-Independent verifier mvr3dc9z-c-q5ck reread the complete current official README. PASS means implementation inspection plus applicable automated checks, not manual/browser or publication evidence. Paths below are repository-relative. No concrete implementation noncompliance found; full delivery remains PARTIAL.
+Independent verifier mvr3dc9z-c-q5ck reread the complete current official README. PASS means implementation inspection plus applicable automated checks, not manual/browser or publication evidence. Paths below are repository-relative. No concrete implementation noncompliance found; implementation and verification complete, submission/publication remains pending.
 
 | ID | Requirement | Result and observed evidence |
 | --- | --- | --- |
@@ -58,14 +58,14 @@ Independent verifier mvr3dc9z-c-q5ck reread the complete current official README
 | A10 | Email/password login and signed JWT | PASS: services/api/routes/auth.py:16-31; tests/test_auth_tokens.py:58,80; form email and OAuth username alias |
 | A11 | /auth/me email, role, linked profile | PASS: services/api/routes/auth.py:34-39; tests/test_auth_tokens.py:58 |
 | A12 | OAuth2 bearer dependency, token validation and DB identity | PASS: services/api/auth_dependencies.py:17,41-61; tests/test_auth_tokens.py:115,130 |
-| A13 | Environment secret and configurable expiry | PASS implementation: services/api/auth.py:32-49; tests/test_auth_tokens.py:149. LOCAL SETUP PENDING: real ignored .env not created or inspected |
+| A13 | Environment secret and configurable expiry | PASS implementation: services/api/auth.py:32-49; tests/test_auth_tokens.py:149. LOCAL SETUP PASS: ignored .env created exclusively with mode 0600; real Uvicorn login verified explicit env loading without exposing secrets |
 | A14 | Required route authentication and 401/403 distinction | PASS: services/api/routes/users.py:18-20; tests/test_auth_users_profiles.py:53 |
 | A15 | Five or more existing additional routes protected | PASS: eight routes; services/api/app/main.py:47-48; tests/test_auth_operational.py:20-29,58 |
 | A16 | libpass bcrypt, no plaintext storage/comparison | PASS: pyproject.toml:9; services/api/auth.py:8-24; tests/test_auth_registration.py:37 |
 | A17 | TinyDB identities retained; future user_uuid references only | PASS current architecture: services/api/auth_database.py:37-63 and API README. Future Supabase migration is not yet present/tested |
 | A18 | Stateless JWT, no session/cookie authentication | PASS: auth/dependency code inspection; services/api/app/main.py:43 disables CORS credentials |
-| A19 | Manual /docs registration → login → authorization → protected route | PENDING: no browser tool available; README labels walkthrough unexercised |
-| A20 | Missing/malformed/expired token returns 401 | PASS automated: services/api/tests/test_auth_tokens.py:115; test_auth_operational.py:58. Manual evidence still pending |
+| A19 | Manual /docs registration → login → authorization → protected route | PASS, HUMAN-REPORTED: developer confirmed registration, form login, Authorize, /auth/me200 with correct profile and /suppliers200 after initially observing unauthenticated401 |
+| A20 | Missing/malformed/expired token returns 401 | PASS automated: services/api/tests/test_auth_tokens.py:115; test_auth_operational.py:58. Manual missing-token and valid-token flow confirmed by developer; malformed/expired token cases verified automatically |
 | A21 | Valid-token existing API behavior unchanged | PASS: real-login helpers and preserved incident/supplier regressions; 41/41 API and 7/7 shared analysis tests |
 | A22 | Push/PR against main, protected-route/check description, instructor link | PENDING: publication not authorized; no push/PR/submission/merge |
 
@@ -148,12 +148,31 @@ Interpretations checked independently:
 - Browser tool discovery returned no matching browser/playwright tools. No manual /docs check claimed.
 
 ## Next step
-Request developer participation for the manual /docs flow; implementation and audit are committed locally. Configure a private ignored .env locally without exposing secrets; do not overwrite existing secrets or start services on occupied ports. No publication until separately authorized. Parent owns this document and Engram mirror.
+Finish passive documentation of developer-reported manual results, commit the verification record locally, and request separate publication authorization. No source/test changes, extra tests or repeated code reviews needed. Parent owns this document and Engram mirror.
 
 ## Final check limitations
 - No failing automated tests; Starlette/httpx deprecation warning is pre-existing and non-failing.
 - Historical RED reported by bounded writers; final GREEN independently rerun.
-- Manual browser /docs, real local .env setup and publication remain pending.
+- Developer completed manual Swagger from their PC; local .env loading passed real HTTP checks. Only publication/submission remains pending.
 - No concurrency stress, multiprocess operation or crash-recovery testing; single-worker TinyDB explicitly documented.
 - Frontend tests skipped because no UI changes; existing static clients intentionally receive 401 without bearer tokens.
 - Native reviews are approved for all four work units, not proof of manual acceptance or publication.
+
+## Local runtime verification progress
+- User requested continuing appropriate checks without unnecessary stops.
+- Confirmed .env absent, then created exclusively with os.O_EXCL and permissions 0600; JWT_SECRET_KEY generated with secrets.token_urlsafe(32), ACCESS_TOKEN_EXPIRE_MINUTES=30. Values not displayed or persisted in memory. git check-ignore confirmed .env ignored; tracked worktree was clean.
+- No callable browser tool was found, but installed browser runtime availability is being checked separately. No conclusion of total browser unavailability yet.
+- Verifier mvr3mxrq-d-9m3t will test real Uvicorn with isolated stores, using uv --env-file .env, without source changes/installations or rerunning full suites.
+
+### Live runtime result
+- Verifier mvr3mxrq-d-9m3t finished. Real Uvicorn with explicit .env and disposable databases: /docs and /openapi.json 200, registration 201, login 200, bearer /auth/me and /suppliers 200, missing/malformed token 401, cross-owner user read 403.
+- Cached Chromium exists, but fresh-profile launch fails because libatk-1.0.so.0 is missing. Combined script exit 1 occurred after successful HTTP checks. No rendered Swagger, console, screenshots or human manual verification performed; no installations attempted.
+- Temporary server PID 3035300/port44129 stopped; process absence and closed port checked. Temp artifacts remain in /tmp/trackflow-runtime-_kn85yuz/. No secrets printed.
+- Task-file modification seen by verifier was the parent's concurrent progress update; no unexplained source mutation.
+- No background verifier remains active. Next action is resolve browser OS dependency with authorization, or perform the documented flow in the developer's browser. Publication still unauthorized.
+
+### Human-reported Swagger acceptance
+- Developer accessed Swagger from their main PC through Tailscale. Confirmed unauthenticated GET /suppliers401 and successful registration201 with safe user metadata.
+- Developer then confirmed all three grouped steps: email/password login200 with bearer token, Authorize successful, GET /auth/me200 with correct identity/profile, and GET /suppliers200 with supplier list.
+- Evidence is explicitly human-reported, not an agent browser run; no credentials/tokens were requested or recorded. Cached Chromium/libatk issue no longer blocks acceptance because developer used their own browser.
+- No functional code changed; document closure needs structural readback/diff check only. Documentation writer mvr5xwx6-e-5td3 updates API README and progress; parent updates this plan. Publication remains unauthorized.

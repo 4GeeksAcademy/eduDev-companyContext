@@ -181,7 +181,7 @@ HTTP routes filter through `UserResponse`.
 - Missing/invalid/expired tokens and deleted/inactive identities return **401**
   with `WWW-Authenticate: Bearer`. No sessions, cookies or refresh tokens are used.
 
-### Manual Swagger check — instructions only, not exercised
+### Manual Swagger check — human-reported pass (A19)
 
 1. Start with the ignored `.env` loaded and open `http://localhost:8000/docs`.
 2. Register through `POST /users`, then log in with the form in `POST /auth/login`.
@@ -193,7 +193,14 @@ HTTP routes filter through `UserResponse`.
    A malformed or expired bearer token must also return **401** (automated fixtures
    cover these cases).
 
-No manual `/docs` execution is claimed by the automated HTTP/OpenAPI tests.
+The developer reports passing the manual flow from a PC via Tailscale at
+`http://100.75.110.66:8000/docs`: registration **201** (`user`, active, safe
+response), login **200** with bearer token, Swagger **Authorize** success,
+`/auth/me` **200** with correct email/role/profile and no credentials, and
+`/suppliers` **200** with a supplier list; unauthenticated `/suppliers` returned
+**401**. These are human-reported results, not agent-browser observations.
+The additional incident walkthrough steps above are retained as instructions,
+not claimed as manually exercised.
 
 ## Tests
 
@@ -233,8 +240,11 @@ uv run python -m unittest discover -s services/api/tests -p 'test_suppliers.py' 
 uv run python -m unittest shared.test_incident_analysis -v
 ```
 
-Manual Swagger verification and PR publication remain **unperformed**; automated
-TestClient checks are not browser evidence. Final assignment audit is pending.
+Final implementation audit and human-reported mandatory manual verification are
+complete. Prior automated checks passed API **41/41** and shared **7/7**;
+independent live Uvicorn HTTP checks also passed. The agent's Chromium attempt
+was blocked by missing `libatk-1.0.so.0`, not a manual success observation.
+Publication remains unauthorized: no push, PR or instructor submission is claimed.
 
 Use **uv only** for this assignment. `services/api/requirements.txt` is a
 compatibility mirror, not the recommended setup workflow.
