@@ -33,6 +33,15 @@ class UserResponse(BaseModel):
     created_at: datetime
 
 
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class CurrentUserResponse(UserResponse):
+    profile: Profile
+
+
 class User(UserResponse):
     hashed_password: str = Field(repr=False)
 
