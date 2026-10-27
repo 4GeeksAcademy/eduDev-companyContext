@@ -119,15 +119,16 @@
   Independent live HTTP checks passed registration/login/auth-me/suppliers,
   missing/malformed-token 401 and cross-owner 403. Agent Chromium launch failed
   on missing `libatk-1.0.so.0`; human verification resolves the manual requirement.
-- A22 remains pending: no push, PR, instructor submission or merge was performed.
-  The user authorized local commits only. Future Supabase identity placement is a
-  documented constraint, not a migration that has already been tested.
+- A22 publication completed with explicit developer authorization: branch pushed
+  and [PR #12](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/12) opened
+  against `main`. Instructor submission and merge remain pending. Future Supabase
+  identity placement is a documented constraint, not an already-tested migration.
 - Full requirement evidence, review identities and known non-blocking limitations
   are tracked in `odd/tasks/auth-api.md`.
 
 ## Next Steps
 
-1. After explicit publication authorization, push `feature/auth-api` and open a PR
-   against `main` describing the eight protected routes and exact verification,
-   distinguishing human-reported manual results from agent HTTP/automated checks.
-2. Share the PR with the instructor; merge only after approval and user authorization.
+1. Share PR #12 with the instructor; its description lists the eight protected
+   routes and separates automated/live HTTP results from human-reported Swagger checks.
+2. Address review feedback if needed; merge only after approval and user authorization.
+   GitHub reported no status checks for the PR at publication; no CI success is claimed.

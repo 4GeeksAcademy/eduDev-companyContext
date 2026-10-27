@@ -35,14 +35,15 @@ AUTH-02 split into two cohesive units before writing to keep the security-critic
 - [x] AUTH-03 Protect eight existing routes, authenticated regression tests, CORS and integration docs. Verified and committed: e522ea439b5df7eec35437b247ee35f94f7b6a39.
 - [x] AUTH-04 Independent final assignment audit and documented verification evidence. Commit: 9d5e80244b078b2967354adcc18a98cb084d3ff2; structural readback and staged diff check passed. No behavior changes, so no meaningful test-first RED or additional test rerun required for this passive documentation unit.
 - [x] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. PASS: real env/HTTP verification and explicit human Swagger confirmation. Evidence commit: fc0888923e50978372aa075b859ea737310d222d.
-- [ ] AUTH-06 Publish PR against main and submit instructor link. Status: in_progress; push and one PR against main explicitly authorized, preflight in progress. No merge authorization.
+- [x] AUTH-06 Publish PR against main and provide instructor submission link. PR #12 OPEN: https://github.com/4GeeksAcademy/eduDev-companyContext/pull/12. Non-force push and PR creation succeeded; publication head d8a56ad95294a17707cbd36b99cfa98fefab5d57. No merge.
+- [ ] AUTH-07 Developer shares PR #12 with instructor. Status: in_progress; awaiting human submission confirmation, no agent process running.
 
 Final audit was separated from manual verification and publication so passing automated checks does not falsely close mandatory remaining steps.
 
 Each implementation task uses one bounded writer, tests first when deterministic, and records exact RED/GREEN/refactor commands/results. No task is complete while required checks fail. Local work-unit commits, branch push and one PR are authorized; merge is not. Avoid oversized units; do not compress tests or readability to reduce diff size.
 
 ## Final acceptance matrix
-Independent verifier mvr3dc9z-c-q5ck reread the complete current official README. PASS means implementation inspection plus applicable automated checks, not manual/browser or publication evidence. Paths below are repository-relative. No concrete implementation noncompliance found; implementation and verification complete, submission/publication remains pending.
+Independent verifier mvr3dc9z-c-q5ck reread the complete current official README. PASS means implementation inspection plus applicable automated checks, not manual/browser or publication evidence. Paths below are repository-relative. No concrete implementation noncompliance found; implementation, verification and PR publication complete; instructor submission remains pending.
 
 | ID | Requirement | Result and observed evidence |
 | --- | --- | --- |
@@ -67,7 +68,7 @@ Independent verifier mvr3dc9z-c-q5ck reread the complete current official README
 | A19 | Manual /docs registration → login → authorization → protected route | PASS, HUMAN-REPORTED: developer confirmed registration, form login, Authorize, /auth/me200 with correct profile and /suppliers200 after initially observing unauthenticated401 |
 | A20 | Missing/malformed/expired token returns 401 | PASS automated: services/api/tests/test_auth_tokens.py:115; test_auth_operational.py:58. Manual missing-token and valid-token flow confirmed by developer; malformed/expired token cases verified automatically |
 | A21 | Valid-token existing API behavior unchanged | PASS: real-login helpers and preserved incident/supplier regressions; 41/41 API and 7/7 shared analysis tests |
-| A22 | Push/PR against main, protected-route/check description, instructor link | IN PROGRESS: branch push and one PR authorized; repository-policy preflight running; instructor submission and merge not performed |
+| A22 | Push/PR against main, protected-route/check description, instructor link | PUBLICATION PASS: PR #12 open against main with route/check evidence; link provided. Instructor submission remains a human step; no merge |
 
 Interpretations checked independently:
 - Stored UUID User.id satisfies the assignment; TinyDB integer doc_id is an internal storage key, not a required JWT identity.
@@ -148,12 +149,12 @@ Interpretations checked independently:
 - Browser tool discovery returned no matching browser/playwright tools. No manual /docs check claimed.
 
 ## Next step
-Complete target-policy preflight, push feature/auth-api normally and open one PR against verified main; no merge. Include eight protected routes and separate automated/live/manual evidence. User will submit the instructor link. Parent owns this document and Engram mirror.
+Developer shares https://github.com/4GeeksAcademy/eduDev-companyContext/pull/12 with the instructor. Await review feedback; no merge without explicit authorization. Parent owns this document and Engram mirror.
 
 ## Final check limitations
 - No failing automated tests; Starlette/httpx deprecation warning is pre-existing and non-failing.
 - Historical RED reported by bounded writers; final GREEN independently rerun.
-- Developer completed manual Swagger from their PC; local .env loading passed real HTTP checks. Only publication/submission remains pending.
+- Developer completed manual Swagger from their PC; local .env loading passed real HTTP checks. PR #12 is published; instructor submission remains pending.
 - No concurrency stress, multiprocess operation or crash-recovery testing; single-worker TinyDB explicitly documented.
 - Frontend tests skipped because no UI changes; existing static clients intentionally receive 401 without bearer tokens.
 - Native reviews are approved for all four work units, not proof of manual acceptance or publication.
@@ -181,3 +182,11 @@ Complete target-policy preflight, push feature/auth-api normally and open one PR
 - User explicitly authorized push and one PR against main, without merge.
 - Destination verified: github.com/4GeeksAcademy/eduDev-companyContext, origin SSH URL and gh repo metadata agree; default main; no PR found for feature/auth-api.
 - Single-PR delivery of existing reviewed work-unit commits selected by the user's explicit one-PR authorization. Observed aggregate review load: 1978 additions/35 deletions across23files including lockfile, tests and docs; do not omit evidence or rewrite history to shrink it. Actual repository size/contribution policy is being checked.
+
+## Publication receipt
+- Preflight: confirmed origin and GitHub repo/default branch, no existing auth PR, no tracked PR templates/workflows/contribution or size policy, no issues, standard enhancement label available; no foreign issue/type-label rules imposed.
+- Initial metadata commands had malformed --limit flags; corrected to --limit 30/100 and succeeded. This was a tooling argument error, not a project failure; no tests rerun.
+- `git push -u origin feature/auth-api` succeeded without force. `gh pr create --repo 4GeeksAcademy/eduDev-companyContext --base main --head feature/auth-api ... --label enhancement` returned PR #12.
+- PR verified OPEN, not draft, base main/head feature/auth-api, mergeStateStatus CLEAN, statusCheckRollup empty. No remote CI success claim; merge not performed.
+- PR body includes all eight protected routes, 41+7 automated tests, live HTTP checks, developer-reported manual evidence, known limitations and four reviewed functional commits. No credentials or tokens in body.
+- Publication receipt recorded in project docs and plan; source behavior unchanged, so only structural readback and diff checks are applicable. Instructor submission belongs to the developer.

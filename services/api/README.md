@@ -244,7 +244,8 @@ Final implementation audit and human-reported mandatory manual verification are
 complete. Prior automated checks passed API **41/41** and shared **7/7**;
 independent live Uvicorn HTTP checks also passed. The agent's Chromium attempt
 was blocked by missing `libatk-1.0.so.0`, not a manual success observation.
-Publication remains unauthorized: no push, PR or instructor submission is claimed.
+Published as [PR #12](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/12)
+from `feature/auth-api` to `main`. Instructor submission and merge remain pending.
 
 Use **uv only** for this assignment. `services/api/requirements.txt` is a
 compatibility mirror, not the recommended setup workflow.
