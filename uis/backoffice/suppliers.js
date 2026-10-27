@@ -1,3 +1,6 @@
+import { protectedFetch } from './auth.js';
+import { guardSession } from './session-guard.js';
+
 const categories = [
   "carrier_last_mile",
   "carrier_international",
@@ -9,16 +12,6 @@ const categories = [
   "cleaning_and_facilities",
 ];
 
-const requestedApiPort = new URLSearchParams(window.location.search).get("apiPort");
-const parsedApiPort = requestedApiPort !== null && /^\d+$/.test(requestedApiPort)
-  ? Number(requestedApiPort)
-  : 0;
-const apiPort = parsedApiPort >= 1 && parsedApiPort <= 65535 ? parsedApiPort : 8000;
-const apiBaseUrl = (
-  window.TRACKFLOW_API_BASE_URL
-  ?? `${window.location.protocol === "http:" || window.location.protocol === "https:" ? window.location.protocol : "http:"}//${window.location.hostname || "localhost"}:${apiPort}`
-).replace(/\/$/, "");
-
 const rows = document.querySelector("#supplier-rows");
 const directoryState = document.querySelector("#directory-state");
 const countryFilter = document.querySelector("#country-filter");
@@ -26,6 +19,7 @@ const categoryFilter = document.querySelector("#category-filter");
 const form = document.querySelector("#supplier-form");
 const formState = document.querySelector("#form-state");
 
+function initializeCategories() {
 for (const category of categories) {
   const option = document.createElement("option");
   option.value = category;
@@ -41,9 +35,15 @@ for (const category of categories) {
   document.querySelector("#category-options").append(label);
 }
 
-countryFilter.addEventListener("change", loadSuppliers);
-categoryFilter.addEventListener("change", loadSuppliers);
-form.addEventListener("submit", createSupplier);
+}
+
+guardSession(() => {
+  initializeCategories();
+  countryFilter.addEventListener("change", loadSuppliers);
+  categoryFilter.addEventListener("change", loadSuppliers);
+  form.addEventListener("submit", createSupplier);
+  loadSuppliers();
+});
 
 async function loadSuppliers() {
   const parameters = new URLSearchParams();
@@ -201,7 +201,7 @@ function actionButton(label) {
 }
 
 async function request(path, options = {}) {
-  const response = await fetch(`${apiBaseUrl}${path}`, {
+  const response = await protectedFetch(path, {
     ...options,
     headers: options.body ? { "Content-Type": "application/json" } : undefined,
   });
@@ -232,5 +232,3 @@ function setState(element, message, isError = false) {
 function errorMessage(error) {
   return error instanceof Error ? error.message : "The request could not be completed.";
 }
-
-loadSuppliers();

@@ -9,6 +9,12 @@
     <script type="module" src="dashboard.js"></script>
   </head>
   <body>
+    <section id="session-panel" aria-label="Session">
+      <p id="session-state" role="status">Checking your session… JavaScript is required.</p>
+      <button id="session-retry" type="button" hidden>Retry</button>
+      <button data-logout type="button">Sign out</button>
+    </section>
+    <div data-protected hidden>
     <a class="skip-link" href="#main-content">Skip to operations</a>
     <header class="topbar">
       <div class="brand-block">
@@ -26,6 +32,7 @@
           <a href="incident-analysis.html">Incident analysis</a>
           <a href="suppliers.html">Supplier directory</a>
         </nav>
+        <button data-logout type="button">Sign out</button>
         <div class="shift-card">
           <span>Current view</span>
           <strong>Global network</strong>
@@ -84,5 +91,6 @@
     </div>
 
     <footer>TrackFlow Tech · Internal static demonstration</footer>
+    </div>
   </body>
 </html>

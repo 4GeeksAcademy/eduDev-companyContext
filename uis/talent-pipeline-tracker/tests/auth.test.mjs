@@ -98,8 +98,10 @@ test('missing or rejected protected token clears and redirects, login 401 does n
     assert.equal(auth.readToken(), null);
   }
   redirects.length = 0;
+  auth.saveToken('keep');
   responses.push([401, { detail: 'Invalid credentials' }]);
   await assert.rejects(auth.login(credentials), { status: 401 });
+  assert.equal(auth.readToken(), 'keep');
   assert.deepEqual(redirects, []);
 });
 
@@ -120,6 +122,78 @@ test('stale in-flight 401 cannot clear a newer session', async () => {
   auth.saveToken('new'); finish(new Response('{}', { status: 401 }));
   await assert.rejects(pending);
   assert.equal(auth.readToken(), 'new'); assert.deepEqual(redirects, []);
+});
+
+test('already-aborted auth submissions never start a request or change the session', async () => {
+  auth.saveToken('keep');
+  const controller = new AbortController();
+  controller.abort();
+  for (const submit of [auth.login, auth.register]) {
+    await assert.rejects(submit(credentials, controller.signal), { name: 'AbortError' });
+  }
+  assert.equal(calls.length, 0);
+  assert.equal(auth.readToken(), 'keep');
+});
+
+function deferred() {
+  let resolve;
+  const promise = new Promise(done => { resolve = done; });
+  return { promise, resolve };
+}
+
+test('late aborted login cannot persist a token even when fetch ignores abort', async () => {
+  for (const phase of ['fetch', 'json']) {
+    const controller = new AbortController();
+    const started = deferred();
+    const finish = deferred();
+    globalThis.fetch = async (_url, options) => {
+      assert.equal(options.signal, controller.signal);
+      if (phase === 'fetch') {
+        started.resolve();
+        await finish.promise;
+      }
+      return { ok: true, status: 200, json: async () => {
+        started.resolve();
+        if (phase === 'json') await finish.promise;
+        return token;
+      } };
+    };
+    const pending = auth.login(credentials, controller.signal);
+    await started.promise;
+    controller.abort();
+    auth.saveToken('newer-session');
+    finish.resolve();
+    await assert.rejects(pending, { name: 'AbortError' });
+    assert.equal(auth.readToken(), 'newer-session');
+    assert.deepEqual(redirects, []);
+  }
+});
+
+test('registration canceled after account creation never starts automatic login', async () => {
+  const controller = new AbortController();
+  globalThis.fetch = async () => {
+    calls.push('users');
+    return { ok: true, status: 201, json: async () => {
+      controller.abort();
+      return user;
+    } };
+  };
+  auth.saveToken('keep');
+  await assert.rejects(auth.register(credentials, controller.signal), { name: 'AbortError' });
+  assert.deepEqual(calls, ['users']);
+  assert.equal(auth.readToken(), 'keep');
+});
+
+test('aborted automatic login is not reported as a manual-login failure', async () => {
+  const controller = new AbortController();
+  responses.push([201, user]);
+  const createUser = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    if (url.endsWith('/users')) return createUser(url, options);
+    controller.abort();
+    throw new DOMException('Aborted', 'AbortError');
+  };
+  await assert.rejects(auth.register(credentials, controller.signal), { name: 'AbortError' });
 });
 
 test('storage functions are safe without a browser', () => {
