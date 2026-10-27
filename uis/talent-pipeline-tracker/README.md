@@ -86,8 +86,27 @@ npm run start
   AUTH-FE-04 checks: `node --test tests/*.test.mjs` passed 20/20 (16 existing,
   four profile conversion cases); `npm run lint`, `npm run build` and repository
   `git diff --check` passed. Node's module-type warning remains non-failing.
-  No integrated browser or real API verification is claimed. Chromium cannot launch
-  here because `libatk-1.0.so.0` is missing; no retry or installation was attempted.
-  Final browser acceptance must check profile load/retry, null clearing, save
-  success/errors, disabled pending controls, navigation during load/save, public
-  navigation hiding Perfil, and unchanged candidate flows against configured APIs.
+  Those checks preceded runtime acceptance; lint/build were not rerun during it.
+
+### AUTH-FE-03 runtime acceptance
+
+Initial tracker scope is implemented and runtime verified at `dd0bd71` by verifier
+`mvr8xgvw-b-rbem`. After user/admin installation of Chromium system libraries,
+`ldd` was clean and cached Playwright Chromium launched/closed `about:blank`.
+All eight ephemeral browser groups passed (no permanent E2E suite added):
+
+1. Public login/register hide private navigation; all five private routes redirect missing tokens before candidate fetching.
+2. Real isolated FastAPI registration with contacts, login and localStorage; client required/email/UTF-8 >72-byte checks, duplicate email 409 and wrong password 401.
+3. Real profile read-only email, updates and null clearing persist after reload; injected save delays/errors preserve edits/session and prevent duplicate submits.
+4. Logout, storage, refresh, back navigation and private access.
+5. Real invalid/expired signed JWT 401 cleanup; injected protected 401 and guard network/500 failures with retry.
+6. Delayed login/register/profile departure cancellation prevents stale token/UI/navigation; server writes may still complete.
+7. Real registration plus injected login failure shows account-created guidance; real manual login succeeds without repeat auto-registration.
+8. Candidate list/status-stage-search/detail/notes display uses mocked external API GETs only: no Authorization, no playground requests, no candidate mutations tested.
+
+`node --test tests/*.test.mjs` passed again, 20/20. Earlier lint/build passed and
+code was unchanged; optional public-website browser smoke was not run (code untouched).
+Static backoffice remains deferred; global all-application README compliance is
+not claimed. Four local source commits are on `feature/auth-frontend`. The user
+selected a feature-branch chain for future delivery; slice branches and PRs have
+not been created, and publication has not been performed.

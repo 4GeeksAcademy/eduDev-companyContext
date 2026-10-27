@@ -190,9 +190,44 @@
 - `npm run lint`, `npm run build` and `git diff --check` passed (exit 0).
   Existing Node module-type warnings remain non-failing. No meaningful automated
   JSX RED is available without a DOM runner; lint/build and structural review are
-  not browser acceptance. Real browser/live API verification remains pending;
-  known missing Chromium `libatk-1.0.so.0` was not retried or installed. Backoffice
+  not browser acceptance. At AUTH-FE-04, browser/live API verification was pending;
+  Chromium's missing `libatk-1.0.so.0` had not been retried or installed. Backoffice
   remains explicitly deferred; public website and backend are untouched.
+
+## Tracker Authentication — AUTH-FE-03 Runtime Closeout
+
+- Initial tracker scope is implemented and runtime verified at `dd0bd71` by
+  verifier `mvr8xgvw-b-rbem`; the earlier browser blockers above are historical.
+  After user/admin installed Chromium system libraries, `ldd` was clean and cached
+  Playwright Chromium `about:blank` launch/close passed. Verifier installed nothing.
+- All eight ephemeral browser groups passed: public navigation/five-route gating;
+  real isolated registration/contact fields/login/localStorage and validation
+  (required/email/UTF-8 >72 bytes, duplicate 409, wrong-password 401); real profile
+  read/update/null clearing/reload with injected save delays/errors; logout/storage/
+  refresh/back/private access; real invalid/expired signed JWT 401 plus injected
+  protected 401/guard network/500 retry; delayed login/register/profile departure
+  cancellation; real registration plus injected login failure/manual real login
+  without repeat registration; mocked candidate GET-only display regression.
+- Profile errors preserve edits/session and prevent duplicate submits; departure
+  prevents stale token/UI/navigation, but server writes may still complete.
+  Candidate list/status-stage-search/detail/notes used mocked external responses:
+  no Authorization, no requests reached playground, no candidate mutations tested.
+- `node --test tests/*.test.mjs` passed again 20/20. Prior lint/build passed with
+  code unchanged; neither was rerun for this runtime run. No permanent E2E suite
+  added. Optional public website browser smoke skipped; its code stayed untouched.
+- Initial harness runs failed on redirect-abort waits, strict locators and
+  prehydration interactions; corrected reruns passed without application changes.
+  Temporary tracker copies isolated BOTH identity/supplier stores (startup seeds
+  suppliers), used ephemeral secrets and no `.env`; existing data was untouched.
+- Dev command: `npm run dev -- --webpack --hostname 127.0.0.1 --port <allocated>`;
+  backend: `.venv/bin/python -B -m uvicorn services.api.main:app --host 127.0.0.1 --port <allocated> --no-access-log`.
+  Public auth URL/CORS process environment matched temporary ports. All browsers
+  and six owned server process groups stopped; zero members/temp directories remain.
+  Verifier left Git unchanged except the preexisting parent task file.
+- Static backoffice remains explicitly deferred; global all-application README
+  compliance is not claimed. Four local source commits are on `feature/auth-frontend`.
+  The feature-branch chain is the selected future delivery strategy; slice branches
+  and PRs have not been created, and no publication has been performed.
 
 ## Next Steps
 
