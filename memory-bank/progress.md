@@ -229,6 +229,59 @@
   The feature-branch chain is the selected future delivery strategy; slice branches
   and PRs have not been created, and no publication has been performed.
 
+## Backoffice Authentication Expansion — AUTH-BO-01
+
+- Added standalone English login and plain-JS auth helper with origin-local token
+  storage, cancellable form login, `/auth/me`, raw bearer Response handling,
+  safe backoffice returns and existing API host/port configuration semantics.
+- Tracker runtime closeout above remains unchanged. This newly authorized static
+  expansion is separate: overview, analyzer and supplier gating/request wiring
+  remain pending AUTH-BO-02; no global authentication completion is claimed.
+- Node 24 RED exited 1 (missing auth module); GREEN passed 9/9 (exit 0), covering
+  encoding, raw multipart/blob compatibility, session failures/stale 401, abort,
+  API configuration and safe redirects. No DOM runner or live UI/API checks run.
+
+## Backoffice Authentication — AUTH-BO-02
+
+- All three private shells start hidden, including headers/sidebar/sample content.
+  Shared guard validates `/auth/me` before one-time initialization; transient errors
+  offer retry/logout. Departure cancels validation and hides content; persisted
+  restores and cross-tab token events revalidate. Sidebar apiPort is preserved.
+- Analyzer multipart/export and all supplier requests now use the existing raw
+  bearer helper. Login native fallback uses POST and departure resets pending UI.
+- RED: Node suite passed existing 9 tests, failed missing guard module. GREEN:
+  10/10 passed, including retry, cancellation, restore, 401 and missing session.
+  Browser/API acceptance and verify-trackflow-ui runtime were pending at this
+  implementation stage; subsequent AUTH-BO-03 closeout is recorded below.
+  Tracker, website, backend and historical root apps are unchanged.
+
+## Backoffice Authentication — AUTH-BO-03 Closeout
+
+- Scoped automated/runtime acceptance completed for source `8186751`, following
+  foundation `b9db58d`; evidence is summarized in `uis/backoffice/README.md`.
+  Verifiers `mvra4y7t-i-t17g` and `mvrae4y4-k-x08r` observed Node 10/10 twice,
+  six JS syntax checks and diff checks passing, real isolated auth/supplier/CSV
+  flows, session replacement/concealment, keyboard and 390/1440 error-free checks.
+  Synthetic persisted handlers passed; actual bfcache was attempted but not
+  exercised (`pageshow.persisted=false`), not an application failure.
+- Public website separately passed its skill run without auth calls/redirects.
+  Isolated browser tasks made no source edits; resources were cleaned without
+  stopping existing servers. Tracker 20/20 + lint/build were not rerun here;
+  candidate reads were mocked, no external writes tested.
+- USER-REPORTED manual completion: after live Tailscale tracker/backoffice/website/
+  API docs URLs and checklist, user said “listo, probado”; no issues described.
+  Not independently observed manual assertions. Host checks saw pages 200,
+  unauthenticated `/auth/me` 401 and CORS for both origins. Requested manual
+  servers remain running on 3000/3001/8000 with ordinary local data, no reset.
+- Route inventories and shared-identity/separate-origin session boundaries are in
+  both UI READMEs. Website/public B2B intake remain unchanged; legacy Hito 2
+  `operations.html` stays outside scope, without established private/public or
+  superseded status. No global 100% claim.
+- All work remains sequential local commits on ONE `feature/auth-frontend` branch.
+  Feature-branch PR-chain is the selected strategy only: no slice branches/PRs,
+  publication or merge. Source reviews were approved and acknowledged; this
+  passive documentation does not claim a new review outcome.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected
