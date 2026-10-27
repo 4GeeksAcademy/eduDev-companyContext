@@ -4,9 +4,8 @@ This FastAPI service preserves the aggregate-only Incident Analyzer and adds a
 small Pydantic + TinyDB Supplier Directory. Incident source files remain transient;
 supplier records persist in an API-owned JSON database. Public user registration
 stores identities and linked profiles in a separate TinyDB file. Form login issues
-JWTs and `GET /auth/me` requires a bearer token. Existing operational endpoints
-and registration remain public. User CRUD and owner profile routes require bearer
-authentication; operational route protection remains AUTH-03.
+JWTs. All eight operational endpoints below, user CRUD and owner profile routes
+require bearer authentication. Registration, login and API documentation remain public.
 
 ## Run locally
 
@@ -49,7 +48,13 @@ TRACKFLOW_CORS_ORIGINS="http://localhost:3000,http://your-tailnet-host:3000" \
   uv run --env-file .env uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000
 ```
 
-## Endpoints
+## Protected operational endpoints
+
+All active authenticated roles (`user`, `manager`, `admin`) may use these eight
+routes. Send `Authorization: Bearer <access_token>`. Missing, malformed or expired
+tokens and deleted/inactive identities return **401** with `WWW-Authenticate: Bearer`.
+Successful schemas, validation, supplier IDs and seed behavior are unchanged;
+there is no supplier ownership or admin-only operational policy.
 
 - `POST /api/incidents/analyze` accepts one UTF-8 `.csv` upload.
 - `GET /api/incidents/results/export` downloads aggregate metrics as `results.csv`.
@@ -60,6 +65,18 @@ TRACKFLOW_CORS_ORIGINS="http://localhost:3000,http://your-tailnet-host:3000" \
 - `PATCH /suppliers/{id}/rate` updates a positive rate and its timestamp.
 - `PATCH /suppliers/{id}/status` activates or suspends a supplier.
 - `DELETE /suppliers/{id}` removes a supplier.
+
+The unchanged static incident/supplier frontend does not send tokens and now
+receives **401**; frontend authentication integration is outside this delivery.
+CORS permits PUT and Authorization alongside the existing methods and Content-Type,
+using the explicit origin allowlist without cookies. Browser preflight OPTIONS is
+public; unrelated origins do not receive permission.
+
+The latest successful incident summary remains **process-global and shared between
+authenticated users**, not user-owned. A failed upload preserves it; a restart
+clears it. Only aggregates are retained/exported, never source rows or customer
+email values. Uploaded source files remain transient. Use one API worker for
+TinyDB and consistent latest-summary behavior; this is not multi-worker storage.
 
 ## Public registration
 
@@ -93,8 +110,6 @@ private: it contains email/contact data and bcrypt hashes.
 `uv sync` installs `libpass[bcrypt]` (imported as `passlib.hash.bcrypt`, not the
 legacy passlib distribution). `python-jose[cryptography]` signs and validates JWTs.
 No JWT secret or `.env` file is required for registration; `.env` files are ignored.
-Existing incident and supplier endpoints are explicitly **not protected yet**
-(until AUTH-03).
 
 ## User and profile permissions
 
@@ -172,8 +187,11 @@ HTTP routes filter through `UserResponse`.
 2. Register through `POST /users`, then log in with the form in `POST /auth/login`.
 3. Click **Authorize**; use the email in the **username** field and the password.
 4. Execute `GET /auth/me`; confirm email, database role and linked profile.
-5. Clear authorization and retry `/auth/me` for **401**. A malformed or expired
-   bearer token must also return **401** (automated fixtures cover these cases).
+5. Execute `GET /suppliers`, upload a CSV through `POST /api/incidents/analyze`,
+   then download `GET /api/incidents/results/export` with the same authorization.
+6. Clear authorization and retry `/auth/me` and the operational routes for **401**.
+   A malformed or expired bearer token must also return **401** (automated fixtures
+   cover these cases).
 
 No manual `/docs` execution is claimed by the automated HTTP/OpenAPI tests.
 
@@ -203,6 +221,20 @@ Focused CRUD/profile checks use isolated identity/supplier files and real login:
 ```bash
 uv run python -m unittest discover -s services/api/tests -p 'test_auth_users_profiles.py' -v
 ```
+
+Focused operational authentication/CORS checks use real registration/login,
+synthetic test secrets and temporary identity AND supplier stores (no dependency
+overrides). Existing incident/supplier HTTP regressions also use real tokens:
+
+```bash
+uv run python -m unittest discover -s services/api/tests -p 'test_auth_operational.py' -v
+uv run python -m unittest discover -s services/api/tests -p 'test_incidents.py' -v
+uv run python -m unittest discover -s services/api/tests -p 'test_suppliers.py' -v
+uv run python -m unittest shared.test_incident_analysis -v
+```
+
+Manual Swagger verification and PR publication remain **unperformed**; automated
+TestClient checks are not browser evidence. Final assignment audit is pending.
 
 Use **uv only** for this assignment. `services/api/requirements.txt` is a
 compatibility mirror, not the recommended setup workflow.

@@ -11,6 +11,7 @@
 | Incident analysis core and CLI | Python 3 standard library (`csv`, no pandas) |
 | Incident API | FastAPI, Uvicorn, and multipart uploads under `services/api/` |
 | Supplier Directory | Pydantic, FastAPI, and TinyDB with a static backoffice client |
+| Identity API | Separate TinyDB users/profiles, libpass bcrypt, python-jose HS256 JWT, uv |
 
 ## Architecture Decisions
 
@@ -34,25 +35,25 @@ npm run demo
 npm run serve
 ```
 
-Incident Analyzer setup and checks:
+Independent standard-library incident CLI checks (no API setup required):
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -r services/api/requirements.txt
 python3 scripts/analyze.py scripts/incidents-trackflow.csv
 python3 -m unittest shared.test_incident_analysis -v
-python3 -m unittest discover -s services/api/tests -v
-uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000
 ```
 
-Supplier Directory setup and checks:
+Operations/authentication API setup and checks (uv only):
+Create an ignored local `.env` with a private `JWT_SECRET_KEY`; optionally set
+`ACCESS_TOKEN_EXPIRE_MINUTES` (default 30). Never commit secrets. See
+`services/api/README.md` for the real-login/manual Swagger flow and permissions.
 
 ```bash
 uv sync
 uv run seed
 uv run python -m unittest discover -s services/api/tests -v
-uv run uvicorn services.api.main:app --host 0.0.0.0 --port 8000
+uv run python -m unittest discover -s services/api/tests -p 'test_auth_operational.py' -v
+uv run python -m unittest shared.test_incident_analysis -v
+uv run --env-file .env uvicorn services.api.main:app --host 0.0.0.0 --port 8000
 node --check uis/backoffice/suppliers.js
 ```
 
@@ -66,7 +67,11 @@ After `npm run serve`, open:
 ## Constraints
 
 - Do not add frontend dependencies for the static backoffice.
-- Install Python dependencies only inside `.venv`; the shared core and CLI remain standard-library only.
+- Use uv for API dependency/setup/test workflow in `.venv`; the shared core and CLI remain standard-library only.
+- Run one API worker: TinyDB is not multi-process coordinated. Identity and supplier stores remain separate.
+- All eight incident/supplier routes require an active database identity via bearer JWT; all active roles may operate them. Registration/login/docs and CORS preflight remain public.
+- The unchanged static frontend sends no token and receives 401 until separately integrated.
+- The process-global latest incident aggregate is shared between authenticated users, transient across restart and not user-owned. No raw uploads persist.
 - Keep technical artifacts and UI copy in English.
 - Never print, log, export, or return source incident rows or customer email addresses.
 - Treat `CONTEXT.md` as the official general briefing; preserve milestone contexts separately.

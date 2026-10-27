@@ -16,8 +16,8 @@
   records with UUID IDs, normalized unique emails, server-controlled role/activity,
   bcrypt hashes and credential-free responses. Every identity gets a profile.
 - Identity storage uses `TRACKFLOW_USERS_DB_PATH`; supplier storage is unchanged.
-  JWT login and `/auth/me` are delivered in AUTH-02 below; operational route
-  protection, user CRUD and profile endpoints remain pending.
+  JWT login and `/auth/me` are delivered in AUTH-02 below; user CRUD/profile
+  endpoints and operational protection are delivered in AUTH-02B/AUTH-03 below.
 - Dependencies added with `uv add "python-jose[cryptography]" "libpass[bcrypt]"`;
   requirements mirror updated. No secrets or `.env` files created.
 - Test-first evidence: baseline API suite passed 16/16; registration RED observed
@@ -41,8 +41,8 @@
   routes and unsupported password input); GREEN 8/8, then expanded negative/config
   fixtures 8/8. `uv run python -m unittest discover -s services/api/tests -v`:
   32/32 passed. Existing Starlette/httpx deprecation warning remains non-failing.
-- No manual `/docs` execution claimed. Operational routes remain public until
-  AUTH-03; user CRUD/profile routes remain AUTH-02B. No dependency changes,
+- No manual `/docs` execution claimed. Operational and user CRUD/profile
+  protection are delivered in AUTH-03/AUTH-02B below. No dependency changes,
   runtime identity data writes, real secrets, commits or task-plan edits.
 
 ## Authentication API — AUTH-02B
@@ -61,8 +61,38 @@
   GREEN 4/4 in 7.364s; expanded alternate cases 4/4 in 7.579s. Full
   `uv run python -m unittest discover -s services/api/tests -v`: 36/36 in 15.309s.
   Existing Starlette/httpx warning remains non-failing. No manual `/docs` claim.
-- Operational protection and CORS remain AUTH-03; no frontend/dependency changes,
+- Operational protection and CORS are delivered in AUTH-03 below; no frontend/dependency changes,
   runtime accounts, task-plan edits or git writes performed by this writer.
+
+## Authentication API — AUTH-03
+
+- All eight incident/supplier endpoints now require `get_current_user` through
+  router inclusion dependencies; bodies, schemas, validation, seeds and IDs are
+  unchanged. Every active role may operate them; inactive/deleted identities fail
+  closed on every request. Registration/login/docs and preflight remain public.
+- CORS adds PUT and Authorization, preserving explicit origins, existing methods
+  and no-cookie policy. Tests reject an unrelated origin.
+- Existing incident/supplier HTTP tests use real registration/login with dummy
+  secrets and temporary identity AND supplier stores; no dependency overrides.
+  Added eight-route absent/malformed/expired-token matrix, all-role access,
+  inactive/deleted revocation, public docs/OpenAPI and cross-user shared aggregate
+  checks. No raw source/email export; failed uploads preserve the shared summary.
+- Test-first operational command: RED 5 tests/50 failures (48 missing protection,
+  one CORS failure, one overbroad privacy assertion corrected because aggregate
+  `invalid_customer_email` counts are legitimate); focused GREEN 5/5 in 2.628s.
+  Incident and supplier focused suites each passed 8/8. Expanded operational
+  rerun passed 5/5 in 2.818s; cleanup refactor keeps environment restoration before
+  temporary directory cleanup. Final
+  `uv run python -m unittest discover -s services/api/tests -v`: 41/41 in 24.229s;
+  `uv run python -m unittest shared.test_incident_analysis -v`: 7/7 in 0.084s.
+  `git diff --check` passed. Existing Starlette/httpx deprecation warning remains
+  non-failing.
+- Automated evidence covers operational A14/A15/A21 and invalid-token A20.
+  Static frontend remains unchanged and now receives 401 without tokens.
+  Single-worker TinyDB and process-global authenticated shared aggregate boundaries
+  are documented. Manual Swagger/browser verification, official assignment final
+  audit and PR publication remain unperformed/parent-owned. No git writes,
+  dependency changes, runtime data or task-plan edits by this writer.
 
 ## Next Steps
 
