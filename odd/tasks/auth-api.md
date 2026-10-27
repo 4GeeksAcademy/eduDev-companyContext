@@ -5,7 +5,7 @@ Implement the complete 4Geeks authentication assignment in the existing TrackFlo
 
 Assignment: https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-user-authentication-api/README.md
 Branch: feature/auth-api (created from clean main).
-The user explicitly authorized local work-unit commits on feature/auth-api. Push, PR and merge remain unauthorized. AUTH-01 commit: b4d353c3855b18d83d19e74f7d7944df6d6330da.
+The user explicitly authorized local work-unit commits and now a non-force push of feature/auth-api plus one PR against main in 4GeeksAcademy/eduDev-companyContext. Merge remains unauthorized. AUTH-01 commit: b4d353c3855b18d83d19e74f7d7944df6d6330da.
 
 ## Scope and design
 - FastAPI/Pydantic, TinyDB, uv, python-jose[cryptography], libpass[bcrypt]. No new framework.
@@ -35,11 +35,11 @@ AUTH-02 split into two cohesive units before writing to keep the security-critic
 - [x] AUTH-03 Protect eight existing routes, authenticated regression tests, CORS and integration docs. Verified and committed: e522ea439b5df7eec35437b247ee35f94f7b6a39.
 - [x] AUTH-04 Independent final assignment audit and documented verification evidence. Commit: 9d5e80244b078b2967354adcc18a98cb084d3ff2; structural readback and staged diff check passed. No behavior changes, so no meaningful test-first RED or additional test rerun required for this passive documentation unit.
 - [x] AUTH-05 Configure local ignored .env and perform manual /docs authentication flow with developer. PASS: real env/HTTP verification and explicit human Swagger confirmation. Evidence commit: fc0888923e50978372aa075b859ea737310d222d.
-- [ ] AUTH-06 Publish PR against main and submit instructor link. Status: in_progress; awaiting explicit publication authorization, no push/PR commands run.
+- [ ] AUTH-06 Publish PR against main and submit instructor link. Status: in_progress; push and one PR against main explicitly authorized, preflight in progress. No merge authorization.
 
 Final audit was separated from manual verification and publication so passing automated checks does not falsely close mandatory remaining steps.
 
-Each implementation task uses one bounded writer, tests first when deterministic, and records exact RED/GREEN/refactor commands/results. No task is complete while required checks fail. Local work-unit commits are authorized; publishing is not. Avoid oversized units; do not compress tests or readability to reduce diff size.
+Each implementation task uses one bounded writer, tests first when deterministic, and records exact RED/GREEN/refactor commands/results. No task is complete while required checks fail. Local work-unit commits, branch push and one PR are authorized; merge is not. Avoid oversized units; do not compress tests or readability to reduce diff size.
 
 ## Final acceptance matrix
 Independent verifier mvr3dc9z-c-q5ck reread the complete current official README. PASS means implementation inspection plus applicable automated checks, not manual/browser or publication evidence. Paths below are repository-relative. No concrete implementation noncompliance found; implementation and verification complete, submission/publication remains pending.
@@ -67,7 +67,7 @@ Independent verifier mvr3dc9z-c-q5ck reread the complete current official README
 | A19 | Manual /docs registration → login → authorization → protected route | PASS, HUMAN-REPORTED: developer confirmed registration, form login, Authorize, /auth/me200 with correct profile and /suppliers200 after initially observing unauthenticated401 |
 | A20 | Missing/malformed/expired token returns 401 | PASS automated: services/api/tests/test_auth_tokens.py:115; test_auth_operational.py:58. Manual missing-token and valid-token flow confirmed by developer; malformed/expired token cases verified automatically |
 | A21 | Valid-token existing API behavior unchanged | PASS: real-login helpers and preserved incident/supplier regressions; 41/41 API and 7/7 shared analysis tests |
-| A22 | Push/PR against main, protected-route/check description, instructor link | PENDING: publication not authorized; no push/PR/submission/merge |
+| A22 | Push/PR against main, protected-route/check description, instructor link | IN PROGRESS: branch push and one PR authorized; repository-policy preflight running; instructor submission and merge not performed |
 
 Interpretations checked independently:
 - Stored UUID User.id satisfies the assignment; TinyDB integer doc_id is an internal storage key, not a required JWT identity.
@@ -148,7 +148,7 @@ Interpretations checked independently:
 - Browser tool discovery returned no matching browser/playwright tools. No manual /docs check claimed.
 
 ## Next step
-Await explicit publication authorization for feature/auth-api push and PR against main. Implementation, tests and manual acceptance are complete and committed locally; no further tests are scheduled. Parent owns this document and Engram mirror.
+Complete target-policy preflight, push feature/auth-api normally and open one PR against verified main; no merge. Include eight protected routes and separate automated/live/manual evidence. User will submit the instructor link. Parent owns this document and Engram mirror.
 
 ## Final check limitations
 - No failing automated tests; Starlette/httpx deprecation warning is pre-existing and non-failing.
@@ -176,3 +176,8 @@ Await explicit publication authorization for feature/auth-api push and PR agains
 - Developer then confirmed all three grouped steps: email/password login200 with bearer token, Authorize successful, GET /auth/me200 with correct identity/profile, and GET /suppliers200 with supplier list.
 - Evidence is explicitly human-reported, not an agent browser run; no credentials/tokens were requested or recorded. Cached Chromium/libatk issue no longer blocks acceptance because developer used their own browser.
 - No functional code changed; document closure needs structural readback/diff check only. Documentation writer mvr5xwx6-e-5td3 updates API README and progress; parent updates this plan. Publication remains unauthorized.
+
+## Publication authorization
+- User explicitly authorized push and one PR against main, without merge.
+- Destination verified: github.com/4GeeksAcademy/eduDev-companyContext, origin SSH URL and gh repo metadata agree; default main; no PR found for feature/auth-api.
+- Single-PR delivery of existing reviewed work-unit commits selected by the user's explicit one-PR authorization. Observed aggregate review load: 1978 additions/35 deletions across23files including lockfile, tests and docs; do not omit evidence or rewrite history to shrink it. Actual repository size/contribution policy is being checked.
