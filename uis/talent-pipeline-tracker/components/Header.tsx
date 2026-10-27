@@ -17,6 +17,7 @@ export function Header({ privateActions }: { privateActions: boolean }) {
           <Link href="/candidates/new" className="rounded-lg bg-blue-700 px-4 py-2 text-white hover:bg-blue-800">
             Nueva candidatura
           </Link>
+          <Link href="/account/profile" className="text-slate-600 hover:text-blue-700">Perfil</Link>
           <button onClick={logout} className="text-slate-600 hover:text-blue-700">Cerrar sesión</button>
         </nav>}
       </div>

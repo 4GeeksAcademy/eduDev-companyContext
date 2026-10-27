@@ -175,6 +175,25 @@
   inspected only: no installed DOM runner. Browser/live API checks remain pending;
   known Chromium missing `libatk-1.0.so.0` was not retried or installed.
 
+## Tracker Authentication — AUTH-FE-04
+
+- Added guarded `/account/profile` and private-only Perfil navigation. Email is
+  read-only; name, phone and address load before editing. Nullable contacts become
+  empty inputs; only trimmed profile fields are sent, with blanks cleared to null.
+- Load errors offer retry; save errors preserve edits and expose field messages.
+  Successful saves display the server response. Pending saves lock editing and
+  duplicate submission; unmount aborts requests and stale completions are ignored.
+  Auth client, session guard and original candidate requests are unchanged.
+- Test-first `node --test tests/*.test.mjs`: RED exit 1 (missing profile helper,
+  existing 16 tests passed); GREEN exit 0, 20/20 including null conversion, blank
+  clearing, trimming, identity exclusion and contact-string preservation.
+- `npm run lint`, `npm run build` and `git diff --check` passed (exit 0).
+  Existing Node module-type warnings remain non-failing. No meaningful automated
+  JSX RED is available without a DOM runner; lint/build and structural review are
+  not browser acceptance. Real browser/live API verification remains pending;
+  known missing Chromium `libatk-1.0.so.0` was not retried or installed. Backoffice
+  remains explicitly deferred; public website and backend are untouched.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected

@@ -49,8 +49,13 @@ another registration stays disabled until inputs are deliberately changed.
 
 All other routes validate `/auth/me` before mounting private content, including
 candidate components. Transient failures preserve the token and offer retry/logout.
-Private navigation includes logout; profile UI/navigation is deferred. This is a
-client-side access gate, not authorization for the separate external candidate API.
+Private navigation includes Perfil (`/account/profile`) and logout. The profile
+page loads `/auth/me` before showing editable name, phone and address; email is
+read-only. Saving sends only profile fields to `PUT /profiles/me`, clears blank
+fields with null, and displays the returned profile. Loading failures offer retry;
+save failures preserve edits. Pending saves disable editing and duplicate submits;
+unmount aborts requests and ignores stale completions. This is a client-side access
+gate, not authorization for the separate external candidate API.
 
 ## Verification
 
@@ -74,8 +79,15 @@ npm run start
 - Status and stage updates from the detail view.
 - Candidate-only notes with add and delete actions.
 - Direct browser candidate API calls; no backend routes or database are included.
-- Identity login/registration, guarded candidate screens and logout; profile and
-  backoffice integration remain deferred. The separate public website is unchanged.
+- Identity login/registration, guarded candidate screens, profile editing and logout.
+  Backoffice integration remains explicitly deferred; the public website is unchanged.
 - Node tests cover identity requests and form validation. JSX has no configured
   deterministic UI runner; lint/build do not replace browser or live API checks.
-  No integrated browser or real API verification is claimed.
+  AUTH-FE-04 checks: `node --test tests/*.test.mjs` passed 20/20 (16 existing,
+  four profile conversion cases); `npm run lint`, `npm run build` and repository
+  `git diff --check` passed. Node's module-type warning remains non-failing.
+  No integrated browser or real API verification is claimed. Chromium cannot launch
+  here because `libatk-1.0.so.0` is missing; no retry or installation was attempted.
+  Final browser acceptance must check profile load/retry, null clearing, save
+  success/errors, disabled pending controls, navigation during load/save, public
+  navigation hiding Perfil, and unchanged candidate flows against configured APIs.
