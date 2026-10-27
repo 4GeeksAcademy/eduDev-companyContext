@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Feedback } from "@/components/Feedback";
 import { authPayload, validateAuth, type AuthValues } from "@/lib/auth-form";
 import { AuthApiError, login, register } from "@/services/auth";
@@ -32,6 +32,11 @@ export function AuthForm({ registration = false }: { registration?: boolean }) {
   const [pending, setPending] = useState(false);
   const [created, setCreated] = useState(false);
   const submitting = useRef(false);
+  const request = useRef<AbortController | null>(null);
+  useEffect(() => () => {
+    request.current?.abort();
+    request.current = null;
+  }, []);
   const title = registration ? 'Crear cuenta' : 'Iniciar sesión';
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -43,11 +48,16 @@ export function AuthForm({ registration = false }: { registration?: boolean }) {
     if (Object.keys(nextErrors).length) return;
     submitting.current = true;
     setPending(true);
+    const controller = new AbortController();
+    request.current = controller;
+    const isCurrent = () => request.current === controller && !controller.signal.aborted;
     try {
-      await (registration ? register : login)(authPayload(values, registration));
+      await (registration ? register : login)(authPayload(values, registration), controller.signal);
+      if (!isCurrent()) return;
       router.replace('/');
       // Keep submission locked while navigation completes.
     } catch (error) {
+      if (!isCurrent()) return;
       if (error instanceof AuthApiError) {
         setErrors(error.fieldErrors);
         setCreated(error.accountCreated);

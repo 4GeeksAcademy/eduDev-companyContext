@@ -75,6 +75,7 @@ async function request<T>(path: string, options: RequestInit, protectedRequest =
 }
 
 export async function login(credentials: Credentials, signal?: AbortSignal): Promise<Token> {
+  signal?.throwIfAborted();
   const result = await request<Token>('/auth/login', {
     method: 'POST', signal,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -84,18 +85,23 @@ export async function login(credentials: Credentials, signal?: AbortSignal): Pro
     result.token_type !== 'bearer') {
     throw new AuthApiError('Respuesta de acceso inválida.', 502);
   }
+  signal?.throwIfAborted();
   saveToken(result.access_token);
   return result;
 }
 
 export async function register(input: Registration, signal?: AbortSignal): Promise<Token> {
+  signal?.throwIfAborted();
   await request<User>('/users', {
     method: 'POST', signal,
     headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
   });
+  signal?.throwIfAborted();
   try {
     return await login({ email: input.email, password: input.password }, signal);
   } catch (cause) {
+    signal?.throwIfAborted();
+    if (cause instanceof Error && cause.name === 'AbortError') throw cause;
     const error = new AuthApiError('Cuenta creada. Inicia sesión manualmente.',
       cause instanceof AuthApiError ? cause.status : 0);
     error.accountCreated = true;

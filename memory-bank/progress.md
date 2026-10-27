@@ -158,6 +158,23 @@
   warning is non-failing. Candidate/identity APIs remain separate and unchanged;
   profile and backoffice remain deferred, public website untouched.
 
+## Tracker Authentication — AUTH-FE-05
+
+- Each form submission now owns an AbortController, aborted and detached on
+  unmount; stale/aborted completions cannot update form state or navigate. No
+  mounted flag is used, avoiding StrictMode effect-replay lifetime assumptions.
+- Login checks cancellation before requests and immediately before token storage.
+  Registration checks before automatic login and propagates cancellation instead
+  of reporting it as a manual-login failure; real login failures retain the
+  account-created message. Canceled/failed login preserves existing sessions.
+- Test-first `node --test tests/*.test.mjs`: RED exit 1, 12 passed/4 failed
+  (behavior assertions); GREEN exit 0, 16/16, including deferred fetch/body parsing,
+  already-aborted submissions and registration cancellation. Final triangulation
+  rerun also passed 16/16. Existing module-type warnings remain non-failing.
+- `npm run lint` and `npm run build` exited 0. JSX cleanup was structurally
+  inspected only: no installed DOM runner. Browser/live API checks remain pending;
+  known Chromium missing `libatk-1.0.so.0` was not retried or installed.
+
 ## Next Steps
 
 1. Share PR #12 with the instructor; its description lists the eight protected
