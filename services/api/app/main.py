@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from services.api.app.routers.incidents import router as incidents_router
 from services.api.routes.suppliers import router as suppliers_router
+from services.api.routes.users import router as users_router
 from services.api.seed import seed_suppliers
 
 
@@ -42,3 +43,4 @@ app.add_middleware(
 )
 app.include_router(incidents_router)
 app.include_router(suppliers_router)
+app.include_router(users_router)
