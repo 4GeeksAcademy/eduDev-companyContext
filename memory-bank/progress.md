@@ -594,9 +594,178 @@
   with no required corrections. Only passive status documentation changed afterward;
   reviewed application/test code is unchanged. No commit, push or PR was performed.
 
+## Error-handling Audit — EH-02 implementation
+
+- Candidate API now maps network, invalid JSON/required shapes and HTTP failures
+  to fixed Spanish messages, ignoring untrusted error bodies. Successful requests,
+  pagination, optional signals and delete 204 are preserved. AbortError identity
+  and cancellation before/after fetch/body parsing remain observable.
+- List/detail/edit loads offer retry. All touched candidate/note mutation paths
+  use safe messages and `finally` cleanup; departure cancels requests and suppresses
+  stale completions. Failed writes retain drafts/data for deliberate retry.
+- Exact observed command: `node --test uis/talent-pipeline-tracker/tests/api.test.mjs`.
+  RED exited 1, 0/5 passed: exposed network/server detail, accepted unexpected 204,
+  malformed required data and missing single-record signal support. Initial GREEN
+  exited 0, 5/5 passed. Expanded triangulation exited 0, 7/7 passed, zero skips,
+  including malformed entities, safe unknown-error fallback and delayed-body abort.
+- `node --test uis/talent-pipeline-tracker/tests/auth.test.mjs` was explicitly not
+  needed: no shared auth client behavior changed; candidate requests stay isolated.
+- `git diff --check` passed (exit 0). Existing non-failing Node
+  MODULE_TYPELESS_PACKAGE_JSON warning remains. No compiler/build/lint, browser,
+  server or real API writes performed. No deterministic JSX runner is configured;
+  manual final recovery/cancellation/mutation/layout checks are documented in the
+  tracker README and remain parent-owned. Static verify-trackflow-ui does not
+  target this Next.js UI. EH-03/EH-04 and integrated EH-05 remain separate tasks.
+- No dependencies, task documents, unrelated notes, Engram mirror, staging, commits
+  or publication changed by this writer. Native review is parent-owned.
+
+## Error-handling Audit — EH-03 implementation
+
+- Added a central sanitized JSON500 fallback, preserving existing HTTP handlers and
+  the manager's local contract. Supplier/identity contexts narrowly translate only
+  OSError/JSONDecodeError; recovery remains account-neutral and corrupt reset storage
+  no longer masquerades as invalid input. No persistence/transaction guarantees added.
+- Analyzer reads attempt close in finally; upload I/O failures are sanitized and
+  parsing errors retain 400/422 with fixed messages (submitted headers are not echoed).
+  Failed analysis preserves the last successful aggregate. No routine exception logs.
+- Exact focused command:
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_error_responses.py' -v`.
+  Initial RED: 6 tests, 8 errors from non-JSON500 responses. An expanded run found
+  one test-fixture TypeError (helper returns an ID string); corrected without source
+  workaround, then GREEN 8/8. Additional header-privacy RED: 9 tests, 1 failure
+  exposing hostile submitted columns; final GREEN 9/9 in 3.868s, zero skips.
+- Exact regressions:
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incidents.py' -v`
+  passed 8/8 (final rerun 3.407s);
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_suppliers.py' -v`
+  passed 8/8 in 3.034s;
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_users_profiles.py' -v`
+  passed 4/4 in 7.667s;
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_recovery.py' -v`
+  passed 8/8 in 3.020s (identity storage touched).
+- New failure-injection tests isolate users/suppliers/incidents before TestClient
+  lifespan and use raise_server_exceptions=False solely to inspect Starlette's
+  last-resort response; production propagation is unchanged. Existing non-failing
+  Starlette/httpx deprecation remains. Auth dependency code unchanged, so no
+  conditional operational-auth run; no broad suite/build/browser checks performed.
+- `git diff --check` passed (exit 0).
+- No real DB writes/seed, mail/network, installs, dependency changes, tracker edits,
+  task/mirror edits, staging, commits, publication or native review by this writer.
+
+## Error-handling Audit — EH-04 implementation
+
+- Supplier CLI catches only the existing normalized `StorageError` at the seed
+  call, prints fixed actionable stderr and returns nonzero; startup/shared seed
+  semantics remain unchanged. Incident seed catches only `OSError` and
+  `json.JSONDecodeError` per insert, preserving safe failure counts/partial success
+  while TypeError, ordinary ValueError and KeyError propagate.
+- Analyzer hostile-header RED reproduced arbitrary submitted-column reflection.
+  Read/parse/write failures now use distinct fixed stderr guidance without raw
+  input or I/O paths. Shared parsing and valid aggregate/export output unchanged.
+- Exact focused commands and observed RED then final GREEN:
+  - `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_seed_cli.py' -v`:
+    RED 3 tests/3 failing storage subcases (tracebacks); GREEN 3/3 in 1.300s.
+  - `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_seed.py' -v`:
+    RED 10 tests/3 failing programmer-error subcases (swallowed exceptions);
+    expanded GREEN 11/11 in 2.436s.
+  - `python3 -m unittest shared.test_incident_analysis -v`:
+    RED 9 tests/2 failures (hostile header and raw read diagnostics);
+    GREEN 9/9 in 0.238s.
+- Alternate cases cover corrupt/missing/new storage, directory/blocked-parent
+  targets, injected permission failure with partial counts, supplier15/0 and
+  incident95/0 reruns, malformed/empty/invalid-UTF8 CSV and blocked export target.
+  All writes were temporary; no fixture corrections or warnings observed.
+- No real DB seeding, installs, dependencies, full suite, browser, task/mirror
+  edits, staging, commits, publication or native review. Prior API/tracker work
+  preserved; final independent acceptance remains parent-owned.
+
+## EH-03 — Registration test contract correction
+
+- Updated only the legacy storage-write failure test: retained fail-once injection,
+  asserted HTTP500 and exact sanitized JSON, and rejected internal message/type,
+  traceback and database path diagnostics. Both existing users/profiles no-orphan
+  assertions now execute unconditionally, including when storage is absent/empty.
+  No production behavior changed; all unrelated work preserved.
+- Exact isolated command run before and after the test edit:
+
+```bash
+uv run --no-sync python - <<'PY'
+import os, subprocess, sys, tempfile
+from pathlib import Path
+with tempfile.TemporaryDirectory(prefix='trackflow-registration-check-') as directory:
+    root = Path(directory)
+    env = dict(os.environ)
+    env.update(TRACKFLOW_USERS_DB_PATH=str(root / 'users.json'), TRACKFLOW_SUPPLIERS_DB_PATH=str(root / 'suppliers.json'), TRACKFLOW_INCIDENTS_DB_PATH=str(root / 'incidents.json'), JWT_SECRET_KEY='error-audit-test-only-secret', ACCESS_TOKEN_EXPIRE_MINUTES='30')
+    result = subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'services/api/tests', '-p', 'test_auth_registration.py', '-v'], env=env)
+    code = result.returncode
+sys.exit(code)
+PY
+```
+
+- RED: 8 tests, 7 passed/1 failed in 2.344s, `OSError not raised`.
+  GREEN: 8/8 passed in 2.324s; both no-orphan assertions reached and passed.
+  No errors/skips; existing non-failing Starlette/httpx deprecation warning only.
+- `git diff --check`: passed. No full suite, tracker checks, installs, real-data
+  writes, staging, commits or native review performed.
+
+## EH-02 — Detail effect lifecycle correction
+
+- Moved the six mutation/control/feedback/draft resets from the synchronous effect
+  body into the successful candidate-and-notes load continuation, immediately after
+  its aborted-signal guard. Accepted new loads reset departed-candidate controls;
+  failed or stale/aborted loads cannot clear current drafts or mutation state.
+  Existing request cancellation, retry and `finally` cleanup remain unchanged.
+- `npm --prefix uis/talent-pipeline-tracker run lint`: RED exited 1 with one
+  `react-hooks/set-state-in-effect` error at CandidateDetail.tsx:28; after the
+  lifecycle correction, GREEN exited 0 with no warnings/errors.
+- `node --test uis/talent-pipeline-tracker/tests/api.test.mjs`: passed 7/7,
+  zero skips (exit 0); existing MODULE_TYPELESS_PACKAGE_JSON warning only.
+- `git diff --check`: passed (exit 0). No full suite/build/browser rerun, installs,
+  task/mirror changes, commits or native review. Parent's final verifier must
+  recheck candidate-ID navigation/retry with pending mutations and stale loads,
+  plus compiler validation; Node tests do not establish JSX lifecycle behavior.
+
+## Error-handling Audit — Final functional acceptance / EH-05 handoff
+
+- EH-02/03/04 behavior is accepted; this supersedes earlier pending functional,
+  compiler and browser stages above without replacing their historical evidence.
+  [Reviewer guide](../docs/error-handling-audit.md) contains scope, rubric coverage,
+  limits and isolated repeatable commands; full history remains in the task.
+- Independent final API97/97 PASS supersedes historical96/97 after the registration
+  assertion correction; both no-orphan checks pass. Shared15/15 and tracker Node32/32
+  passed. Focused subsets are included in those totals, not additional tests.
+- Final tracker lint/build PASS follows the detail lifecycle correction. Earlier
+  browser7 fixture groups and layouts390/1440 are reused; final focused detail
+  retry/candidate-ID navigation during delayed loads/PATCH/note POST/DELETE PASS.
+  Synthetic auth/candidate interception only, no external passthrough/writes, zero
+  uncaught exceptions; deliberate failure resource errors remain expected.
+- Node module-type and Starlette/httpx warnings remain. Two unattributed unclosed
+  SpooledTemporaryFile ResourceWarnings are disclosed, not a proven production leak.
+  Live candidate schema/exhaustive accessibility remain unverified; pre-existing
+  edit-during-create clearing is unchanged. Startup/already-started streams cannot
+  receive replacement JSON; TinyDB remains nontransactional/single-worker.
+- Documentation-only closure adds no features/dependencies or new screenshots and
+  reruns no suites/build/browser. Same branch: feature/error-handling-audit.
+  Native review and final EH-05 disposition remain parent-owned; commits and
+  publication await explicit user confirmation. No staging or publication performed.
+
 ## Previous Milestone Follow-ups
 
 1. Share PR #12 with the instructor; its description lists the eight protected
    routes and separates automated/live HTTP results from human-reported Swagger checks.
 2. Address review feedback if needed; merge only after approval and user authorization.
    GitHub reported no status checks for the PR at publication; no CI success is claimed.
+
+### Error-handling audit — native review closure
+
+- Native review `review-2fbaca21d66564d9` approved all four lenses and its exact
+  acknowledgement succeeded; authority consumed, no correction required.
+- Informational advisories `R3-storage-decoding` and `R4-storage-decoding` at
+  `scripts/seed_incidents.py:87` remain separate nonblocking follow-up work.
+- Only passive status documentation changed afterward; reviewed application/test
+  code is unchanged. Functional acceptance remains API97/shared15/tracker32 plus
+  lint/build and Chromium checks documented in the [guide](../docs/error-handling-audit.md).
+- User authorized commits, push and one PR. Work-unit commits are tracker
+  `99cd2d3`, API `a68a1d5` and scripts `986c81b`; tests/local docs stay with each.
+  Publication is in progress; merge remains unauthorized. Pre-existing unrelated
+  task notes stay excluded. Only passive delivery records changed after review.
