@@ -141,6 +141,20 @@ The static `verify-trackflow-ui` skill targets website/backoffice, not this Next
 
 ## Verification
 
+See the root [testing guide](../../TESTING.md) for the R1–R4 case plan, focused
+results, safety and limitations. Final integrated coverage/history will be recorded
+after all review slices. From this Tracker directory:
+
+```bash
+npm ci
+npm exec -- jest --coverage
+# Or: npm run test:jest:coverage
+```
+
+Jest covers auth services/forms and selected frontend helpers with local fakes;
+no `.env`, real secrets or external API is needed. It does not replace the legacy
+Node checks or the browser/manual instructions above.
+
 ```bash
 # Node 24 native TypeScript stripping; no additional test dependencies
 node --test tests/*.test.mjs

@@ -24,9 +24,9 @@ export const STAGE_OPTIONS = Object.entries(STAGE_LABELS) as Array<
 >;
 
 export function isCandidateStatus(value: string | null): value is CandidateStatus {
-  return value !== null && value in STATUS_LABELS;
+  return value !== null && Object.prototype.hasOwnProperty.call(STATUS_LABELS, value);
 }
 
 export function isCandidateStage(value: string | null): value is CandidateStage {
-  return value !== null && value in STAGE_LABELS;
+  return value !== null && Object.prototype.hasOwnProperty.call(STAGE_LABELS, value);
 }

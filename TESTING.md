@@ -1,11 +1,11 @@
-# Testing TrackFlow — R1 + R2 + R3
+# Testing TrackFlow — R1–R4
 
 R1 retains **103 session/recovery/token/email cases across seven modules**; R2
 adds **72 user/profile cases across seven modules**. R3 adds **105 incident/supplier
-cases across eleven modules**, alongside the preserved legacy API suite. This is
-the R3 candidate's testing snapshot, not the final integrated report or a
-commit/review approval claim. Later-slice tests may already be present in the live
-uncommitted worktree; they are not R1/R2/R3 results or delivered scope.
+cases across eleven modules**, alongside the preserved legacy API suite. R4 adds
+**85 Tracker Jest cases across five suites** and the scoped label-predicate fix.
+This is the R4 candidate's testing snapshot, not the final integrated report or a
+commit/review approval claim. R5 consolidated documentation remains planned.
 
 ## Run the R1 unit
 
@@ -105,14 +105,71 @@ Incident status updates preserve `created_at` and all non-status fields except
 changes preserve it. Corrupt-read checks do not prove crash-write rollback.
 Analyzer expansion, real seeding and live services are excluded.
 
+## R4: Tracker Jest case plan
+
+From `uis/talent-pipeline-tracker/`, using the existing installed dependencies:
+
+```bash
+npm exec -- jest --runInBand --runTestsByPath __tests__/auth-service.test.ts __tests__/auth-form.test.ts __tests__/profile-form.test.ts __tests__/password-form.test.ts __tests__/frontend-helpers.test.ts
+npm exec -- tsc --noEmit --incremental false
+npm run lint
+```
+
+| Real module / suite | Selected success, edge and failure cases / reason |
+| --- | --- |
+| `services/auth.ts` / `auth-service.test.ts` | Session/storage/SSR/logout, login/register encoding and partial success, token validation, public versus bearer requests, current/stale 401, session-preserving failures, cancellation before fetch/during body with exact AbortError identity; protect identity/session boundaries |
+| `lib/auth-form.ts` / `auth-form.test.ts` | Required/email checks, 1/72/73 UTF-8 bytes, trimmed contacts and blank omission, login exclusion and password preservation; match API input policy |
+| `lib/profile-form.ts` / `profile-form.test.ts` | Null-to-empty, trim/blank-to-null, contact strings, nonmutation and identity exclusion; preserve profile authority |
+| `lib/password-form.ts` / `password-form.test.ts` | Mode-specific required/byte/confirmation checks, single nonblank token and exact success query, duplicate rejection and safe guidance; protect recovery navigation/input |
+| `lib/labels.ts` / `frontend-helpers.test.ts` | FE-019 functions `isCandidateStatus` and `isCandidateStage`: known, unknown/null and inherited keys; reject prototype properties |
+| `services/api.ts` / `frontend-helpers.test.ts` | FE-019 functions `candidateErrorMessage` and `isCandidateAbort`: safe mapping/fallback, ordinary-error negatives and native DOMException cancellation identity; preserve safe errors/cancellation |
+
+The four FE-019 functions supplement mandatory auth/form units. Local fetch,
+storage and location fakes are restored between tests; no real network, `.env` or
+credentials are needed. Selected candidate-service helpers are **not comprehensive
+coverage of the whole candidate API service**. Jest does not replace legacy Node
+checks or browser/manual acceptance.
+
+### Prior bug and harness evidence (reused, not new RED)
+
+The original helper run had **3 passed / 7 failed**: six inherited-key failures
+proved a product bug in the two label predicates. The authorized fix uses
+own-property checks, preserving null guards. The seventh failure was native
+DOMException versus Jest VM Error realm mismatch, not a production classifier bug.
+Jest-only setup aligns explicit host Error constructors; it does not realign every
+VM-thrown intrinsic error. The production cancellation classifier is unchanged.
+The corrected helper suite passed **13 cases**, retaining real DOMException
+identity and ordinary-error/subclass negatives.
+
+Other prior integration corrections were typed fetch mocks, async cancellation
+expectation timing and a narrow documented CommonJS setup lint exception. They
+changed test/tooling compatibility, not production classifier behavior.
+
+### Dependency disclosure (prior evidence, not a new audit)
+
+Prior independent comparison found **243 added dev-only lock locations**, with no
+existing package records changed or removed. Prior audit evidence distinguished
+**5 high + 1 critical pre-existing package findings** (including Next) from **6 new
+low dev-package findings** propagated through deepmerge advisory **1243505**.
+These count packages, not unique advisories. Deprecated glob was also reported;
+install scripts were not manually approved/executed. No new audit, remediation,
+upgrade, exploitability assessment or risk acceptance is claimed.
+
+The full generated lockfile is retained unchanged, without normalization or
+minification. Its size may independently exceed native review's context budget;
+this guide does not promise review success. Delivery decisions remain parent-owned.
+
 ## Evidence and boundaries
 
-Earlier separate focused runs passed **103 R1 cases** and **72 R2 cases**, with no
-failures or skips; neither was rerun for R3. The R3 focused command passed **105
-cases**, with no failures or skips. These are not coverage runs or a combined-suite
-observation. All report the same non-failing AnyIO `PytestRemovedIn10Warning` for
-the deprecated `CallSpec2` alias.
-Existing behavior passed; no artificial RED or product fix is claimed.
+Earlier separate focused runs passed **103 R1**, **72 R2** and **105 R3 cases**,
+with no failures or skips; Python was not rerun for R4. Those runs reported the
+non-failing AnyIO `PytestRemovedIn10Warning` for the deprecated `CallSpec2` alias.
+Existing Python behavior passed; no artificial RED or Python product fix is claimed.
+
+The R4 command above passed **85 Jest cases across five suites**, without failures,
+skips or warnings. TypeScript and lint checks also passed. These are focused
+behavior/compatibility checks, not coverage, build or browser evidence. No combined
+Python/JavaScript suite observation is claimed.
 
 Direct units call validated models and explicitly resolved dependencies. They do
 not establish HTTP dependency injection, form/body validation, bearer parsing or
@@ -133,21 +190,19 @@ Existing focused and manual instructions remain in the
 [API README](services/api/README.md#tests). Pytest also discovers the legacy suite;
 importlib mode permits duplicate basenames and the helper path supports legacy
 `auth_helpers` imports. The legacy suite is preserved, not rerun for this passive
-R3 documentation snapshot.
+R4 documentation snapshot.
 
-## Planned later slices — not R1/R2/R3 results
+## Planned R5 — final integrated documentation
 
 This compact forward plan preserves the original plan-before-tests intent:
 
 | Later scope | Planned cases and reason |
 | --- | --- |
-| R4: Tracker Jest auth and FE-019 | Real auth/form utilities: session/SSR, encoding, partial registration, current/stale 401, cancellation, byte limits and nullable contacts; additional label/error/abort helpers: success, unknown/inherited keys and failure cases |
 | R5: consolidated documentation | Restore the final integrated guide and record complete verification, coverage and delivery evidence after all slices |
 
-R4 adds Jest tooling/tests and the scoped helper correction;
-R5 consolidates the final documentation. These are **PLANNED later local commits**,
-even if their files already exist uncommitted locally. No future file links or
-Jest commands are needed for R1/R2/R3.
+R5 is a **PLANNED later local commit**, even if its documentation already exists
+uncommitted locally. Final integrated results/history will be consolidated there;
+no future task-document link is included here.
 
 The configured pytest coverage sources already include the broader existing
 identity, incident and supplier implementation, not only thin route wrappers. Their
