@@ -89,6 +89,7 @@ Luego abre:
 - Landing: `http://localhost:3000/index.html`
 - Formulario B2B: `http://localhost:3000/application.html`
 - Centro de operaciones: `http://localhost:3000/operations.html`
+- Gestor centralizado de incidencias: `http://localhost:3000/uis/backoffice/incidents.html` — [guía de entrega, configuración y evidencias (en inglés)](docs/centralized-incident-manager.md).
 
 ---
 

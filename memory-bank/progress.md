@@ -436,6 +436,164 @@
 3. Stop owned test services and dispose of temporary accounts only when authorized.
    No secret values or token-bearing URLs belong in chat or Git.
 
+## Centralized Incident Manager — T1 Only
+
+- Extracted legacy CSV validation into standard-library `packages/shared/incident_validation.py`;
+  analyzer aggregation/export and compatible imports remain intact. Manager enums,
+  nonblank text, UTC normalization and exactly four lifecycle edges are shared separately.
+- Added Pydantic registration/record/status-update schemas. Branch is always required;
+  descriptions preserve literal text; ordinary records generate UUID4 IDs and UTC dates.
+  The 120-character seed-title transformation is not a registration length cap.
+- Test-first RED: shared command ran 8 tests (7 passed, missing-module error);
+  model command ran 1 failed import test because the schema module did not exist.
+  GREEN: `python3 -m unittest shared.test_incident_analysis shared.test_incident_contract -v`
+  passed 12/12; `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_models.py' -v`
+  passed 6/6, no skips. Covers all lifecycle pairs, legacy official counts/CLI,
+  literal text, required branch, generated-field rejection and UTC normalization.
+- T1 contract only: persistence, seed, manager endpoints and UI remain pending.
+  No full suite, commits, staging, publication or dependency changes performed.
+
+## Centralized Incident Manager — T2
+
+- Added dedicated TinyDB incident storage with JSON-mode model serialization,
+  UUID insert-if-absent, list/get/create and status-only lifecycle updates.
+  One process-wide RLock covers database open through close for thread safety;
+  single-worker/no concurrent CLI-process access remains required.
+- Explicit historical seed validates shared legacy rules before mapping, preserves
+  literal descriptions, creates trimmed 120-character titles and UTC-midnight
+  timestamps, and stores only manager fields. Fixed UUID5 identity preserves
+  existing records on rerun, including updated statuses and timestamps.
+- Official CSV tests observed 95 inserted/5 invalid, expected status/category/
+  origin/branch distributions, then 0 inserted/95 existing. The initial missing-ID
+  limitation was corrected below with explicit seed-only shared-validation opt-in.
+- RED: store command failed import (1 error, missing module); seed command ran
+  5 tests with 3 failures because the script was missing (2 negative tests passed).
+  Initial GREEN: store 3/3, seed 5/5. Final alternate-case/refactor verification:
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_store.py' -v`
+  passed 4/4; `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_seed.py' -v`
+  passed 5/5, zero skips. Tests cover concurrent writes/transitions, safe failures,
+  duplicate ownership, literal text, field privacy and rejected-update nonmutation.
+- All test writes used temporary databases. No real seed, startup hook, endpoints,
+  UI, dependency changes, staging or commits; T1 work preserved. T3 remains pending.
+
+### T2 seed-only fallback correction
+
+- Shared header/record validators now accept keyword-only
+  `allow_missing_incident_id=False`. Seed opts in for an absent ID column or blank
+  stripped ID; nonempty malformed IDs and every other legacy rule remain invalid.
+  Analyzer defaults stay strict, verified at both validator and analyzer levels.
+- Valid source-ID UUID5 namespace/names are unchanged. Missing IDs use that same
+  namespace over a tagged compact ASCII JSON array of transformed title and UTC
+  midnight ISO timestamp. Equal fallback keys deduplicate; title/date changes
+  distinguish incidents. No original IDs or fallback-only fields persist, and
+  reruns preserve existing status and timestamps.
+- Observed RED: seed command ran 7 tests with 1 failure/3 errors from unsupported
+  fallback; shared command ran 13 with 1 unsupported-keyword error. GREEN:
+  `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_seed.py' -v`
+  passed 8/8; `python3 -m unittest shared.test_incident_analysis shared.test_incident_contract -v`
+  passed 13/13; `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_store.py' -v`
+  passed 4/4, all zero skips. Official95/5 and valid-ID compatibility remain tested.
+- Only temporary stores were used. No dependencies, real seed, endpoints, Git
+  writes or task-document changes; parent owns independent verification/disposition.
+
+## Centralized Incident Manager — T3
+
+- Added five authenticated management routes with AND-combined enum filters,
+  zero-filled summary groups, full record responses and status-only updates.
+  Analyzer routes remain first; summary precedes the dynamic manager ID route.
+- Router-local handling returns safe field-mapped 400 validation errors and generic
+  JSON 500 for unexpected failures, including corrupt storage/response validation.
+  Dedicated shared `InvalidStatusTransitionError(ValueError)` distinguishes invalid
+  lifecycle edges from incidental storage ValueErrors. Existing auth and legacy
+  validation/error semantics are preserved. Exact UI contracts are in the API README.
+- Endpoint test-first RED: exact focused manager command ran 8 tests with 27
+  failures/1 error (missing routes/module plus one incorrect legacy 400 assertion).
+  Corrected that assertion to the observed existing 415 without changing analyzer.
+  GREEN: `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_management.py' -v`
+  passed 8/8. Tests exercise all lifecycle pairs, all five auth protections/roles,
+  official95/5 summary counts, validation/nonmutation, filters and safe500 failures.
+- Required regressions passed: `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incidents.py' -v`
+  8/8; `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_operational.py' -v`
+  5/5; `python3 -m unittest shared.test_incident_contract -v` 6/6. Zero skips;
+  existing Starlette/httpx deprecation warning remains non-failing.
+- All test data writes used temporary stores; no real seed, dependencies, frontend,
+  commits, staging, publication or review invocation. T4/T5 and parent disposition
+  remain outstanding; T1/T2 and pre-existing task files are preserved.
+
+## Centralized Incident Manager — T4 source implementation
+
+- Added authenticated `uis/backoffice/incidents.html` with separate registration,
+  list and summary sections, scoped CSS and native browser JavaScript. URL:
+  `http://localhost:3000/uis/backoffice/incidents.html` (optional `?apiPort=8001`).
+  Four private pages now link to the manager; only its explicit filename was added
+  to the auth return allowlist. Session guard and analyzer/supplier logic unchanged.
+- Registration validates whitespace-only text and enums, always requires branch,
+  highlights branch-origin guidance, blocks duplicate submits and resets errors/
+  fields/highlight on success. Safe local field guidance never displays server
+  bodies. List filters include status/origin/branch/category with stale-response
+  protection, recoverable errors and meaningful empty states. Legal status controls
+  restore server baseline on failure; terminal records are read-only. Summary has
+  independent retry and zero-filled presentation for all four dimensions.
+- Observed RED: `node --test uis/backoffice/tests/incidents.test.mjs` failed one
+  missing-module import; `node --test uis/backoffice/tests/auth.test.mjs uis/backoffice/tests/session-guard.test.mjs`
+  passed 9/10 with the new incidents return-target assertion failing as intended.
+  GREEN: incidents initially 8/8, expanded controller/page-node tests 10/10;
+  auth/session guard 10/10, zero failures/skips. `node --check uis/backoffice/incidents.js`
+  and `node --check uis/backoffice/auth.js` passed. `git diff --check` passed.
+  No warnings observed.
+- HTML/CSS have no meaningful deterministic visual RED; Node page-node wiring tests
+  are source-level checks, not browser verification. Browser smoke, narrow/wide
+  checks, console inspection, three screenshots and T5 integrated verification
+  remain pending. No servers, real API mutations, dependencies, Git writes,
+  backend edits or native review performed. Prior work preserved.
+
+### T4 success confirmation correction
+
+- Successful registration now displays “Incident registered successfully.” in the
+  existing form status region after resetting fields/errors/branch emphasis.
+  Saving completion and independent list/summary failures preserve the confirmation;
+  the next invalid or pending submission replaces stale success feedback.
+- Extended the existing small page-wiring regression before changing production:
+  `node --test uis/backoffice/tests/incidents.test.mjs` RED 9/10 (expected success
+  message was empty); GREEN 10/10, zero failures/skips. The same regression checks
+  independent refresh errors and subsequent submission feedback.
+  `node --check uis/backoffice/incidents.js` and `git diff --check` passed.
+- Browser checks and screenshots remain pending; no browser/API mutation claimed.
+
+## Centralized Incident Manager — Current T1–T5 delivery state
+
+- T1–T4 behavior independently verified: shared13/models6/store4/seed8,
+  manager8/analyzer8/operational-auth5/shared-contract6 and backoffice20/20.
+  Earlier pending statements above are historical implementation-stage records.
+- Actual incidents page passed Chromium1440/390: validation, loading/create/reset/
+  confirmation, filters/empty/error/retry states, lifecycle updates/rollback and
+  independently resilient summary. Isolated real API initial95/post-synthetic-create96.
+- Overall verify-trackflow-ui **FAIL** remains explicit: pre-existing overview index
+  overflow, baseline/current513px at390 and1440px at1440 using the same Chromium.
+  Incident page passes; no source CSS changed for the unrelated limitation.
+- [Delivery guide](../docs/centralized-incident-manager.md) records exact historical
+  writer RED versus independent GREEN, seed identity/counts, setup and three sanitized
+  byte-identical PNGs. Form capture was recaptured with real page validation and
+  fixture auth/list/summary to clear stale feedback; list/summary use isolated real
+  API, with summary96 including one synthetic create, not a changed official95 seed.
+- Verification-owned servers/temp DBs were cleaned; the previously retained tracker
+  was stopped with user approval. Earlier live-server statements are historical,
+  not a current availability claim. Existing Starlette/httpx deprecation, optional
+  favicon404 and intentional injected-failure events are disclosed.
+- Latest independent verifier `mvrjcv4b-h-37pg` passed combined API82/82,
+  shared13/13 and backoffice20/20 plus incidents/auth syntax and diff checks, with
+  no failures/errors/skips; existing Starlette/httpx deprecation remains. Exact
+  commands are in the delivery guide, separate from historical writer RED evidence.
+  Links20/PNG dimensions/hashes passed, copies unchanged; no accidental paths,
+  whitespace or obvious secret markers found. Parent accepted documentation/screenshots.
+- No browser rerun: earlier actual Chromium manager390/1440 PASS is reused; overall
+  skill FAIL remains solely the pre-existing overview overflow above. Seed/API
+  quick-start now load the same ignored environment for consistent store selection.
+- Native review `review-d01e45fb968ac84a` was approved and exactly acknowledged;
+  authority was consumed. Four informational warnings remain separate follow-up work,
+  with no required corrections. Only passive status documentation changed afterward;
+  reviewed application/test code is unchanged. No commit, push or PR was performed.
+
 ## Previous Milestone Follow-ups
 
 1. Share PR #12 with the instructor; its description lists the eight protected

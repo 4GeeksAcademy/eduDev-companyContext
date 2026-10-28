@@ -2,7 +2,7 @@
 
 Static internal operations interface for TrackFlow's Los Angeles and Zaragoza teams.
 The overview uses local sample data; the incident and supplier pages connect to the
-local FastAPI service. Public `login.html` provides sign-in. All three private
+local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
 
@@ -27,6 +27,7 @@ Open:
 - Operations overview: `http://localhost:3000/uis/backoffice/`
 - Incident analysis: `http://localhost:3000/uis/backoffice/incident-analysis.html`
 - Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
+- Incident manager: `http://localhost:3000/uis/backoffice/incidents.html`
 
 The incident and supplier pages infer the API URL from the page hostname on port `8000`. To
 override it, define `window.TRACKFLOW_API_BASE_URL` before loading
@@ -55,8 +56,8 @@ priority override.
 
 Open `http://localhost:3000/uis/backoffice/login.html?apiPort=8001` for standalone
 sign-in. Login sends form-urlencoded credentials to `/auth/login`, validates the
-bearer response and stores `trackflow.auth.token` in localStorage. Only the three
-relative backoffice page names are accepted as `next`; `apiPort` is retained.
+bearer response and stores `trackflow.auth.token` in localStorage. Only the four
+explicitly allowed relative backoffice page names are accepted as `next`; `apiPort` is retained.
 Configure `window.TRACKFLOW_API_BASE_URL` consistently **on every page, including
 login**, before its module loads. No query parameter can override the API host.
 
@@ -79,6 +80,68 @@ Tracker registration/profile remain in the independent Next app. Different origi
 Run `node --test uis/backoffice/tests/*.test.mjs` from the repository root.
 Tests exercise auth and gate lifecycle with minimal browser/fetch/storage fakes.
 No build step is required.
+
+## Incident manager — T4 (source implementation)
+
+`incidents.html` provides registration, a filterable list and an independent summary
+using native HTML/CSS/JavaScript. Use `?apiPort=8001` for an alternate API port;
+all sidebar links retain the validated port through the existing session guard.
+The page stays hidden until session validation and uses `protectedFetch` for bearer
+requests. Automatically generated IDs/timestamps are read-only disclosures.
+
+| Operation | Contract |
+| --- | --- |
+| Register | `POST /api/incidents`, JSON title/description/category/status/origin/branch; 201 full record |
+| List | `GET /api/incidents`, AND status/origin/branch/category filters; 200 array |
+| Status | `PATCH /api/incidents/{id}/status`, JSON status; 200 full record |
+| Summary | `GET /api/incidents/summary`; total and by_status/by_category/by_origin/by_branch |
+
+Branch is always required (including Central), with extra guidance for branch
+origin. Registration blocks duplicates and resets fields, errors and branch emphasis
+on success. Only legal next statuses are offered; terminal records are read-only.
+Failed updates restore the original server status. Filter request versions prevent
+stale list results; list and summary have separate loading/error/retry states.
+Server error bodies are never displayed: known field keys map to local guidance.
+User-entered record text is rendered with textContent, not HTML.
+
+Focused source checks (repository root):
+
+```bash
+node --test uis/backoffice/tests/incidents.test.mjs
+node --test uis/backoffice/tests/auth.test.mjs uis/backoffice/tests/session-guard.test.mjs
+node --check uis/backoffice/incidents.js
+node --check uis/backoffice/auth.js
+git diff --check
+```
+
+These Node tests use injected requests and minimal page-specific nodes, not a browser.
+Independent source verification passed incidents10/10 and auth/guard10/10 plus syntax
+checks. Subsequent actual incidents-page Chromium checks passed at1440/390: validation,
+loading/create/reset/confirmation, all filters/empty states, lifecycle updates, failed
+update rollback, list/summary failures and independent retry. The isolated real API
+started at95 and reached96 after one synthetic create. Failure-injection console
+messages were intentional; optional favicon404 is non-blocking.
+
+**Overall verify-trackflow-ui: FAIL** on pre-existing overview `index.html` overflow:
+baseline/current both513px at390 and both1440px at1440 with the same Chromium.
+The incidents page passes; no source CSS was modified for this limitation.
+See the [delivery guide, exact evidence and three screenshots](../../docs/centralized-incident-manager.md).
+The validation capture uses real page validation with fixture auth/list/summary;
+list/summary captures use the isolated real API (summary96 includes the synthetic create).
+Verification servers/temp DBs were cleaned; the previously retained tracker was
+stopped with user approval. Latest independent verifier `mvrjcv4b-h-37pg` passed
+combined API82/82, shared13/13 and backoffice20/20 plus syntax/diff checks, with no
+failures/errors/skips (existing Starlette/httpx deprecation only). Exact commands
+are in the delivery guide. Links/PNG integrity checks passed; parent accepted
+documentation/screenshots. No browser rerun occurred; prior incident-page evidence
+is reused. Native review `review-d01e45fb968ac84a` is **approved and acknowledged**
+with four non-blocking advisories. This passive status update does not change the
+reviewed application/tests; delivery has not been performed.
+Useful smoke selectors: `#incident-form`, `#branch-field`, `#submit-incident`,
+`#form-state`, `#filter-status`, `#filter-origin`, `#filter-branch`, `#filter-category`,
+`#incident-list`, `#list-retry`, `#summary-content`, `#summary-retry`.
+Do not treat the earlier AUTH-BO-03 runtime evidence below as verification of this
+new page. No new dependencies or metadata endpoint were added.
 
 ## Runtime acceptance — AUTH-BO-03
 Source `8186751` passed isolated runtime checks by `mvra4y7t-i-t17g` and
@@ -110,8 +173,10 @@ claim is made. Tracker evidence and candidate API limitations remain in its READ
 **USER-REPORTED manual completion:** after receiving the live Tailscale tracker,
 backoffice, website and API docs URLs, the user said “listo, probado”, with no issues
 described. This is not independently observed, item-by-item manual acceptance.
-Requested manual servers remain running with ordinary local data, without reset.
-For simultaneous local use, keep tracker on 3000 and the installed static server on
+At that historical closeout, manual servers were retained with ordinary local data.
+This is not a current live-service claim: the tracker was subsequently stopped with
+user approval for incident-manager verification; verification resources were cleaned.
+For future simultaneous local use, keep tracker on 3000 and the installed static server on
 3001 (`./node_modules/.bin/http-server . -p 3001`). Run the root API with explicit
 `TRACKFLOW_CORS_ORIGINS="http://localhost:3000,http://localhost:3001"` and the existing
 private environment configuration; set tracker `NEXT_PUBLIC_AUTH_API_URL` to the

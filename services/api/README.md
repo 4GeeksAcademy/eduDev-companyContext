@@ -48,6 +48,106 @@ TRACKFLOW_CORS_ORIGINS="http://localhost:3000,http://your-tailnet-host:3000" \
   uv run --env-file .env uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000
 ```
 
+## Incident manager persistence (T2)
+
+The dedicated store in `incident_store.py` defaults to
+`services/api/data/incidents.json`; override `TRACKFLOW_INCIDENTS_DB_PATH` for
+isolated environments. It is separate from users, suppliers and the transient
+analyzer summary. Manager endpoints are documented below; there is no startup incident seed.
+Use the explicit [historical seed instructions](../../scripts/README.md#historical-incident-manager-seed).
+Seed rows without an ID column or with blank IDs use stable UUID5 identity from
+transformed title plus UTC creation date; valid source-ID identities are unchanged.
+Equal fallback keys deduplicate without overwriting existing records. Only the
+seed opts into missing-ID validation; malformed IDs remain invalid and analyzer
+validation remains strict.
+
+Store functions return `Incident` models: `create_incident(IncidentCreate)`,
+`list_incidents()`, `get_incident(id)` and `update_incident_status(id, status)`.
+Missing reads/updates return `None`; invalid lifecycle transitions raise
+`InvalidStatusTransitionError` (a `ValueError` subclass) without writing. Updates touch only status and `updated_at`, retaining
+`created_at`. `insert_incident_if_absent(Incident)` returns a boolean and never
+replaces an existing UUID. JSON-mode model serialization preserves enums and UTC dates.
+
+A process-wide RLock covers open/read/modify/write/close, preventing lost updates
+between FastAPI threads. Continue using **one worker**; do not run the separate
+seed process concurrently with the API. TinyDB is not crash-transactional or
+multi-process coordinated.
+
+```bash
+uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_store.py' -v
+uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_seed.py' -v
+```
+
+Both suites use temporary databases only.
+
+## Incident management API (T3)
+
+All five routes require the same active database identity as the existing
+operational routes. Every active role may use them. There is no ownership filter.
+
+| Route | Success JSON |
+| --- | --- |
+| `POST /api/incidents` | **201**, full incident record |
+| `GET /api/incidents` | **200**, array of full records (`[]` when empty) |
+| `GET /api/incidents/summary` | **200**, summary object below |
+| `GET /api/incidents/{id}` | **200**, full incident record |
+| `PATCH /api/incidents/{id}/status` | **200**, full updated record |
+
+POST accepts only `title`, `description`, `category`, `origin`, `branch`, and
+optional `status` (default `open`). Title/description must be nonblank strings;
+branch is always required. Enums are defined in `packages/shared/incidents.py`.
+The full record contains exactly those six fields plus `id` (generated UUID4),
+`created_at` and `updated_at` (UTC ISO timestamps). Generated fields are forbidden
+in requests. PATCH accepts only `{"status":"in_progress"}`; it preserves every
+other field except `updated_at`. Allowed edges: open to in_progress/discarded,
+and in_progress to resolved/discarded. Self, reverse and terminal edges fail.
+
+GET collection accepts optional exact enum queries `status`, `origin`, `branch`,
+`category`, combined with AND. Unknown query fields are rejected. Summary always
+covers the entire store, not the current list filters. Its exact empty shape is:
+
+```json
+{
+  "total": 0,
+  "by_status": {"open": 0, "in_progress": 0, "resolved": 0, "discarded": 0},
+  "by_category": {
+    "lost_parcel": 0, "delivery_failure": 0, "inventory_discrepancy": 0,
+    "carrier_issue": 0, "returns_issue": 0, "warehouse_incident": 0,
+    "system_failure": 0, "client_complaint": 0, "other": 0
+  },
+  "by_origin": {"customer": 0, "branch": 0, "internal": 0},
+  "by_branch": {
+    "central": 0, "la_warehouse": 0, "la_office": 0,
+    "zaragoza_warehouse": 0, "zaragoza_office": 0
+  }
+}
+```
+
+All counts are integers; every enum key remains present at zero when absent.
+
+Manager-only errors (no raw submitted values or exception details):
+
+- **400** validation: `{"detail":"Invalid incident request.","errors":{"title":"This field is required."}}`.
+  `errors` maps field names to plain-language strings. Malformed JSON, absent body
+  and non-object bodies use `body`. Unknown fields, types, blank text and invalid
+  body/query enums also use this shape.
+- **400** forbidden lifecycle: `{"detail":"Invalid incident request.","errors":{"status":"This status transition is not allowed."}}`.
+- **404** missing GET/PATCH target: `{"detail":"Incident not found."}`.
+- **500** unexpected storage, corruption or response-validation failure:
+  `{"detail":"Incident service unavailable."}`.
+- Existing authentication **401**, permissions **403**, and configuration **503**
+  behavior is preserved. The local error wrapper does not change legacy **422**
+  validation or analyzer **400/415** errors. Analyzer routes are registered first;
+  `/summary` is registered before the manager ID route.
+
+Focused checks use temporary users/suppliers/incidents files and real login:
+
+```bash
+uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_management.py' -v
+```
+
+No delete, general update, pagination, startup seed or frontend is added by T3.
+
 ## Protected operational endpoints
 
 All active authenticated roles (`user`, `manager`, `admin`) may use these eight

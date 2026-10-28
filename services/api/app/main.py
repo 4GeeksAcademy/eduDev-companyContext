@@ -10,6 +10,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from services.api.app.routers.incidents import router as incidents_router
+from services.api.app.routers.incident_management import router as incident_management_router
 from services.api.routes.suppliers import router as suppliers_router
 from services.api.routes.users import router as users_router
 from services.api.routes.auth import router as auth_router
@@ -45,6 +46,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 app.include_router(incidents_router, dependencies=[Depends(get_current_user)])
+app.include_router(incident_management_router, dependencies=[Depends(get_current_user)])
 app.include_router(suppliers_router, dependencies=[Depends(get_current_user)])
 app.include_router(users_router)
 app.include_router(auth_router)
