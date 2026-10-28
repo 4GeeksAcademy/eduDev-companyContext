@@ -155,6 +155,33 @@ class IncidentSeedTests(unittest.TestCase):
         expected = str(uuid5(UUID("a38f716a-d93e-5a2b-9dc9-d81d3b3d6139"), "TRF-999001"))
         self.assertEqual(self.records()[0]["id"], expected)
 
+    def test_programmer_errors_propagate_instead_of_storage_count(self):
+        from scripts import seed_incidents
+        source = self.source([self.row()])
+        for error in (TypeError("bug"), ValueError("bug"), KeyError("bug")):
+            with self.subTest(error=type(error).__name__):
+                with patch.object(seed_incidents, "insert_incident_if_absent", side_effect=error):
+                    with self.assertRaises(type(error)):
+                        seed_incidents.main([str(source)])
+
+    def test_storage_failure_preserves_partial_counts(self):
+        from contextlib import redirect_stderr, redirect_stdout
+        from io import StringIO
+        from scripts import seed_incidents
+        source = self.source([self.row(), self.row(incident_id="TRF-999002"), self.row(incident_id="TRF-999003")])
+        stdout, stderr = StringIO(), StringIO()
+        with patch.object(seed_incidents, "insert_incident_if_absent", side_effect=[True, PermissionError("private/path"), False]), redirect_stdout(stdout), redirect_stderr(stderr):
+            self.assertEqual(seed_incidents.main([str(source)]), 1)
+        self.assertEqual(stdout.getvalue(), "inserted=1 existing=1 invalid=0 failures=1\n")
+        self.assertEqual(stderr.getvalue(), "Error: incident storage failed; successful inserts are safe to rerun.\n")
+
+    def test_corrupt_storage_is_safe_and_counted(self):
+        self.db.write_text("not JSON private@example.test")
+        result = self.run_seed(self.source([self.row(), self.row(incident_id="TRF-999002")]))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("inserted=0 existing=0 invalid=0 failures=2", result.stdout)
+        self.assertEqual(result.stderr, "Error: incident storage failed; successful inserts are safe to rerun.\n")
+
     def test_database_failure_not_reported_as_existing(self):
         self.db.mkdir()
         result = self.run_seed(self.source([self.row()]))

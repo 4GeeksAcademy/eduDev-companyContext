@@ -84,8 +84,8 @@ def main(argv: list[str] | None = None) -> int:
                 inserted += 1
             else:
                 existing += 1
-        except Exception:
-            # Storage exceptions may contain paths/data; never print their values.
+        except (OSError, json.JSONDecodeError):
+            # TinyDB file I/O/JSON failures may contain paths/data; never print them.
             failures += 1
     print(f"inserted={inserted} existing={existing} invalid={len(invalid)} failures={failures}")
     for line, reasons in invalid:

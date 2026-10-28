@@ -21,6 +21,8 @@ python3 analyze.py incidents-trackflow.csv
 
 Choose `y` at the final prompt to create aggregate-only `results.csv` in the current
 working directory. Choose `n` to exit without creating an export.
+Read, parse and export failures print fixed actionable messages to stderr and exit
+nonzero; submitted headers and internal I/O paths are not echoed.
 
 ## Historical incident manager seed
 
@@ -40,7 +42,9 @@ CLI process: TinyDB supports only one process accessing this store.
 - Output contains only aggregate counts and invalid physical CSV line numbers
   (the ending line for multiline records) with safe reason codes. Invalid rows
   are skipped; structural/I/O errors exit nonzero before inserting. Storage
-  failures are counted separately and exit nonzero; partial successes survive.
+  failures (file I/O and invalid storage JSON) are counted separately and exit
+  nonzero; partial successes survive. Programmer defects propagate rather than
+  being mislabeled as storage failures.
 - UUID5 uses fixed namespace `a38f716a-d93e-5a2b-9dc9-d81d3b3d6139` and the trimmed,
   validated `incident_id`. Different IDs remain distinct even with equal titles
   and dates. Existing records, including changed statuses/timestamps, never overwrite.

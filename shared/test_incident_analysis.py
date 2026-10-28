@@ -121,6 +121,43 @@ class IncidentAnalysisTest(unittest.TestCase):
             export_content = (working_directory / "results.csv").read_text(encoding="utf-8")
             self.assertIsNone(EMAIL_PATTERN.search(with_export.stdout + with_export.stderr + export_content))
 
+    def test_cli_sanitizes_parse_read_and_write_failures(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "private-input.csv"
+            cases = [
+                ("private@example.test\nvalue\n", "Error: Invalid incident CSV; check the header and record structure.\n"),
+                (",".join(REQUIRED_COLUMNS) + '\n"unterminated', "Error: Invalid incident CSV; check the header and record structure.\n"),
+                (",".join(REQUIRED_COLUMNS) + "\n", "Error: Invalid incident CSV; check the header and record structure.\n"),
+            ]
+            for content, expected in cases:
+                source.write_text(content)
+                result = subprocess.run(["python3", str(CLI), str(source)], cwd=root, capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(result.stderr, expected)
+            source.write_bytes(b"\xff")
+            result = subprocess.run(["python3", str(CLI), str(source)], cwd=root, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(result.stderr, "Error: The CSV file must use valid UTF-8 encoding.\n")
+            missing = root / "private-missing.csv"
+            result = subprocess.run(["python3", str(CLI), str(missing)], cwd=root, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertNotIn(str(missing), result.stderr)
+            (root / "results.csv").mkdir()
+            result = subprocess.run(["python3", str(CLI), str(OFFICIAL_CSV)], input="y\n", cwd=root, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(result.stderr, "Error: Could not write results.csv; check output directory permissions and available space.\n")
+
+    def test_cli_read_io_failure_is_sanitized(self) -> None:
+        from contextlib import redirect_stderr
+        from io import StringIO
+        from unittest.mock import patch
+        from scripts import analyze
+        stderr = StringIO()
+        with patch.object(analyze.sys, "argv", ["analyze.py", str(OFFICIAL_CSV)]), patch.object(analyze, "analyze_csv_file", side_effect=OSError("private/path secret")), redirect_stderr(stderr):
+            self.assertNotEqual(analyze.main(), 0)
+        self.assertEqual(stderr.getvalue(), "Error: Could not read CSV; check the input path and read permissions.\n")
+
     def test_cli_fails_clearly_for_missing_argument_and_path(self) -> None:
         for arguments, expected in (([], "Usage:"), (["missing.csv"], "CSV file not found")):
             completed = subprocess.run(

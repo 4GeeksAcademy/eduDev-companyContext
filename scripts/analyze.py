@@ -26,7 +26,7 @@ def main() -> int:
 
     source = Path(sys.argv[1])
     if not source.is_file():
-        print(f"Error: CSV file not found: {source}", file=sys.stderr)
+        print("Error: CSV file not found; check the input path and read permissions.", file=sys.stderr)
         return 2
 
     try:
@@ -34,8 +34,11 @@ def main() -> int:
     except UnicodeDecodeError:
         print("Error: The CSV file must use valid UTF-8 encoding.", file=sys.stderr)
         return 2
-    except (IncidentAnalysisError, OSError) as error:
-        print(f"Error: {error}", file=sys.stderr)
+    except IncidentAnalysisError:
+        print("Error: Invalid incident CSV; check the header and record structure.", file=sys.stderr)
+        return 2
+    except OSError:
+        print("Error: Could not read CSV; check the input path and read permissions.", file=sys.stderr)
         return 2
 
     print_report(summary, source.name)
@@ -44,8 +47,8 @@ def main() -> int:
             Path.cwd().joinpath("results.csv").write_text(
                 results_to_csv(summary), encoding="utf-8", newline=""
             )
-        except OSError as error:
-            print(f"Error: Could not write results.csv: {error}", file=sys.stderr)
+        except OSError:
+            print("Error: Could not write results.csv; check output directory permissions and available space.", file=sys.stderr)
             return 2
         print("Aggregate results exported to results.csv.")
     return 0

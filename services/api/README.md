@@ -31,6 +31,10 @@ not load that file automatically.
 The application also runs the same idempotent seed bootstrap at startup, so a new
 default database never produces an empty demonstration. `uv run seed` remains the
 explicit setup command: a clean run reports 15 inserts and later runs report 0.
+Expected supplier storage failures exit nonzero with fixed stderr guidance to check
+`TRACKFLOW_SUPPLIERS_DB_PATH`, JSON integrity and write permissions; no traceback
+or internal path is printed. Partial inserts may remain; rerunning is idempotent.
+Isolated CLI checks: `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_seed_cli.py' -v`.
 
 Supplier data defaults to `services/api/data/suppliers.json`. Override it for
 isolated tests or local experiments without changing code:
