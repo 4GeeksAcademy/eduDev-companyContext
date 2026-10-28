@@ -119,6 +119,7 @@ Then open:
 - Hito 4 internal backoffice: `http://localhost:3000/uis/backoffice/`
 - Incident analyzer: `http://localhost:3000/uis/backoffice/incident-analysis.html`
 - Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
+- Centralized Incident Manager: `http://localhost:3000/uis/backoffice/incidents.html` — [delivery guide, setup and evidence](docs/centralized-incident-manager.md).
 
 ### Incident Analyzer
 

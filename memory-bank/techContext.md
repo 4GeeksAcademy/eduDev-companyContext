@@ -19,7 +19,7 @@
 - Keep the public website and internal backoffice layouts separate.
 - Use native Web Components for small reusable public-site elements; no framework is needed.
 - Keep the Hito 4 operations overview on static sample data; the separate incident page calls the incident API directly.
-- Reuse `shared/incident_analysis.py` from both CLI and API; never duplicate validation or calculations.
+- Reuse `shared/incident_analysis.py` from both CLI and API for aggregation/export. Legacy CSV validation now lives in standard-library `packages/shared/incident_validation.py`, with compatible analyzer reexports. Manager rules in `packages/shared/incidents.py` feed Pydantic schemas in `services/api/incident_models.py`; keep legacy and manager enums distinct.
 - Keep uploaded incident source files transient and retain only the last successful aggregate summary in process memory.
 - Keep supplier persistence small: one schema module, TinyDB helper functions, one router, and one shared idempotent seed function.
 - Preserve root Hito 1 and Hito 2 files and `uis/talent-pipeline-tracker/` as independent milestone deliverables.
@@ -63,14 +63,15 @@ After `npm run serve`, open:
 - Internal backoffice: `http://localhost:3000/uis/backoffice/`
 - Incident analysis: `http://localhost:3000/uis/backoffice/incident-analysis.html`
 - Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
+- Incident manager: `http://localhost:3000/uis/backoffice/incidents.html` — see [delivery guide](../docs/centralized-incident-manager.md).
 
 ## Constraints
 
 - Do not add frontend dependencies for the static backoffice.
 - Use uv for API dependency/setup/test workflow in `.venv`; the shared core and CLI remain standard-library only.
-- Run one API worker: TinyDB is not multi-process coordinated. Identity and supplier stores remain separate.
-- All eight incident/supplier routes require an active database identity via bearer JWT; all active roles may operate them. Registration/login/docs and CORS preflight remain public.
-- The unchanged static frontend sends no token and receives 401 until separately integrated.
+- Run one API worker: TinyDB is not multi-process coordinated. Identity, supplier and incident stores remain separate; isolate all three for tests. Stop the API before the separate historical incident seed; incidents are never seeded at startup (supplier bootstrap remains).
+- All thirteen incident/supplier routes (five manager, two analyzer, six supplier) require an active database identity via bearer JWT; all active roles may operate them. Registration/login/docs and CORS preflight remain public.
+- Static backoffice private shells validate `/auth/me` before reveal; `auth.js` attaches bearer tokens to analyzer, supplier and manager requests. Sessions are origin-local, not SSO.
 - The process-global latest incident aggregate is shared between authenticated users, transient across restart and not user-owned. No raw uploads persist.
 - Keep technical artifacts and UI copy in English.
 - Never print, log, export, or return source incident rows or customer email addresses.

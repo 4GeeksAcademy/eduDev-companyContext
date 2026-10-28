@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Incident Manager · TrackFlow Control Room</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="incidents.css" />
+  <script type="module" src="incidents.js"></script>
+</head>
+<body class="incidents-page">
+  <section id="session-panel" aria-label="Session">
+    <p id="session-state" role="status">Checking your session… JavaScript is required.</p>
+    <button id="session-retry" type="button" hidden>Retry</button>
+    <button data-logout type="button">Sign out</button>
+  </section>
+  <div data-protected hidden>
+    <a class="skip-link" href="#main-content">Skip to incident manager</a>
+    <header class="topbar">
+      <div class="brand-block"><span class="logo" aria-hidden="true">TF</span><div><strong>TrackFlow</strong><span>Control Room</span></div></div>
+      <div class="system-state">Central incident register</div>
+    </header>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Application menu">
+        <p class="sidebar-label">Workspace</p>
+        <nav class="sidebar-nav">
+          <a href="./">Operations overview</a>
+          <a href="incident-analysis.html">Incident analysis</a>
+          <a class="active-item" aria-current="page" href="incidents.html">Incident manager</a>
+          <a href="suppliers.html">Supplier directory</a>
+        </nav>
+        <button data-logout type="button">Sign out</button>
+      </aside>
+      <main id="main-content">
+        <div class="page-heading"><div><p class="overline">Logistics operations</p><h1>Incident manager</h1><p>Register and track incidents across Los Angeles, Zaragoza and Central.</p></div></div>
+        <section class="incident-panel" aria-labelledby="register-title">
+          <h2 id="register-title">Register an incident</h2>
+          <p>All fields are required. IDs and timestamps are generated automatically.</p>
+          <form id="incident-form" novalidate>
+            <div class="incident-form-grid">
+              <label for="title">Title<input id="title" name="title" required aria-describedby="title-error" /><span class="field-error" id="title-error"></span></label>
+              <label for="category">Category<select id="category" name="category" required aria-describedby="category-error"></select><span class="field-error" id="category-error"></span></label>
+              <label class="full-width" for="description">Description<textarea id="description" name="description" rows="4" required aria-describedby="description-error"></textarea><span class="field-error" id="description-error"></span></label>
+              <label for="status">Initial status<select id="status" name="status" required aria-describedby="status-error"></select><span class="field-error" id="status-error"></span></label>
+              <label for="origin">Origin<select id="origin" name="origin" required aria-describedby="origin-error"></select><span class="field-error" id="origin-error"></span></label>
+              <div id="branch-field" class="full-width">
+                <label for="branch">Branch<select id="branch" name="branch" required aria-describedby="branch-hint branch-error"></select><span class="field-error" id="branch-error"></span></label>
+                <p id="branch-hint">Branch is always required.</p>
+              </div>
+            </div>
+            <button id="submit-incident" class="button" type="submit">Register incident</button>
+            <p id="form-state" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+        <section class="incident-panel" aria-labelledby="list-title">
+          <h2 id="list-title">Registered incidents</h2>
+          <div class="incident-filters">
+            <label for="filter-status">Status<select id="filter-status"></select></label>
+            <label for="filter-origin">Origin<select id="filter-origin"></select></label>
+            <label for="filter-branch">Branch<select id="filter-branch"></select></label>
+            <label for="filter-category">Category<select id="filter-category"></select></label>
+          </div>
+          <p id="list-state" role="status" aria-live="polite">Loading incidents…</p>
+          <button id="list-retry" type="button" hidden>Retry incidents</button>
+          <div id="incident-list"></div>
+        </section>
+        <section class="incident-panel" aria-labelledby="summary-title">
+          <h2 id="summary-title">Incident summary</h2>
+          <p id="summary-state" role="status" aria-live="polite">Loading summary…</p>
+          <button id="summary-retry" type="button" hidden>Retry summary</button>
+          <div id="summary-content"></div>
+        </section>
+      </main>
+    </div>
+    <footer>TrackFlow Tech · Shared logistics incident management</footer>
+  </div>
+</body>
+</html>

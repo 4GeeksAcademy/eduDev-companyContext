@@ -126,4 +126,8 @@ test('return targets allow only local backoffice pages, preserving apiPort', () 
   assert.equal(auth.safeReturnTarget('incident-analysis.html?filter=open'), 'incident-analysis.html?filter=open&apiPort=8001');
   assert.equal(auth.safeReturnTarget('suppliers.html?apiPort=9000'), 'suppliers.html?apiPort=8001');
   assert.equal(auth.safeReturnTarget('./'), 'index.html?apiPort=8001');
+  assert.equal(auth.safeReturnTarget('incidents.html?apiPort=9000'), 'incidents.html?apiPort=8001');
+  for (const target of ['https://evil.test/incidents.html', '../incidents.html', 'incidents.html#bad']) {
+    assert.equal(auth.safeReturnTarget(target), 'index.html?apiPort=8001');
+  }
 });

@@ -17,7 +17,7 @@ export function getApiBase() {
 
 // Deliberately accept relative page names, never arbitrary URL destinations.
 export function safeReturnTarget(next) {
-  const match = /^(?:\.\/)?(index\.html|suppliers\.html|incident-analysis\.html)(\?[^#\\]*)?$/.exec(next ?? '');
+  const match = /^(?:\.\/)?(index\.html|suppliers\.html|incident-analysis\.html|incidents\.html)(\?[^#\\]*)?$/.exec(next ?? '');
   const page = match ? match[1] : 'index.html';
   const query = new URLSearchParams(match?.[2] ?? '');
   const port = apiPort(window.location.search) ?? apiPort(query.toString());
