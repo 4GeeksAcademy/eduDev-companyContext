@@ -424,11 +424,12 @@
 
 ## Next Steps — AUTH-03
 
-1. User authorized commit, push and PR creation and selected a feature-branch chain.
-   Final independent audit passed: 56/56 API,25/25 frontend,lint/build,scope/privacy
-   and diff checks. Local tracker/API/UI work units are committed as `55870a0`,
-   `1b0cbd3` and `48a986f`; publish the evidence unit and open the draft tracker
-   plus dependent API/UI/evidence PRs. No push, PR or merge has occurred yet.
+1. User-authorized feature-branch chain is published: draft tracker PR #18 to main,
+   API #19 to the tracker branch, UI #20 to the API branch, evidence #21 to the UI
+   branch. Commits: `55870a0`, `1b0cbd3`, `48a986f`, `fa54bc7`. Final independent
+   checks passed: 56/56 API,25/25 frontend,lint/build,scope/privacy and diff checks.
+   Remote base/head/diffs match the intended slices. GitHub reported no status
+   checks; no CI success or merge is claimed. Review children before integration.
 2. Before any push, remind the user to revisit temporary Tailscale settings and
    confirm secrets/private test values are excluded. Ignored local `.env` does not
    need reverting merely for Git; deployment must use its own correct URLs.
