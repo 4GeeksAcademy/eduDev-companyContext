@@ -8,7 +8,7 @@ import { AuthApiError, getCurrentUser, logout } from "@/services/auth";
 
 export function SessionGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  if (pathname === '/login' || pathname === '/register') {
+  if (pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname === '/reset-password') {
     return <><Header privateActions={false} />{children}</>;
   }
   return <PrivateSession key={pathname}>{children}</PrivateSession>;

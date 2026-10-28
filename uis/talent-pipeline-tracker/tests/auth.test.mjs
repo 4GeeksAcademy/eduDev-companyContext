@@ -135,6 +135,59 @@ test('already-aborted auth submissions never start a request or change the sessi
   assert.equal(auth.readToken(), 'keep');
 });
 
+test('password endpoints use exact JSON payloads, public isolation and protected bearer', async () => {
+  auth.saveToken('keep');
+  const signal = new AbortController().signal;
+  const cases = [
+    [auth.forgotPassword, '/auth/forgot-password', { email: 'a@example.test' }, false],
+    [auth.resetPassword, '/auth/reset-password', { token: 'reset-only', new_password: 'new' }, false],
+    [auth.changePassword, '/auth/change-password', { current_password: 'old', new_password: 'new' }, true],
+  ];
+  for (const [submit, path, payload, protectedCall] of cases) {
+    responses.push([200, { message: 'ok', access_token: 'must-not-save' }]);
+    await submit(payload, signal);
+    const call = calls.at(-1);
+    assert.equal(call.url, `http://localhost:8000${path}`);
+    assert.equal(call.method, 'POST');
+    assert.equal(call.headers['Content-Type'], 'application/json');
+    assert.equal(call.headers.Authorization, protectedCall ? 'Bearer keep' : undefined);
+    assert.deepEqual(JSON.parse(call.body), payload);
+    assert.equal(call.signal, signal);
+    assert.equal(auth.readToken(), 'keep');
+    responses.push([400, { detail: 'sensitive arbitrary response' }]);
+    await assert.rejects(submit(payload), error => error.status === 400 && !error.message.includes('sensitive'));
+    const controller = new AbortController(); controller.abort();
+    const count = calls.length;
+    await assert.rejects(submit(payload, controller.signal), { name: 'AbortError' });
+    assert.equal(calls.length, count);
+  }
+  responses.push([401, {}]);
+  await assert.rejects(auth.resetPassword({ token: 'bad', new_password: 'new' }), { status: 401 });
+  assert.equal(auth.readToken(), 'keep');
+  responses.push([401, {}]);
+  await assert.rejects(auth.changePassword({ current_password: 'old', new_password: 'new' }), { status: 401 });
+  assert.equal(auth.readToken(), null);
+});
+
+test('password requests preserve sessions on transport errors and reject late cancellation', async () => {
+  auth.saveToken('keep');
+  for (const [submit, payload] of [
+    [auth.forgotPassword, { email: 'a@example.test' }],
+    [auth.resetPassword, { token: 'reset', new_password: 'new' }],
+    [auth.changePassword, { current_password: 'old', new_password: 'new' }],
+  ]) {
+    globalThis.fetch = async () => { throw new TypeError('offline'); };
+    await assert.rejects(submit(payload), TypeError);
+    const controller = new AbortController();
+    globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => {
+      controller.abort(); return { access_token: 'never-save' };
+    } });
+    await assert.rejects(submit(payload, controller.signal), { name: 'AbortError' });
+    assert.equal(auth.readToken(), 'keep');
+    assert.deepEqual(redirects, []);
+  }
+});
+
 function deferred() {
   let resolve;
   const promise = new Promise(done => { resolve = done; });
