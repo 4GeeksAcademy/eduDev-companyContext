@@ -58,6 +58,48 @@ save failures preserve edits. Pending saves disable editing and duplicate submit
 unmount aborts requests and ignores stale completions. This is a client-side access
 gate, not authorization for the separate external candidate API.
 
+## Password recovery and change
+
+- Login links to public `/forgot-password`. A valid email submits JSON to the
+  identity API; every outcome shows the same account-neutral confirmation and
+  locks the form. If delivery fails, reload to make a deliberate new request.
+- Public `/reset-password?token=…` accepts a matching new password/confirmation.
+  Missing, invalid, expired or used links offer recovery. Success replaces the
+  route with `/login?reset=success`, displaying fixed feedback without a token.
+- Perfil links to protected `/account/change-password`; current password and
+  matching new passwords are required. Wrong-current-password errors are explicit.
+- Passwords retain the 1–72 UTF-8 byte policy. Public recovery/reset requests never
+  attach bearer credentials or save session tokens. Reset tokens stay in the URL
+  and request memory, never localStorage; avoid sharing or logging recovery URLs.
+- No new public environment variable is needed. Resend configuration belongs only
+  to the API server; see `services/api/README.md` from the repository root.
+
+### Local browser verification checklist
+
+This is a repeatable runbook, not an open-task status list. Use a locally
+configured identity API and Tracker origin allowed by its CORS:
+
+- [ ] Logged out: recovery/reset are accessible; change-password redirects to login.
+- [ ] Login/register still work; profile exposes change-password.
+- [ ] Invalid email and missing/mismatched/>72-byte passwords never submit.
+- [ ] Known/unknown email and injected network/server errors show identical confirmation;
+      rapid double submit sends once and the recovery form stays disabled.
+- [ ] Reset from a real delivered link redirects with visible login success;
+      old password fails and new password logs in. Missing/expired/used links offer recovery.
+- [ ] Change success, wrong current password and transient errors show safe feedback.
+- [ ] Departure during pending requests prevents stale feedback/navigation; verify
+      keyboard, narrow/wide layout and console. Public calls contain no Authorization;
+      change calls use the existing bearer. Neither flow replaces stored sessions.
+
+Node service/helper tests and the structural guard assertion are not browser E2E.
+Recorded AUTH-03 evidence: 25/25 Node tests, lint and build passed; independent
+mocked-browser checks covered forms, access, failures, cancellation, duplicate
+submits, headers and narrow/wide layouts. The user separately confirmed real email
+receipt, delivered-link reset, old/new password login, reused-link rejection and
+authenticated change with wrong/correct current passwords. Mailbox results are
+human-reported; expiry is covered by API tests, not a live 30-minute wait.
+See `memory-bank/progress.md` for details and remaining delivery steps.
+
 ## Verification
 
 ```bash

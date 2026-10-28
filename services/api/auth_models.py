@@ -44,6 +44,7 @@ class CurrentUserResponse(UserResponse):
 
 class User(UserResponse):
     hashed_password: str = Field(repr=False)
+    password_reset_id: str | None = Field(default=None, repr=False)
 
 
 class RegistrationInput(BaseModel):
@@ -70,6 +71,29 @@ class RegistrationInput(BaseModel):
         if not 1 <= size <= 72:
             raise ValueError("Password must contain 1 to 72 UTF-8 bytes")
         return value
+
+
+class ForgotPasswordInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+    email: str
+
+    _email = field_validator("email")(RegistrationInput.valid_email.__func__)
+
+
+class ResetPasswordInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+    token: SecretStr
+    new_password: SecretStr
+
+    _password = field_validator("new_password")(RegistrationInput.valid_password.__func__)
+
+
+class ChangePasswordInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+    current_password: SecretStr
+    new_password: SecretStr
+
+    _password = field_validator("new_password")(RegistrationInput.valid_password.__func__)
 
 
 class UserUpdate(BaseModel):

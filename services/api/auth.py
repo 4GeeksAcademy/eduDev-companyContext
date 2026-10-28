@@ -4,7 +4,8 @@ import math
 import os
 from datetime import datetime, timedelta, timezone
 
-from jose import jwt
+from jose import JWTError, jwt
+from uuid import uuid4
 from passlib.hash import bcrypt
 
 
@@ -42,6 +43,39 @@ def token_configuration() -> tuple[str, datetime]:
     except (ValueError, OverflowError):
         raise AuthConfigurationError("Authentication configuration unavailable") from None
     return secret, expiry
+
+
+def create_reset_token(user_id: str) -> tuple[str, str]:
+    try:
+        minutes = float(os.environ.get("PASSWORD_RESET_EXPIRE_MINUTES", "30"))
+        secret = os.environ.get("JWT_SECRET_KEY", "")
+        if not secret.strip() or not math.isfinite(minutes) or not 15 <= minutes <= 60:
+            raise ValueError
+    except ValueError:
+        raise AuthConfigurationError("Recovery configuration unavailable") from None
+    reset_id = str(uuid4())
+    token = jwt.encode({"sub": user_id, "purpose": "password_reset", "jti": reset_id,
+                        "exp": datetime.now(timezone.utc) + timedelta(minutes=minutes)},
+                       secret, algorithm="HS256")
+    return token, reset_id
+
+
+def decode_reset_token(token: str) -> dict:
+    secret = os.environ.get("JWT_SECRET_KEY", "")
+    if not secret.strip():
+        raise AuthConfigurationError("Recovery configuration unavailable")
+    try:
+        claims = jwt.decode(token, secret, algorithms=["HS256"],
+                            options={"require_sub": True, "require_exp": True})
+        expiry = claims["exp"]
+        if (claims.get("purpose") != "password_reset"
+                or not isinstance(claims.get("jti"), str) or not claims["jti"]
+                or isinstance(expiry, bool) or not isinstance(expiry, (int, float))
+                or not math.isfinite(expiry) or expiry <= datetime.now(timezone.utc).timestamp()):
+            raise ValueError
+        return claims
+    except (JWTError, ValueError, TypeError, OverflowError):
+        raise ValueError("Invalid or expired reset token") from None
 
 
 def create_access_token(user_id: str) -> str:

@@ -282,7 +282,161 @@
   publication or merge. Source reviews were approved and acknowledged; this
   passive documentation does not claim a new review outcome.
 
-## Next Steps
+## Password Recovery — PR-1
+
+- Implemented public forgot/reset JSON endpoints and real Resend HTTPS adapter
+  using stdlib urllib with a 10-second timeout. Generic forgot 200 responses cover
+  unknown accounts and provider/config failures; tokens and provider details are
+  never returned or logged. No real email sent and no `.env` edits performed.
+- Reset JWTs require signature, expiry and password-reset purpose plus a matching
+  persistent random reset ID. Password + consumed state update together under the
+  identity RLock; concurrent requests yield exactly one success in focused tests.
+  New links supersede earlier links; existing sessions remain valid. Reset/session
+  token separation preserves legacy session tokens without a purpose claim.
+- Exact focused command: `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_recovery.py' -v`.
+  Observed RED: 6 tests failed on absent routes (404), 1.303s. Initial GREEN:
+  6/6, 2.801s; expanded deleted-user/missing-state triangulation: 7/7, 3.023s.
+- `uv run --no-sync python -m unittest discover -s services/api/tests -v`
+  passed 48/48 in 27.423s. Existing Starlette/httpx deprecation warning remains
+  non-failing. Tests use temporary DBs, synthetic secrets, mocked provider HTTP
+  and explicitly expired signed tokens; no dependency changes or network calls.
+- README documents server-only Resend/base-URL/expiry settings, ignored `.env`,
+  no-domain recipient restriction and single-worker TinyDB limits. Tracker UI,
+  authenticated change-password and real-email/browser acceptance remain pending.
+  No commits, staging, publication, task-document edits or review claims.
+
+## Password Change — PR-2
+
+- Added bearer-protected `POST /auth/change-password` with current/new passwords,
+  credential-free validation and success feedback. Wrong current password is 400;
+  missing/invalid/reset-token bearer credentials are 401. Existing new-password
+  policy is reused. Verification of the latest hash, hashing and password/reset-ID
+  replacement share the identity RLock and one write, avoiding stale-hash checks.
+- Successful existing PUT password updates now clear pending recovery state too;
+  non-password updates preserve it. Existing access JWT lifetime is unchanged.
+- `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_change.py' -v`:
+  RED 7 tests, 6 failures in 3.592s (missing route 404 and stale recovery link
+  incorrectly accepted after PUT); GREEN 7/7 in 5.488s. Covers wrong-password and
+  malformed-input nonmutation, authentication, old/new login, recovery invalidation,
+  session preservation and concurrent changes (one 200, one 400).
+- `uv run --no-sync python -m unittest discover -s services/api/tests -v`:
+  passed 55/55 in 32.744s, including all PR-1 tests. Existing Starlette/httpx
+  deprecation warning remains non-failing. Tests use temporary DBs and synthetic
+  credentials; no mail/network, secrets, dependencies, task edits or git writes.
+- Tracker UI and real-email/browser acceptance remain pending; no Resend setup
+  requested or performed in this unit. README documents the new route/invariant.
+
+## Password Recovery Tracker — PR-3
+
+- Added Spanish public recovery/reset forms and guarded account password change,
+  profile/login links, fixed login reset-success feedback and Suspense-safe query
+  handling. Only the two recovery routes join the guard's public allowlist.
+- Public JSON recovery/reset calls never attach bearer or save tokens; change
+  reuses the protected identity client. Forms validate UTF-8 byte limits and
+  confirmation before requests, prevent duplicates, abort on departure and ignore
+  stale completions. Recovery locks with generic confirmation even on errors.
+- `cd uis/talent-pipeline-tracker && node --test tests/*.test.mjs`: RED exit 1,
+  20 pass/2 fail (missing password helper and service functions); GREEN 24/24,
+  expanded cancellation/transport triangulation 25/25, exit 0, zero skips.
+- `cd uis/talent-pipeline-tracker && npm run lint` and
+  `cd uis/talent-pipeline-tracker && npm run build` passed (exit 0); production
+  output includes all three new routes. Existing Node module-type warning remains
+  non-failing. Build automatically reported loading existing `.env.local`; no
+  environment contents were inspected or edited. No dependency/API/task changes.
+- README includes pending browser/local API and real-mail checklist. Node tests
+  cover services/helpers plus a structural guard assertion, not browser E2E.
+  Browser interaction, narrow/wide checks and real Resend delivery remain pending.
+- `git diff --check` passed; unrelated pre-existing API/task work was preserved.
+
+## Password Recovery — Independent Verification
+
+- API verification independently passed 55/55 tests, including the 7/7 focused
+  password-change cases and recovery regressions. Tracker verification independently
+  passed `node --test tests/*.test.mjs` (25/25, zero skips), `npm run lint`,
+  `npm run build`, and `git diff --check`.
+- Existing cached Playwright/Chromium ran the built Tracker on an isolated loopback
+  port with synthetic identity HTTP responses and unrelated traffic blocked. Passed:
+  public recovery/private change access, generic confirmation on success/HTTP/network
+  failure, disabled controls, duplicate prevention, confirmation validation, token
+  error links, reset-to-login success, password-change feedback, exact payloads and
+  bearer isolation, preserved session, and departure cancellation without redirects.
+- Desktop 1440px and mobile 390px checks found no horizontal form overflow; labels,
+  focus traversal and keyboard submit access passed. No uncaught browser JavaScript
+  errors. This was not an exhaustive visual/accessibility or console-message audit.
+  Browser and owned server were stopped; existing servers were untouched. No installs,
+  secret inspection, actual API/password mutation or real email occurred.
+- Integrated native review `review-36e05904c97e1de3` was approved and acknowledged
+  for the 23-file candidate; no blocking findings. This later passive verification
+  record is not a new source-review claim. Non-blocking follow-ups remain recorded
+  in `odd/tasks/password-reset.md` rather than expanding the assignment.
+- Existing Starlette/httpx and Node module-type warnings are non-failing. The
+  browser's expired-token response was simulated; actual expiry is covered by API
+  tests, not by live mailbox acceptance. Real Resend delivery remains unverified.
+
+## AUTH-03 — Isolated Manual Verification
+
+- Manual testing used isolated identity/supplier data, preserving existing project
+  data. Configuration and frontend/API origins were checked without exposing secrets.
+- Public pages and API schema returned 200; unauthenticated `/auth/me` returned
+  401; reset/change CORS preflights returned 200 and the configured origin.
+- Initial email delivery failed despite local readiness. Restarting preserved the
+  test account but did not resolve delivery; the controlled diagnosis and correction
+  are recorded below. Infrastructure readiness is not proof of mailbox receipt.
+
+## Resend User-Agent Compatibility — PR-5
+
+- Added only honest `User-Agent: TrackFlow/1.0` identification to the existing
+  urllib Resend Request. POST endpoint, authorization, JSON payload, timeout 10,
+  generic responses and persistent single-use semantics are unchanged.
+- Parent-provided prior evidence: one authorized adapter diagnostic returned
+  403/edge_error_1010; its one-send grant is consumed. A controlled no-credential
+  HEAD pair with only UA varied returned 403 (default urllib) versus 200
+  (TrackFlow/1.0). This supports compatibility work, not authenticated POST
+  acceptance or real-email receipt. Missing-email resolution remains unproven.
+- `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_recovery.py' -v`:
+  RED 8 tests, one missing-UA failure (`None` versus `TrackFlow/1.0`) in 3.063s;
+  GREEN 8/8 in 3.048s. New mocked adapter regression also verifies POST URL,
+  authorization/content-type, sender/recipient/text/subject and timeout unchanged.
+- `uv run --no-sync python -m unittest discover -s services/api/tests -v`:
+  passed 56/56 in 33.530s. Existing Starlette/httpx warning remains non-failing.
+- Independent verification subsequently confirmed 8/8 recovery and 56/56 API
+  tests plus clean diff checks. Native review `review-fb52209080aa0531` was approved
+  and acknowledged for the corrected source candidate.
+- Controlled API-only reload activated the correction, preserving temporary
+  identity/supplier database digests and leaving Tracker untouched. Masked config,
+  HTTP and CORS checks passed. No provider call or account mutation occurred during
+  activation. Subsequent human-reported live-flow acceptance is recorded below.
+
+## AUTH-03 — User-Reported Delivery Retry
+
+- After activating the User-Agent correction, the user reported "ok, ahora si
+  funcionó" in response to the recovery retry/receipt request. This is human-reported
+  success, not independently observed mailbox evidence. The delivery blocker is
+  considered resolved. The user then explicitly answered "Si, todo ok" to the
+  delivered-link reset, old-password rejection/new-password login, reused-link
+  rejection and authenticated wrong/correct-current-password checklist. Those
+  live results are USER-REPORTED, not independently observed by the agent.
+- Final automated evidence: 56/56 API tests, 25/25 frontend tests, lint/build and
+  independent mocked-browser checks passed; corrected source review was approved
+  and acknowledged. Token expiry has deterministic API coverage, not a live
+  30-minute wait. No exhaustive visual/accessibility audit was claimed. Existing
+  non-failing dependency warnings remain. Test services are still running.
+
+## Next Steps — AUTH-03
+
+1. User-authorized feature-branch chain is published: draft tracker PR #18 to main,
+   API #19 to the tracker branch, UI #20 to the API branch, evidence #21 to the UI
+   branch. Commits: `55870a0`, `1b0cbd3`, `48a986f`, `fa54bc7`. Final independent
+   checks passed: 56/56 API,25/25 frontend,lint/build,scope/privacy and diff checks.
+   Remote base/head/diffs match the intended slices. GitHub reported no status
+   checks; no CI success or merge is claimed. Review children before integration.
+2. Before any push, remind the user to revisit temporary Tailscale settings and
+   confirm secrets/private test values are excluded. Ignored local `.env` does not
+   need reverting merely for Git; deployment must use its own correct URLs.
+3. Stop owned test services and dispose of temporary accounts only when authorized.
+   No secret values or token-bearing URLs belong in chat or Git.
+
+## Previous Milestone Follow-ups
 
 1. Share PR #12 with the instructor; its description lists the eight protected
    routes and separates automated/live HTTP results from human-reported Swagger checks.
