@@ -141,6 +141,21 @@ The static `verify-trackflow-ui` skill targets website/backoffice, not this Next
 
 ## Verification
 
+See the root [testing guide](../../TESTING.md) for the final case plan, coverage,
+safety and limitations. Independent Jest verification passed 85 tests across five
+suites; legacy Node 32/32 evidence is reused, not an additional Jest count.
+From this Tracker directory:
+
+```bash
+npm ci
+npm exec -- jest --coverage
+# Or: npm run test:jest:coverage
+```
+
+Jest covers auth services/forms and selected frontend helpers with local fakes;
+no `.env`, real secrets or external API is needed. It does not replace the legacy
+Node checks or the browser/manual instructions above.
+
 ```bash
 # Node 24 native TypeScript stripping; no additional test dependencies
 node --test tests/*.test.mjs

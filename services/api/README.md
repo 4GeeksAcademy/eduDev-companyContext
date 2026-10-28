@@ -427,7 +427,24 @@ response. Production exception propagation is not disabled.
 
 ## Tests
 
-Run all API tests from the repository root:
+See the root [testing guide](../../TESTING.md) for the endpoint case plan,
+no-real-data safety, suite boundaries and final coverage results. Final independent
+verification passed 377 tests (280 new units + 97 legacy HTTP regressions); the guide
+separates reused unit-only coverage from fresh integrated coverage. From the root:
+
+```bash
+uv sync
+uv run pytest
+uv run pytest --cov
+```
+
+No real secrets or `.env` are required for tests. Preserve isolated test stores;
+do not seed ordinary data for testing. Remove `UV_ENV_FILE` and set
+`UV_NO_ENV_FILE=1` before automated runs to disable env-file loading. The guide
+distinguishes ordinary commands from the protective final-verification environment.
+
+Legacy API-only runner and focused/manual instructions remain available below.
+Run all legacy API tests from the repository root:
 
 ```bash
 uv run python -m unittest discover -s services/api/tests -v
