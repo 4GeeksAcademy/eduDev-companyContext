@@ -1,10 +1,10 @@
-# Testing TrackFlow — R1
+# Testing TrackFlow — R1 + R2
 
-R1 adds isolated Python session/recovery/token/email business-unit tests: **103
-cases across seven modules**, alongside the preserved legacy API suite. This guide
-is the review-slice snapshot, not the final integrated testing report. Later-slice
-tests may already be present in the live uncommitted worktree; they are not R1
-results or delivered scope.
+R1 retains **103 session/recovery/token/email cases across seven modules**; R2
+adds **72 user/profile cases across seven modules**, alongside the preserved legacy
+API suite. This is the R2 candidate's testing snapshot, not the final integrated
+report or a commit/review approval claim. Later-slice tests may already be present
+in the live uncommitted worktree; they are not R1/R2 results or delivered scope.
 
 ## Run the R1 unit
 
@@ -23,7 +23,7 @@ TinyDB, bcrypt, JWT, models and business functions remain in use. Only outbound
 transport and the access-expiry clock are replaced where needed. Never substitute
 personal accounts, ordinary data or real provider credentials.
 
-## Five-route case plan
+## R1: five-route case plan
 
 The case selection was planned before assignment tests were written. Each route
 has its own module under `tests/`; this table retains the happy/edge/failure plan
@@ -49,11 +49,38 @@ AI-assisted case selection emphasized exact reset reuse, supersession despite
 failed delivery, current stored roles and state nonmutation. Existing behavior
 passed initially; no product bug or artificial RED is claimed for these units.
 
+## R2: seven-route case plan
+
+Run only the R2 subset from the root with env-file loading disabled:
+
+```bash
+unset UV_ENV_FILE; export UV_NO_ENV_FILE=1; uv run pytest tests/test_users_register.py tests/test_users_list.py tests/test_users_get.py tests/test_users_update.py tests/test_users_delete.py tests/test_profiles_get.py tests/test_profiles_update.py -q
+```
+
+These modules extend the original pre-test plan with linked-record lifecycle,
+permissions, normalized duplicates, nonmutation and null-versus-omitted checks.
+
+| Route / module | Happy path | Edge or alternate | Failure / reason |
+| --- | --- | --- | --- |
+| POST /users — `test_users_register.py` | Persist linked UUID identity/profile with bcrypt and safe schema | Optional/null contacts and UTF-8 password boundaries | Normalized duplicate cannot create an orphan; invalid/privileged fields cannot create storage; protect registration authority |
+| GET /users — `test_users_list.py` | Admin reads real directory with safe schema | Empty directory with explicitly resolved admin | User/manager refused without mutation; enforce directory policy |
+| GET /users/{id} — `test_users_get.py` | Every role reads self; admin reads another identity | Missing admin target returns 404 | Nonowner refused even for unknown target without mutation; prevent existence disclosure |
+| PUT /users/{id} — `test_users_update.py` | Owner email/password and admin role updates persist | Empty/same normalized email preserves state; password change clears reset state | Duplicate combined update, forbidden role/ownership, missing admin target and invalid fields cannot partially mutate; preserve uniqueness and recovery invalidation |
+| DELETE /users/{id} — `test_users_delete.py` | Self/admin removes linked records and revokes identity token | Unrelated records preserved; repeated deletion is missing | Permission precedes target existence; protect linked lifecycle without disclosure |
+| GET /profiles/me — `test_profiles_get.py` | Every role reads only its own nullable profile | Explicitly resolved owner, independent of role | Missing linked profile fails closed; invalid bearer cannot resolve owner; prevent cross-owner disclosure |
+| PUT /profiles/me — `test_profiles_update.py` | Update own contacts, preserving identity/unrelated profile | Omitted contacts retained, null clears, empty update stable | Invalid/identity fields cannot partially apply; missing link leaves identity unchanged; separate profile from identity authority |
+
+Registration duplicate checks compare unchanged storage; update collision checks
+protect password/role as well as email. Registration write-failure/no-orphan
+injection remains legacy HTTP evidence, not a new direct-unit guarantee.
+
 ## Evidence and boundaries
 
-The focused command above passed **103 cases**, with no failures or skips. It is
-not a coverage run. AnyIO reports a non-failing `PytestRemovedIn10Warning` for its
-deprecated `CallSpec2` alias.
+The R1 focused command previously passed **103 cases** and is retained, not rerun
+for R2. The R2 focused command passed **72 cases**, with no failures or skips.
+Neither is a coverage run or a combined-suite observation. Both report the same
+non-failing AnyIO `PytestRemovedIn10Warning` for the deprecated `CallSpec2` alias.
+Existing behavior passed; no artificial RED or product fix is claimed.
 
 Direct units call validated models and explicitly resolved dependencies. They do
 not establish HTTP dependency injection, form/body validation, bearer parsing or
@@ -71,28 +98,26 @@ Existing focused and manual instructions remain in the
 [API README](services/api/README.md#tests). Pytest also discovers the legacy suite;
 importlib mode permits duplicate basenames and the helper path supports legacy
 `auth_helpers` imports. The legacy suite is preserved, not rerun for this passive
-R1 documentation snapshot.
+R2 documentation snapshot.
 
-## Planned later slices — not R1 results
+## Planned later slices — not R1/R2 results
 
 This compact forward plan preserves the original plan-before-tests intent:
 
 | Later scope | Planned cases and reason |
 | --- | --- |
-| R2: POST /users | Linked UUID identity/profile, normalized unique email, bcrypt, optional contacts and UTF-8 boundaries; invalid/privileged fields, duplicate nonmutation and orphan prevention |
-| R2: GET /users; GET/PUT/DELETE /users/{id} | Admin directory, self/admin ownership, safe schemas, missing/forbidden targets, email collisions, role restrictions, omitted updates, linked deletion and recovery invalidation |
-| R2: GET/PUT /profiles/me | Own nullable contacts for all roles, omission versus null clearing, forbidden identity fields, missing profile and unrelated-record nonmutation |
 | R3: API-042 incident manager | Create/list/summary/get/status success, filters and zero groups, all lifecycle pairs, validation, missing records and storage failures |
 | R3: API-042 suppliers | Create/list/get/rate/status/delete success, filters, rate boundaries, timestamp semantics, validation, absence and storage failures |
 | R4: Tracker Jest auth and FE-019 | Real auth/form utilities: session/SSR, encoding, partial registration, current/stale 401, cancellation, byte limits and nullable contacts; additional label/error/abort helpers: success, unknown/inherited keys and failure cases |
+| R5: consolidated documentation | Restore the final integrated guide and record complete verification, coverage and delivery evidence after all slices |
 
-R2 adds the remaining seven identity-route unit modules; R3 adds API-042 units;
-R4 adds Jest tooling/tests and the scoped helper correction. These are **PLANNED
-later commits**, even if their files already exist uncommitted locally. No future
-file links or Jest commands are needed for R1.
+R3 adds API-042 units; R4 adds Jest tooling/tests and the scoped helper correction;
+R5 consolidates the final documentation. These are **PLANNED later local commits**,
+even if their files already exist uncommitted locally. No future file links or
+Jest commands are needed for R1/R2.
 
 The configured pytest coverage sources already include the broader existing
-identity, incident and supplier implementation, not just these five routes. Their
+identity, incident and supplier implementation, not just the R1/R2 units. Their
 presence is not unit-specific coverage evidence. Final integrated commands,
 coverage denominators/gates, frontend findings and consolidated results will be
 recorded after all slices. Review, staging, commits and publication remain
