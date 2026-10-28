@@ -1,10 +1,11 @@
-# Testing TrackFlow — R1 + R2
+# Testing TrackFlow — R1 + R2 + R3
 
 R1 retains **103 session/recovery/token/email cases across seven modules**; R2
-adds **72 user/profile cases across seven modules**, alongside the preserved legacy
-API suite. This is the R2 candidate's testing snapshot, not the final integrated
-report or a commit/review approval claim. Later-slice tests may already be present
-in the live uncommitted worktree; they are not R1/R2 results or delivered scope.
+adds **72 user/profile cases across seven modules**. R3 adds **105 incident/supplier
+cases across eleven modules**, alongside the preserved legacy API suite. This is
+the R3 candidate's testing snapshot, not the final integrated report or a
+commit/review approval claim. Later-slice tests may already be present in the live
+uncommitted worktree; they are not R1/R2/R3 results or delivered scope.
 
 ## Run the R1 unit
 
@@ -74,17 +75,51 @@ Registration duplicate checks compare unchanged storage; update collision checks
 protect password/role as well as email. Registration write-failure/no-orphan
 injection remains legacy HTTP evidence, not a new direct-unit guarantee.
 
+## R3: eleven-route API-042 case plan
+
+Run only the R3 subset from the root with env-file loading disabled:
+
+```bash
+unset UV_ENV_FILE; export UV_NO_ENV_FILE=1; uv run pytest tests/test_incidents_*.py tests/test_suppliers_*.py -q
+```
+
+This extends the original pre-test plan using real models/routes/TinyDB against
+isolated temporary stores. Each operation has a dedicated module under `tests/`.
+
+| Route / module | Happy path | Edge or alternate | Failure / reason |
+| --- | --- | --- | --- |
+| POST /api/incidents — `test_incidents_create.py` | Persist UUID/UTC record with literal text | Default open; branch required even for nonbranch origin | Invalid/generated fields and corrupt storage; protect creation contract |
+| GET /api/incidents — `test_incidents_list.py` | Exact filter membership | AND combinations, empty/no matches | Invalid filters and corrupt records; avoid partial results |
+| GET /api/incidents/summary — `test_incidents_summary.py` | Count every dimension | Empty/sparse stores retain zero-filled groups | Malformed record fails rather than returning partial counts; preserve denominator |
+| GET /api/incidents/{id} — `test_incidents_get.py` | Return exact stored record | Unknown ID leaves storage unchanged | Storage failure is not absence; distinguish missing from unavailable |
+| PATCH /api/incidents/{id}/status — `test_incidents_status.py` | Four allowed lifecycle edges | All 16 status pairs; competing identical transitions have one winner | Rejected edges/models do not write; missing target and storage failure; preserve identity and status-only mutation |
+| POST /suppliers — `test_suppliers_create.py` | Persist generated ID/UTC and validated supplier | Country/currency variants, optional literal contacts | Invalid category/rate/fields and corrupt storage; protect creation |
+| GET /suppliers — `test_suppliers_list.py` | Exact country/category membership | Combined filters, empty/no matches | Invalid enums and storage failure; verify selection |
+| GET /suppliers/{id} — `test_suppliers_get.py` | Preserve exact record at first positive ID | Unknown ID does not mutate | Storage failure is not absence; protect lookup contract |
+| PATCH /suppliers/{id}/rate — `test_suppliers_rate.py` | Positive rate refreshes timestamp | Tiny positive rate; only pricing fields change | Invalid rate, missing target and storage failure; reject without mutation |
+| PATCH /suppliers/{id}/status — `test_suppliers_status.py` | Active/suspended updates | Same-status update preserves rate timestamp and other fields | Invalid status, missing target and storage failure; preserve status semantics |
+| DELETE /suppliers/{id} — `test_suppliers_delete.py` | Remove only target with success object | Unrelated records preserved; repeat is absent | Unknown target and storage failure; verify persistence |
+
+Incident status updates preserve `created_at` and all non-status fields except
+`updated_at`. Supplier rate changes refresh the pricing timestamp; supplier status
+changes preserve it. Corrupt-read checks do not prove crash-write rollback.
+Analyzer expansion, real seeding and live services are excluded.
+
 ## Evidence and boundaries
 
-The R1 focused command previously passed **103 cases** and is retained, not rerun
-for R2. The R2 focused command passed **72 cases**, with no failures or skips.
-Neither is a coverage run or a combined-suite observation. Both report the same
-non-failing AnyIO `PytestRemovedIn10Warning` for the deprecated `CallSpec2` alias.
+Earlier separate focused runs passed **103 R1 cases** and **72 R2 cases**, with no
+failures or skips; neither was rerun for R3. The R3 focused command passed **105
+cases**, with no failures or skips. These are not coverage runs or a combined-suite
+observation. All report the same non-failing AnyIO `PytestRemovedIn10Warning` for
+the deprecated `CallSpec2` alias.
 Existing behavior passed; no artificial RED or product fix is claimed.
 
 Direct units call validated models and explicitly resolved dependencies. They do
 not establish HTTP dependency injection, form/body validation, bearer parsing or
 response filtering; explicit schema checks do not substitute for HTTP responses.
+Incident/supplier authentication is router-inclusion wiring, not direct-call proof;
+legacy HTTP regressions retain that boundary. Supplier path validation likewise
+remains a model/HTTP boundary, not direct-route validation.
 One-winner concurrency assertions do not force scheduling overlap. No browser UX,
 real email receipt, crash rollback or multi-process safety is established.
 
@@ -98,26 +133,24 @@ Existing focused and manual instructions remain in the
 [API README](services/api/README.md#tests). Pytest also discovers the legacy suite;
 importlib mode permits duplicate basenames and the helper path supports legacy
 `auth_helpers` imports. The legacy suite is preserved, not rerun for this passive
-R2 documentation snapshot.
+R3 documentation snapshot.
 
-## Planned later slices — not R1/R2 results
+## Planned later slices — not R1/R2/R3 results
 
 This compact forward plan preserves the original plan-before-tests intent:
 
 | Later scope | Planned cases and reason |
 | --- | --- |
-| R3: API-042 incident manager | Create/list/summary/get/status success, filters and zero groups, all lifecycle pairs, validation, missing records and storage failures |
-| R3: API-042 suppliers | Create/list/get/rate/status/delete success, filters, rate boundaries, timestamp semantics, validation, absence and storage failures |
 | R4: Tracker Jest auth and FE-019 | Real auth/form utilities: session/SSR, encoding, partial registration, current/stale 401, cancellation, byte limits and nullable contacts; additional label/error/abort helpers: success, unknown/inherited keys and failure cases |
 | R5: consolidated documentation | Restore the final integrated guide and record complete verification, coverage and delivery evidence after all slices |
 
-R3 adds API-042 units; R4 adds Jest tooling/tests and the scoped helper correction;
+R4 adds Jest tooling/tests and the scoped helper correction;
 R5 consolidates the final documentation. These are **PLANNED later local commits**,
 even if their files already exist uncommitted locally. No future file links or
-Jest commands are needed for R1/R2.
+Jest commands are needed for R1/R2/R3.
 
 The configured pytest coverage sources already include the broader existing
-identity, incident and supplier implementation, not just the R1/R2 units. Their
+identity, incident and supplier implementation, not only thin route wrappers. Their
 presence is not unit-specific coverage evidence. Final integrated commands,
 coverage denominators/gates, frontend findings and consolidated results will be
 recorded after all slices. Review, staging, commits and publication remain
