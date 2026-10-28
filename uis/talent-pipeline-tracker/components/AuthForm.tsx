@@ -24,7 +24,7 @@ function readable(message: string): string {
   return translations[message] ?? message;
 }
 
-export function AuthForm({ registration = false }: { registration?: boolean }) {
+export function AuthForm({ registration = false, successMessage = '' }: { registration?: boolean; successMessage?: string }) {
   const router = useRouter();
   const [values, setValues] = useState<AuthValues>({ email: '', password: '', name: '', phone: '', address: '' });
   const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -73,6 +73,7 @@ export function AuthForm({ registration = false }: { registration?: boolean }) {
   return (
     <section className="mx-auto max-w-md space-y-6">
       <h1 className="text-2xl font-bold">{title}</h1>
+      {successMessage && <Feedback type="success">{successMessage}</Feedback>}
       <form noValidate onSubmit={submit} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         {fields.filter((_, index) => registration || index < 2).map((field) => (
           <div key={field.name}>
@@ -105,6 +106,7 @@ export function AuthForm({ registration = false }: { registration?: boolean }) {
           {pending ? 'Enviando…' : title}
         </button>
       </form>
+      {!registration && <Link className="block text-blue-700 underline" href="/forgot-password">¿Olvidaste tu contraseña?</Link>}
       <Link className="text-blue-700 underline" href={registration ? '/login' : '/register'}>
         {registration ? 'Ir a iniciar sesión' : 'Crear una cuenta'}
       </Link>

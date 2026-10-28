@@ -109,6 +109,24 @@ export async function register(input: Registration, signal?: AbortSignal): Promi
   }
 }
 
+async function passwordRequest(path: string, input: object, signal?: AbortSignal, protectedRequest = false): Promise<void> {
+  signal?.throwIfAborted();
+  await request<unknown>(path, {
+    method: 'POST', signal,
+    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
+  }, protectedRequest);
+  signal?.throwIfAborted();
+}
+export function forgotPassword(input: { email: string }, signal?: AbortSignal): Promise<void> {
+  return passwordRequest('/auth/forgot-password', input, signal);
+}
+export function resetPassword(input: { token: string; new_password: string }, signal?: AbortSignal): Promise<void> {
+  return passwordRequest('/auth/reset-password', input, signal);
+}
+export function changePassword(input: { current_password: string; new_password: string }, signal?: AbortSignal): Promise<void> {
+  return passwordRequest('/auth/change-password', input, signal, true);
+}
+
 export function getCurrentUser(signal?: AbortSignal): Promise<CurrentUser> {
   return request<CurrentUser>('/auth/me', { method: 'GET', signal }, true);
 }
