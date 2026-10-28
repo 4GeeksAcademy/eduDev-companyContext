@@ -10,6 +10,14 @@
 - Incident Analyzer: implementation and full milestone compliance audit passed. Shared/CLI tests pass 7/7, permanent API tests pass 8/8, dependency installation and `pip check` passed in the ignored `.venv`, and live Uvicorn/curl integration passed on port 8001 because an unrelated service owns port 8000. Manual narrow/wide browser and console verification passed, and both required screenshots are ready for the PR.
 - Supplier Directory: backend models, TinyDB persistence, 15-record idempotent seed, CRUD/filter endpoints, startup bootstrap, focused tests, and the static backoffice directory page are implemented. Supplier rows become labelled cards on narrow screens while desktop tables remain unchanged. API tests pass 16/16, shared incident tests pass 7/7, backoffice JavaScript syntax checks pass, TypeScript typecheck/build pass, isolated `uv run seed` reports 15 then 0 inserts, live API bootstrap/filter smoke passes, and `git diff --check` passes. Manual desktop/mobile verification passed with a clean browser console, and all three required milestone screenshots were captured and verified.
 
+## Inventory Backoffice — In Progress
+
+- Work is tracked in `odd/tasks/inventory-backoffice.md` on `feat/inventory-backoffice`.
+- T1 adds an authenticated SQLModel inventory API with Supabase/PostgreSQL runtime configuration, per-warehouse computed stock, attributed entries/exits, and an explicit rerunnable demo seed. Existing TinyDB authentication is reused; no SQL user table or stored stock total is introduced.
+- Writer verification: `uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py -q` passed 13 tests; adding `services/api/tests/test_auth_operational.py` passed 18 tests and 76 subtests. `uv lock`, `uv sync`, and `git diff --check` passed. Initial RED was missing dependencies/modules during collection, not a behavior assertion failure.
+- Independent focused execution also passed 18 tests and 76 subtests, plus `git diff --check`; its documentation-only worktree warning was traced to the parent's progress update. Native review `review-62c05b8c8695291b` approved and acknowledgement burned, with two informational advisories and no correction. User confirmed local work-unit commits without push or PR; T1 is ready for its local commit. Next.js integration and the four inventory views remain pending.
+- Real Supabase configuration, schema/seed execution, and PostgreSQL concurrency verification remain pending. Isolated SQLite tests and PostgreSQL lock-clause compilation do not establish live database behavior. No remote database calls performed.
+
 ## Authentication API — AUTH-01
 
 - Public `POST /users` registration now persists separate TinyDB identity/profile

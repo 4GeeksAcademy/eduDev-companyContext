@@ -11,6 +11,8 @@ dependencies = [
   "python-jose[cryptography]>=3.5.0",
   "python-multipart>=0.0.20,<1",
   "tinydb>=4.8,<5",
+  "sqlmodel>=0.0.38,<0.1",
+  "psycopg2-binary>=2.9.11,<3",
   "uvicorn>=0.35,<1",
 ]
 
