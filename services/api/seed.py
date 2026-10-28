@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from services.api.database import insert_supplier, supplier_names
+import sys
+
+from services.api.database import StorageError, insert_supplier, supplier_names
 from services.api.models import SupplierCreate
 from services.api.routes.suppliers import stored_payload
 
@@ -40,10 +42,15 @@ def seed_suppliers() -> int:
     return inserted
 
 
-def main() -> None:
-    inserted = seed_suppliers()
+def main() -> int:
+    try:
+        inserted = seed_suppliers()
+    except StorageError:
+        print("Error: supplier seed storage unavailable; check TRACKFLOW_SUPPLIERS_DB_PATH, JSON integrity and write permissions before retrying.", file=sys.stderr)
+        return 1
     print(f"Supplier seed complete: inserted {inserted} supplier(s).")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

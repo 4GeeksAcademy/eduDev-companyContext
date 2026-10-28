@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Feedback } from "@/components/Feedback";
 import { STAGE_LABELS, STAGE_OPTIONS, STATUS_LABELS, STATUS_OPTIONS } from "@/lib/labels";
-import { createNote, deleteNote, getCandidate, getNotes, patchCandidate } from "@/services/api";
+import { candidateErrorMessage, createNote, deleteNote, getCandidate, getNotes, isCandidateAbort, patchCandidate } from "@/services/api";
 import type { Candidate, CandidateStage, CandidateStatus, Note } from "@/types/api";
 
 export function CandidateDetail({ id }: { id: string }) {
@@ -19,63 +19,79 @@ export function CandidateDetail({ id }: { id: string }) {
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
   const [noteFeedback, setNoteFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
+  const [retry, setRetry] = useState(0);
+  const requests = useRef<AbortController | null>(null);
+
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
+    requests.current = controller;
 
     async function load() {
       setLoading(true);
       setLoadError("");
       try {
         const [candidateResponse, notesResponse] = await Promise.all([
-          getCandidate(id),
-          getNotes(id),
+          getCandidate(id, controller.signal),
+          getNotes(id, controller.signal),
         ]);
-        if (!active) return;
+        if (controller.signal.aborted) return;
+        setUpdating(null);
+        setNoteLoading(false);
+        setDeletingNoteId(null);
+        setUpdateFeedback(null);
+        setNoteFeedback(null);
+        setNoteContent("");
         setCandidate(candidateResponse);
         setNotes(notesResponse.data);
       } catch (caughtError) {
-        if (active) setLoadError(caughtError instanceof Error ? caughtError.message : "No se pudo cargar la candidatura.");
+        if (!controller.signal.aborted && !isCandidateAbort(caughtError)) setLoadError(candidateErrorMessage(caughtError, "No se pudo cargar la candidatura."));
       } finally {
-        if (active) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
 
     void load();
-    return () => { active = false; };
-  }, [id]);
+    return () => { controller.abort(); requests.current = null; };
+  }, [id, retry]);
 
   async function changeStatus(status: CandidateStatus) {
-    if (!candidate || status === candidate.status) return;
+    const signal = requests.current?.signal;
+    if (!signal || signal.aborted || !candidate || updating || noteLoading || deletingNoteId !== null || status === candidate.status) return;
     setUpdating("status");
     setUpdateFeedback(null);
     try {
-      const updated = await patchCandidate(id, { status });
+      const updated = await patchCandidate(id, { status }, signal);
+      if (signal.aborted) return;
       setCandidate(updated);
       setUpdateFeedback({ type: "success", message: "El estado se actualizó correctamente." });
     } catch (caughtError) {
-      setUpdateFeedback({ type: "error", message: caughtError instanceof Error ? caughtError.message : "No se pudo actualizar el estado." });
+      if (!signal.aborted && !isCandidateAbort(caughtError)) setUpdateFeedback({ type: "error", message: candidateErrorMessage(caughtError, "No se pudo actualizar el estado.") });
     } finally {
-      setUpdating(null);
+      if (!signal.aborted) setUpdating(null);
     }
   }
 
   async function changeStage(stage: CandidateStage) {
-    if (!candidate || stage === candidate.stage) return;
+    const signal = requests.current?.signal;
+    if (!signal || signal.aborted || !candidate || updating || noteLoading || deletingNoteId !== null || stage === candidate.stage) return;
     setUpdating("stage");
     setUpdateFeedback(null);
     try {
-      const updated = await patchCandidate(id, { stage });
+      const updated = await patchCandidate(id, { stage }, signal);
+      if (signal.aborted) return;
       setCandidate(updated);
       setUpdateFeedback({ type: "success", message: "La etapa se actualizó correctamente." });
     } catch (caughtError) {
-      setUpdateFeedback({ type: "error", message: caughtError instanceof Error ? caughtError.message : "No se pudo actualizar la etapa." });
+      if (!signal.aborted && !isCandidateAbort(caughtError)) setUpdateFeedback({ type: "error", message: candidateErrorMessage(caughtError, "No se pudo actualizar la etapa.") });
     } finally {
-      setUpdating(null);
+      if (!signal.aborted) setUpdating(null);
     }
   }
 
   async function addNote(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const signal = requests.current?.signal;
+    if (!signal || signal.aborted || noteLoading || deletingNoteId !== null || updating) return;
     const content = noteContent.trim();
     setNoteFeedback(null);
     if (!content) {
@@ -85,35 +101,39 @@ export function CandidateDetail({ id }: { id: string }) {
 
     setNoteLoading(true);
     try {
-      const note = await createNote(id, content);
+      const note = await createNote(id, content, signal);
+      if (signal.aborted) return;
       setNotes((current) => [...current, note]);
       setCandidate((current) => current ? { ...current, notes_count: current.notes_count + 1 } : current);
       setNoteContent("");
       setNoteFeedback({ type: "success", message: "La nota se añadió correctamente." });
     } catch (caughtError) {
-      setNoteFeedback({ type: "error", message: caughtError instanceof Error ? caughtError.message : "No se pudo añadir la nota." });
+      if (!signal.aborted && !isCandidateAbort(caughtError)) setNoteFeedback({ type: "error", message: candidateErrorMessage(caughtError, "No se pudo añadir la nota.") });
     } finally {
-      setNoteLoading(false);
+      if (!signal.aborted) setNoteLoading(false);
     }
   }
 
   async function removeNote(noteId: string) {
+    const signal = requests.current?.signal;
+    if (!signal || signal.aborted || deletingNoteId !== null || noteLoading || updating) return;
     setDeletingNoteId(noteId);
     setNoteFeedback(null);
     try {
-      await deleteNote(id, noteId);
+      await deleteNote(id, noteId, signal);
+      if (signal.aborted) return;
       setNotes((current) => current.filter((note) => note.id !== noteId));
       setCandidate((current) => current ? { ...current, notes_count: Math.max(0, current.notes_count - 1) } : current);
       setNoteFeedback({ type: "success", message: "La nota se eliminó correctamente." });
     } catch (caughtError) {
-      setNoteFeedback({ type: "error", message: caughtError instanceof Error ? caughtError.message : "No se pudo eliminar la nota." });
+      if (!signal.aborted && !isCandidateAbort(caughtError)) setNoteFeedback({ type: "error", message: candidateErrorMessage(caughtError, "No se pudo eliminar la nota.") });
     } finally {
-      setDeletingNoteId(null);
+      if (!signal.aborted) setDeletingNoteId(null);
     }
   }
 
   if (loading) return <Feedback type="loading">Cargando candidatura y notas…</Feedback>;
-  if (loadError) return <Feedback type="error">{loadError}</Feedback>;
+  if (loadError) return <Feedback type="error">{loadError} <button type="button" className="button-secondary" onClick={() => setRetry(value => value + 1)}>Reintentar</button></Feedback>;
   if (!candidate) return <Feedback type="error">No se encontró la candidatura.</Feedback>;
 
   return (
@@ -137,7 +157,7 @@ export function CandidateDetail({ id }: { id: string }) {
             <Detail label="Identificador" value={String(candidate.id)} />
             <Detail label="Nombre completo" value={candidate.full_name} />
             <Detail label="Correo electrónico" value={candidate.email} />
-            <Detail label="Teléfono" value={candidate.phone} />
+            <Detail label="Teléfono" value={candidate.phone || "No informado"} />
             <Detail label="Puesto" value={candidate.position} />
             <Detail label="Años de experiencia" value={String(candidate.experience_years)} />
             <Detail label="Estado" value={STATUS_LABELS[candidate.status]} />
@@ -154,13 +174,13 @@ export function CandidateDetail({ id }: { id: string }) {
           <h2 className="text-lg font-bold text-slate-950">Actualizar proceso</h2>
           <label className="block text-sm font-medium text-slate-700">
             Estado
-            <select className="field mt-1" value={candidate.status} disabled={updating !== null} onChange={(event) => void changeStatus(event.target.value as CandidateStatus)}>
+            <select className="field mt-1" value={candidate.status} disabled={updating !== null || noteLoading || deletingNoteId !== null} onChange={(event) => void changeStatus(event.target.value as CandidateStatus)}>
               {STATUS_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
           <label className="block text-sm font-medium text-slate-700">
             Etapa
-            <select className="field mt-1" value={candidate.stage} disabled={updating !== null} onChange={(event) => void changeStage(event.target.value as CandidateStage)}>
+            <select className="field mt-1" value={candidate.stage} disabled={updating !== null || noteLoading || deletingNoteId !== null} onChange={(event) => void changeStage(event.target.value as CandidateStage)}>
               {STAGE_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
@@ -175,7 +195,7 @@ export function CandidateDetail({ id }: { id: string }) {
             Nueva nota
             <textarea className="field mt-1 min-h-28 resize-y" value={noteContent} onChange={(event) => setNoteContent(event.target.value)} placeholder="Escribe una nota sobre la candidatura" />
           </label>
-          <button className="button-primary" type="submit" disabled={noteLoading}>{noteLoading ? "Añadiendo…" : "Añadir nota"}</button>
+          <button className="button-primary" type="submit" disabled={noteLoading || deletingNoteId !== null || updating !== null}>{noteLoading ? "Añadiendo…" : "Añadir nota"}</button>
         </form>
         <div className="mt-4 space-y-3">
           {noteLoading && <Feedback type="loading">Guardando nota…</Feedback>}
@@ -186,7 +206,7 @@ export function CandidateDetail({ id }: { id: string }) {
           {notes.map((note) => (
             <div key={note.id} className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4 sm:flex-row sm:items-start sm:justify-between">
               <div><p className="whitespace-pre-wrap text-sm text-slate-800">{note.content}</p><p className="mt-2 text-xs text-slate-500">{formatDate(note.created_at)}</p></div>
-              <button type="button" className="text-left text-sm font-semibold text-red-700 hover:text-red-900 disabled:opacity-60" disabled={deletingNoteId !== null} onClick={() => void removeNote(note.id)}>
+              <button type="button" className="text-left text-sm font-semibold text-red-700 hover:text-red-900 disabled:opacity-60" disabled={deletingNoteId !== null || noteLoading || updating !== null} onClick={() => void removeNote(note.id)}>
                 {deletingNoteId === note.id ? "Eliminando…" : "Eliminar"}
               </button>
             </div>

@@ -131,9 +131,14 @@ class RegistrationTest(unittest.TestCase):
             return original(storage, data)
 
         with patch.object(JSONStorage, "write", fail_once):
-            with self.assertRaises(OSError):
-                self.register()
-        if self.path.exists() and self.path.read_text():
-            disk = json.loads(self.path.read_text())
-            self.assertFalse(disk.get("users"))
-            self.assertFalse(disk.get("profiles"))
+            response = self.register()
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json(), {"detail": "Service unavailable."})
+        self.assertNotIn("simulated write failure", response.text)
+        self.assertNotIn("StorageError", response.text)
+        self.assertNotIn("Traceback", response.text)
+        self.assertNotIn(str(self.path), response.text)
+        content = self.path.read_text() if self.path.exists() else ""
+        disk = json.loads(content) if content else {}
+        self.assertFalse(disk.get("users"))
+        self.assertFalse(disk.get("profiles"))

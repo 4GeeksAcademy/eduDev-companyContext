@@ -31,6 +31,10 @@ not load that file automatically.
 The application also runs the same idempotent seed bootstrap at startup, so a new
 default database never produces an empty demonstration. `uv run seed` remains the
 explicit setup command: a clean run reports 15 inserts and later runs report 0.
+Expected supplier storage failures exit nonzero with fixed stderr guidance to check
+`TRACKFLOW_SUPPLIERS_DB_PATH`, JSON integrity and write permissions; no traceback
+or internal path is printed. Partial inserts may remain; rerunning is idempotent.
+Isolated CLI checks: `uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_seed_cli.py' -v`.
 
 Supplier data defaults to `services/api/data/suppliers.json`. Override it for
 isolated tests or local experiments without changing code:
@@ -389,6 +393,37 @@ regressions, using temporary databases and synthetic credentials without mail:
 ```bash
 uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_change.py' -v
 ```
+
+## Safe failure responses
+
+Unhandled request failures return **500** JSON `{"detail":"Service unavailable."}`.
+The central fallback does not replace existing HTTP, authentication or validation
+handlers; the incident manager retains its own `Incident service unavailable.`
+contract. No exception contents are added to responses or routine application logs.
+Startup failures and failures after a streaming response starts cannot be replaced
+by this request boundary.
+
+Supplier and identity database contexts catch only file I/O (`OSError`) and JSON
+decoding failures, translating them to a sanitized storage error. Domain exceptions
+and programmer errors are not reclassified as invalid input. Recovery keeps its
+account-neutral response; reset storage corruption is a service failure, not an
+invalid reset token. Locks, write order and TinyDB's non-transactional limits are
+unchanged; a failed write does not guarantee rollback.
+
+Analyzer reads always attempt upload closure, including on read failure. Expected
+upload I/O failures return safe 500; invalid CSV retains 400/422 and uses fixed
+messages rather than echoing submitted column names. Failed analysis preserves
+the last successful aggregate.
+
+Focused real-app tests isolate all three stores before lifespan startup:
+
+```bash
+uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_error_responses.py' -v
+```
+
+These tests use `raise_server_exceptions=False` to inspect Starlette's last-resort
+JSON response: its server-error middleware otherwise re-raises after sending the
+response. Production exception propagation is not disabled.
 
 ## Tests
 

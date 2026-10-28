@@ -12,7 +12,7 @@ import {
   STATUS_LABELS,
   STATUS_OPTIONS,
 } from "@/lib/labels";
-import { getCandidates } from "@/services/api";
+import { candidateErrorMessage, getCandidates, isCandidateAbort } from "@/services/api";
 import type { Candidate } from "@/types/api";
 
 export function CandidateList() {
@@ -25,6 +25,7 @@ export function CandidateList() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -42,11 +43,11 @@ export function CandidateList() {
           },
           controller.signal,
         );
-        setCandidates(response.data);
+        if (!controller.signal.aborted) setCandidates(response.data);
       } catch (caughtError) {
-        if (caughtError instanceof DOMException && caughtError.name === "AbortError") return;
+        if (controller.signal.aborted || isCandidateAbort(caughtError)) return;
         setCandidates([]);
-        setError(caughtError instanceof Error ? caughtError.message : "No se pudieron cargar las candidaturas.");
+        setError(candidateErrorMessage(caughtError, "No se pudieron cargar las candidaturas."));
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -54,7 +55,7 @@ export function CandidateList() {
 
     void loadCandidates();
     return () => controller.abort();
-  }, [searchParam, stageParam, statusParam]);
+  }, [searchParam, stageParam, statusParam, retry]);
 
   function updateQuery(name: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -122,7 +123,7 @@ export function CandidateList() {
       </div>
 
       {loading && <Feedback type="loading">Cargando candidaturas…</Feedback>}
-      {error && <Feedback type="error">{error}</Feedback>}
+      {error && <Feedback type="error">{error} <button type="button" className="button-secondary" onClick={() => setRetry(value => value + 1)}>Reintentar</button></Feedback>}
       {!loading && !error && <Feedback type="success">{candidates.length} candidatura(s) cargada(s).</Feedback>}
 
       {!loading && !error && candidates.length === 0 && (

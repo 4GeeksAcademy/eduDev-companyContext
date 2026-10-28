@@ -3,34 +3,35 @@
 import { useEffect, useState } from "react";
 import { CandidateForm } from "@/components/CandidateForm";
 import { Feedback } from "@/components/Feedback";
-import { getCandidate } from "@/services/api";
+import { candidateErrorMessage, getCandidate, isCandidateAbort } from "@/services/api";
 import type { Candidate } from "@/types/api";
 
 export function EditCandidatePage({ id }: { id: string }) {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
     async function load() {
       setLoading(true);
       setError("");
       try {
-        const response = await getCandidate(id);
-        if (active) setCandidate(response);
+        const response = await getCandidate(id, controller.signal);
+        if (!controller.signal.aborted) setCandidate(response);
       } catch (caughtError) {
-        if (active) setError(caughtError instanceof Error ? caughtError.message : "No se pudo cargar la candidatura.");
+        if (!controller.signal.aborted && !isCandidateAbort(caughtError)) setError(candidateErrorMessage(caughtError, "No se pudo cargar la candidatura."));
       } finally {
-        if (active) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
     void load();
-    return () => { active = false; };
-  }, [id]);
+    return () => controller.abort();
+  }, [id, retry]);
 
   if (loading) return <Feedback type="loading">Cargando candidatura…</Feedback>;
-  if (error) return <Feedback type="error">{error}</Feedback>;
+  if (error) return <Feedback type="error">{error} <button type="button" className="button-secondary" onClick={() => setRetry(value => value + 1)}>Reintentar</button></Feedback>;
   if (!candidate) return <Feedback type="error">No se encontró la candidatura.</Feedback>;
-  return <CandidateForm candidate={candidate} />;
+  return <CandidateForm key={candidate.id} candidate={candidate} />;
 }

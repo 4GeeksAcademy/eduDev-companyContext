@@ -100,6 +100,45 @@ authenticated change with wrong/correct current passwords. Mailbox results are
 human-reported; expiry is covered by API tests, not a live 30-minute wait.
 See `memory-bank/progress.md` for details and remaining delivery steps.
 
+## Candidate error recovery (EH-02)
+
+Candidate requests use fixed Spanish messages for connection, invalid-response and
+HTTP failures; upstream error bodies are never displayed. Required candidate/note
+shapes fail explicitly instead of becoming empty results. Optional links retain
+“No informado”; invalid dates retain “No disponible”. List, detail (including notes)
+and edit loads offer **Reintentar** with the current filters/ID. Failed mutations
+retain the previous data or draft for deliberate retry; no automatic write retry
+is performed. Loading/saving cleanup uses `finally`. Departure aborts requests and
+ignores late completions, but cannot undo a write already accepted by the server.
+Candidate requests remain separate from identity and never attach identity JWTs.
+
+Focused service check from the repository root:
+`node --test uis/talent-pipeline-tracker/tests/api.test.mjs`.
+Node mocked-fetch tests cover safe failures, required shapes, pagination, success,
+204 deletion and cancellation; they do not exercise JSX interactions.
+
+### Completed fixture browser checks and remaining limits
+
+Independent Chromium checks passed seven fixture groups: list/detail/edit recovery,
+network/HTTP/malformed-response failures, empty/multi-page lists, stale filters,
+failed mutations with draft retention, retry and departure cancellation. Layouts
+passed at 390/1440 for list/detail/edit/create. Final focused detail checks passed
+keyboard retry and real-route candidate-ID navigation during delayed loads, PATCH
+and note POST/DELETE, preserving new-ID data/drafts/feedback. Navigation remounts
+private content through pathname-keyed SessionGuard; no same-component proof is claimed.
+
+All auth/candidate responses were intercepted synthetic fixtures; no real external
+API passthrough or writes occurred. Zero uncaught browser exceptions; deliberate
+HTTP/network failures produced expected console resource errors. Independent Node
+32/32 and final lint/build passed. Earlier lint failure is corrected, not outstanding.
+
+Delayed body parsing is covered by Node, not browser interaction. Live upstream
+schema compatibility and exhaustive accessibility remain unverified. Existing
+edit-during-create draft clearing is unchanged/out of scope. No permanent E2E suite
+or new screenshots were added. See the [audit handoff](../../docs/error-handling-audit.md)
+for evidence, warnings and safe API check commands. Native review was approved and exactly acknowledged.
+The static `verify-trackflow-ui` skill targets website/backoffice, not this Next.js tracker.
+
 ## Verification
 
 ```bash

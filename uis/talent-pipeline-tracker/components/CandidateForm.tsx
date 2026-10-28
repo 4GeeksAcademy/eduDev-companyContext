@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Feedback } from "@/components/Feedback";
-import { createCandidate, updateCandidate } from "@/services/api";
+import { candidateErrorMessage, createCandidate, isCandidateAbort, updateCandidate } from "@/services/api";
 import type { Candidate, RecordCreate, RecordUpdate } from "@/types/api";
 
 interface CandidateFormProps {
@@ -40,6 +40,12 @@ export function CandidateForm({ candidate }: CandidateFormProps) {
   const [success, setSuccess] = useState("");
   const [requestError, setRequestError] = useState("");
   const [savedCandidate, setSavedCandidate] = useState<Candidate | null>(null);
+
+  const submission = useRef<AbortController | null>(null);
+  useEffect(() => () => {
+    submission.current?.abort();
+    submission.current = null;
+  }, []);
 
   function setField(name: keyof FormValues, value: string) {
     setValues((current) => ({ ...current, [name]: value }));
@@ -94,24 +100,29 @@ export function CandidateForm({ candidate }: CandidateFormProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submission.current) return;
     const validationErrors = validate();
     setErrors(validationErrors);
     setSuccess("");
     setRequestError("");
     if (validationErrors.length > 0) return;
 
+    const controller = new AbortController();
+    submission.current = controller;
     setSaving(true);
     try {
       const saved = editing
-        ? await updateCandidate(candidate.id, toUpdatePayload())
-        : await createCandidate(toCreatePayload());
+        ? await updateCandidate(candidate.id, toUpdatePayload(), controller.signal)
+        : await createCandidate(toCreatePayload(), controller.signal);
+      if (controller.signal.aborted) return;
       setSavedCandidate(saved);
       setSuccess(editing ? "Los datos se actualizaron correctamente." : "La candidatura se creó correctamente.");
       if (!editing) setValues(initialValues());
     } catch (caughtError) {
-      setRequestError(caughtError instanceof Error ? caughtError.message : "No se pudieron guardar los datos.");
+      if (!controller.signal.aborted && !isCandidateAbort(caughtError)) setRequestError(candidateErrorMessage(caughtError, "No se pudieron guardar los datos."));
     } finally {
-      setSaving(false);
+      if (submission.current === controller) submission.current = null;
+      if (!controller.signal.aborted) setSaving(false);
     }
   }
 

@@ -5,6 +5,7 @@ TinyDB is not a multi-process database or a crash-safe transactional store.
 """
 
 import os
+from json import JSONDecodeError
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,6 +14,7 @@ from uuid import uuid4
 
 from tinydb import Query, TinyDB
 
+from services.api.database import StorageError
 from services.api.auth import hash_password, verify_password
 from services.api.auth_models import (
     Profile, ProfileUpdate, RegistrationInput, Role, User, UserUpdate, normalize_email,
@@ -33,9 +35,14 @@ def open_database():
     configured = os.getenv(DB_PATH_ENV)
     path = Path(configured).expanduser() if configured else DEFAULT_DB_PATH
     with _lock:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with TinyDB(path) as database:
-            yield database
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with TinyDB(path) as database:
+                yield database
+        except (OSError, JSONDecodeError):
+            # Do not let JSONDecodeError (a ValueError) become invalid credentials
+            # or an invalid reset token in route-level domain error handling.
+            raise StorageError("Storage unavailable") from None
 
 
 def create_user(data: RegistrationInput) -> User:
