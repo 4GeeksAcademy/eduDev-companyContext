@@ -952,5 +952,9 @@ PY
   five high/one critical pre-existing findings remain disclosed, not resolved by
   review approval. See the [testing guide](../TESTING.md) and
   [task history](../odd/tasks/bullet-proof-tests.md).
-- R5 documentation commit/review is pending, with no R5 hash or final delivery
-  claimed. Parent owns task status, Git and native review. No push, PR or merge.
+- R5 documentation commit `b9e2106` received low-risk native approval under
+  `review-9156c08b69d4f7a9`; acknowledgement remains blocked by the integration's
+  committed-range selector handling. No authority consumption is claimed.
+- The user explicitly authorized the pending tracking commit, push and one PR to
+  `main`, accepting deferred R5 acknowledgement and no further review attempts.
+  Implementation and functional acceptance remain complete; merge is not authorized.

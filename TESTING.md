@@ -5,8 +5,9 @@ Tracker Jest 85 tests, with no failures or skips. AUTH-088 is mandatory; API-042
 and FE-019 are authorized extras. Code/test slices R1–R4 are locally committed,
 native-review approved and exactly acknowledged. The initial whole-candidate
 preflight budget stop is historical, resolved for code/tests through those slices.
-Final documentation slice R5 awaits commit/review; no final delivery, push, PR or
-merge is claimed.
+Documentation slice R5 is committed and natively approved; its acknowledgement is
+blocked by the review integration and explicitly deferred by the user. Publication
+is authorized without further review attempts; no merge is authorized.
 
 ## Quickstart
 
@@ -232,5 +233,6 @@ exploitability assessment or risk acceptance is claimed; remediation is separate
 
 Full chronological evidence belongs in the [task](odd/tasks/bullet-proof-tests.md)
 and [progress](memory-bank/progress.md), not an expanding run log here.
-R1–R4 approval does not resolve the disclosed dependency findings. R5 documentation
-review and commit/publication decisions remain parent/user-owned.
+Review approval does not resolve the disclosed dependency findings. The user
+explicitly deferred R5 acknowledgement and authorized commit, push and PR; merge
+remains a separate decision.
