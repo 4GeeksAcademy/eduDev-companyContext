@@ -1,6 +1,6 @@
 # Error-handling audit — reviewer handoff
 
-Functionally accepted on `feature/error-handling-audit`; native review `review-2fbaca21d66564d9` was approved and exactly acknowledged. Commits, push and a single PR are authorized; merge is not authorized.
+Functionally accepted on `feature/error-handling-audit`; native review `review-2fbaca21d66564d9` was approved and exactly acknowledged. Published in [PR #23](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/23) against `main`; merge remains a separate decision.
 This assignment improves existing failure boundaries, with no new features, technologies or dependencies.
 
 - [Assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-error-handling/README.md)

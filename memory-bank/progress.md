@@ -765,7 +765,9 @@ PY
 - Only passive status documentation changed afterward; reviewed application/test
   code is unchanged. Functional acceptance remains API97/shared15/tracker32 plus
   lint/build and Chromium checks documented in the [guide](../docs/error-handling-audit.md).
-- User authorized commits, push and one PR. Work-unit commits are tracker
-  `99cd2d3`, API `a68a1d5` and scripts `986c81b`; tests/local docs stay with each.
-  Publication is in progress; merge remains unauthorized. Pre-existing unrelated
-  task notes stay excluded. Only passive delivery records changed after review.
+- Authorized work-unit commits: tracker `99cd2d3`, API `a68a1d5`, scripts
+  `986c81b`, consolidated audit docs `b990ebe`; tests/local docs stay with behavior.
+- Branch pushed and [PR #23](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/23)
+  opened against `main`. GitHub reported OPEN/non-draft, CLEAN and no status checks;
+  no CI success or merge is claimed. Pre-existing unrelated task notes stay excluded.
+  Only passive delivery records changed after review; source/test code is unchanged.

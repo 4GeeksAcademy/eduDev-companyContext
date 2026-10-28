@@ -120,7 +120,7 @@ Final checks: targeted cross-layer regressions, tracker lint/build if affected, 
 - Target: `4GeeksAcademy/eduDev-companyContext`, branch `feature/error-handling-audit`, verified base `main`; fetched base matches initial HEAD `1e3b1393f4ecfe9a5619a2f3b1a507ac30464529`. No existing PR for this head at preflight.
 - [x] D1 — Precommit scope verified: intended24 paths,18/18 application/test blobs match approved tree;11 local Markdown links and diff check PASS. Full suites/browser not repeated. Passive authorization/review wording reconciled. Tool-owned temporary diff output is outside repository and excluded from delivery.
 - [x] D2 — Create tracker/API/scripts work-unit commits with their tests and local documentation; prepare this consolidated audit record. Exact paths only; the two unrelated task notes remain excluded.
-- [ ] D3 — Push feature branch and open one PR against main; inspect returned URL/checks. **In progress.** No merge.
+- [x] D3 — Branch pushed and [PR #23](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/23) opened against main. Verified OPEN/non-draft, expected head/base and CLEAN merge state; GitHub reports no status checks, so no CI success is claimed. No merge.
 
 ### Work-unit commit evidence
 
@@ -129,5 +129,8 @@ Final checks: targeted cross-layer regressions, tracker lint/build if affected, 
 | EH-02 | `99cd2d3c673da5945bcaac52e32a2a61be05a18c` | Safe tracker errors/recovery, focused tests and runbook |
 | EH-03 | `a68a1d58f13cbc767dc0f64f0b7fcae877d633e7` | Safe API boundaries, response/registration tests and API contract |
 | EH-04 | `986c81b431c9aed84a70da10a19eb7fd09d6676b` | Safe CLI diagnostics, seed/analyzer tests and CLI docs |
+| EH-01 / EH-05 | `b990ebed9c9b8ca318fbcb41d4e3b7182f4ce713` | Audit coverage, verification and consolidated documentation |
 
 Consolidated audit/progress documentation is delivered alongside this record. Each staged diff passed `git diff --cached --check`; no unrelated files were staged. No merge is authorized.
+
+Publication bookkeeping is passive documentation only; the approved source/test blobs remain unchanged. Next step: human PR review and instructor submission; merge requires separate authorization.
