@@ -42,7 +42,23 @@ python3 scripts/analyze.py scripts/incidents-trackflow.csv
 python3 -m unittest shared.test_incident_analysis -v
 ```
 
-Operations/authentication API setup and checks (uv only):
+Current test runners and coverage are documented in the root
+[testing guide](../TESTING.md), including temporary-store/config safety and the
+protective final-verification environment. Tests need no real secrets or `.env`.
+
+```bash
+# Repository root: new business units + legacy API regressions
+uv sync
+uv run pytest
+uv run pytest --cov
+# Then from uis/talent-pipeline-tracker/: auth/form/helper Jest units
+npm ci
+npm exec -- jest --coverage
+# Equivalent: npm run test:jest:coverage
+```
+
+Operations/authentication API setup and legacy checks (uv only; the local-server
+configuration below is not required for automated tests):
 Create an ignored local `.env` with a private `JWT_SECRET_KEY`; optionally set
 `ACCESS_TOKEN_EXPIRE_MINUTES` (default 30). Never commit secrets. See
 `services/api/README.md` for the real-login/manual Swagger flow and permissions.

@@ -141,9 +141,10 @@ The static `verify-trackflow-ui` skill targets website/backoffice, not this Next
 
 ## Verification
 
-See the root [testing guide](../../TESTING.md) for the R1–R4 case plan, focused
-results, safety and limitations. Final integrated coverage/history will be recorded
-after all review slices. From this Tracker directory:
+See the root [testing guide](../../TESTING.md) for the final case plan, coverage,
+safety and limitations. Independent Jest verification passed 85 tests across five
+suites; legacy Node 32/32 evidence is reused, not an additional Jest count.
+From this Tracker directory:
 
 ```bash
 npm ci

@@ -771,3 +771,186 @@ PY
   opened against `main`. GitHub reported OPEN/non-draft, CLEAN and no status checks;
   no CI success or merge is claimed. Pre-existing unrelated task notes stay excluded.
   Only passive delivery records changed after review; source/test code is unchanged.
+
+## Bullet-proof Tests — BP-01 setup
+
+- Wrote root `TESTING.md` before fixtures: planned cases/reasons for all 12 identity
+  endpoints, five incident-manager and six supplier operations, token/password/
+  recovery logic, mandatory TypeScript auth utilities and separate FE-019 helpers.
+  New test results and coverage remain pending; no new bugs claimed.
+- Added root uv dev dependencies pytest/pytest-cov and locked resolution. Pytest
+  discovers new `tests/` and existing API suites with importlib mode. Branch-aware
+  coverage sources include actual auth/recovery, incident and supplier modules;
+  per-group statement gates remain unmeasured (70% auth, 60% each extra group).
+- Added new-unit-only autouse temporary users/suppliers/incidents paths, synthetic
+  JWT/recovery config, mocked outbound email HTTP, and real bcrypt/TinyDB user
+  factory. Environment restoration uses pytest monkeypatch; no startup/seed/server
+  or application source changes. Legacy suites remain untouched.
+- Observed setup checks: `uv add --dev pytest pytest-cov` passed;
+  `uv sync --locked` passed; `uv run pytest --version` reported pytest 9.2.0;
+  `uv run python -m py_compile tests/conftest.py` passed. Compilation does not
+  verify runtime fixture behavior. Config/docs/shared setup has no meaningful
+  behavioral RED; no tests, full suite, build, browser or coverage run in BP-01.
+
+## Bullet-proof Tests — BP-02 auth business units
+
+- Added dedicated direct-call login/me/forgot/reset/change-password modules plus
+  token/password and email adapter tests. Real TinyDB, bcrypt, JWT, models and
+  active-identity dependency run against temporary stores and synthetic config;
+  only outbound email transport and the access-expiry clock are replaced.
+- First run GREEN: `uv run pytest tests/test_auth_login.py tests/test_auth_me.py tests/test_auth_forgot_password.py tests/test_auth_reset_password.py tests/test_auth_change_password.py tests/test_auth_tokens.py tests/test_email_delivery.py -q`
+  passed 103/103 in 19.63s, zero failures/skips, one AnyIO
+  `PytestRemovedIn10Warning` for the deprecated `CallSpec2` alias. No manufactured
+  RED or product bug. TESTING.md records actual cases/test names and boundaries.
+- Covers endpoint happy/edge/failure, state/nonmutation, exact reset reuse,
+  supersession despite failed delivery, concurrent single-winner reset/change,
+  preserved sessions, current stored roles and token purpose/claim rejection.
+  No HTTP/server/seed/real mail, legacy/full suite or coverage run. BP-03–06 and
+  integrated gates remain pending. No source/dependency/task/Git lifecycle edits.
+
+## Bullet-proof Tests — BP-03 identity CRUD/profile units
+
+- Added seven dedicated direct-call registration/user CRUD/profile modules, reusing
+  isolated fixtures, real TinyDB/bcrypt/JWT and explicit resolved identities.
+  Tests check linked lifecycle, permissions before existence disclosure, duplicate
+  nonmutation, privilege rejection, PUT recovery invalidation and null/omission.
+- First and only run: `uv run pytest tests/test_users_register.py tests/test_users_list.py tests/test_users_get.py tests/test_users_update.py tests/test_users_delete.py tests/test_profiles_get.py tests/test_profiles_update.py -q`
+  passed 72/72 in 18.88s, zero failures/skips, one existing AnyIO
+  `PytestRemovedIn10Warning`. No artificial RED, proven bug or source/fixture edits.
+- TESTING.md records actual evidence and limitations; no BP-02/legacy/full suite,
+  coverage, HTTP client, startup, real data or network checks ran. Independent
+  final verification and coverage remain pending BP-06; parent owns task/mirror.
+
+## Bullet-proof Tests — BP-04 incident/supplier units
+
+- Added eleven dedicated endpoint modules and two small appended factories. Real
+  models/routes/TinyDB run only during tests against isolated temporary stores.
+  Checks include every incident lifecycle pair, exact AND-filter membership,
+  zero-filled summaries, literal text/identity preservation, supplier validation,
+  rate-versus-status timestamp semantics, absence and corrupt-storage failures.
+- First and only run: `uv run pytest tests/test_incidents_*.py tests/test_suppliers_*.py -q`
+  passed 105/105 in 0.38s, zero failures/skips; one existing AnyIO
+  `PytestRemovedIn10Warning`. Existing behavior passed immediately; no artificial
+  RED, corrections, proven bug or source/config/dependency changes.
+- TESTING.md records scope and limits. Direct calls do not establish router auth,
+  HTTP validation or safe serialization; no auth-matrix duplication, existing/full
+  suites, coverage, startup, real seed or network ran. Independent verification
+  and coverage remain BP-06; frontend BP-05 and task/mirror/review stay parent-owned.
+
+## Bullet-proof Tests — BP-05 partial
+
+- Installed only Jest/@types/jest/ts-jest as Tracker dev dependencies; added node
+  Jest config with transform-only TS overrides, real-module coverage selection and
+  additive scripts. Native Node/backend suites and all application source untouched.
+- First focused command (Tracker cwd): `npm exec -- jest --runInBand --runTestsByPath __tests__/frontend-helpers.test.ts`
+  exited 1: 3 passed, 7 failed, 0 skipped. Six failures prove both label predicates
+  accept inherited toString/constructor/__proto__ keys. Exact regressions retained;
+  stopped before mandatory auth Jest tests per source-authorization boundary.
+- Proposed, not applied: own-property checks in lib/labels.ts. Seventh failure is
+  native DOMException AbortError classification under Jest; possible Error realm
+  mismatch, not yet a proven product defect. TESTING.md records evidence and gaps.
+- npm reported glob deprecation, 12 audit vulnerabilities and two uncovered install
+  scripts; no remediation, peer bypass, build/full suite/browser/coverage performed.
+  Parent owns source authorization, task/mirror and review disposition.
+
+## Bullet-proof Tests — BP-05A focused correction
+
+- Reconfirmed Jest RED: 3 passed/7 failed/0 skipped (0.252s): six inherited-key
+  label failures plus one confirmed native DOMException/Jest Error realm artifact.
+- Only production changes are two own-property predicate replacements in labels.ts,
+  preserving null guards and inherited-key regressions. services/api.ts is untouched.
+- Jest-only setup aligns the explicit built-in Error constructor family to host
+  Node before imports. Expanded tests preserve real DOMException assertions and
+  fetch/body rejection identity, Error/subclass negatives and inheritance semantics.
+- Same focused Jest command passed 13/13 (0.33s), no warnings; native
+  `node --test tests/api.test.mjs` passed 7/7 (103.58ms), existing module-type warning
+  only. No full suite/build/coverage; mandatory BP-05 auth suites remain pending.
+- TESTING.md distinguishes the production bug from environment correction and
+  records parent diagnostic lock/audit evidence: 243 dev-only additions, no existing
+  metadata/version changes/removals; baseline6 versus candidate12 findings, adding
+  six low deepmerge findings; critical Next advisory predates this work. No package
+  changes/remediation/script execution; risk disposition remains parent-owned.
+
+## Bullet-proof Tests — BP-05 mandatory auth/form completion
+
+- Added four Jest modules for real auth service and auth/profile/password form
+  exports. Covers session/SSR, login/register partial outcomes, public/bearer
+  boundaries, current/stale401, session-preserving errors, exact DOMException
+  cancellation identity, UTF-8 limits, trimming/null and duplicate URL parameters.
+- Exact command (Tracker cwd): `npm exec -- jest --runInBand --runTestsByPath __tests__/auth-service.test.ts __tests__/auth-form.test.ts __tests__/profile-form.test.ts __tests__/password-form.test.ts`.
+  First run67 passed/5 failed/0 skipped: test evaluated signal.reason before async
+  body abort. Corrected with pre-created real DOMException identity; final run72/72,
+  zero failures/skips, 0.387s, no warnings. No product fix or artificial RED.
+- Fresh local fetch/storage/location fakes restored after each service test.
+  Existing source/dependencies/Jest setup/helper regressions and all legacy suites
+  preserved. TESTING.md records focused evidence; no full suite/coverage/build/
+  browser/install/audit ran. Independent integrated checks and coverage remain
+  BP-06; parent owns task/mirror/review and dependency-risk disposition.
+
+## Bullet-proof Tests — BP-06A integration corrections
+
+- Reproduced five legacy auth_helpers collection errors, four TS2743 mock generic
+  errors and the setup CommonJS lint error before edits. Added only the legacy
+  pytest helper path, compatible typed fetch mocks and a documented line-local
+  setup lint exception; no product/dependency/coverage-denominator changes.
+- Focused GREEN: isolated collection38 (no execution), project tsc exit0, focused
+  ESLint exit0, auth-service/helper Jest68/68 across2 suites (0.367s); diff-check
+  passed. Existing AnyIO and Starlette/httpx warnings remain; uv implicitly rebuilt
+  the editable local project after pyproject changed. Detailed command history is
+  in odd/tasks/bullet-proof-tests.md; TESTING.md summarizes the final evidence.
+  No full suites/coverage/build/browser reruns in BP-06A; final BP-06 integration,
+  task/mirror and native review remain parent-owned.
+
+## Bullet-proof Tests — BP-06 final functional acceptance
+
+- Independent verifier `mvs36fl2-e-n632` passed root pytest **377/377** (280 new +
+  97 legacy, 81.73s), integrated coverage **377/377** (81.84s), Tracker Jest
+  **85/85 across five suites** (0.76s), TypeScript, lint and diff-check. No failures
+  or skips. This supersedes historical BP-06 collection/type/lint blockers above.
+- Full implementation statement gates pass: integrated auth **98.87%**, incidents
+  **99.46%**, suppliers **100%**; reused unit-only values **97.28% / 90.22% / 97.97%**.
+  Legacy Tracker Node **32/32** is reused, not rerun after type/config/comment-only
+  corrections; no application/assertion changes separate that evidence.
+- Python commands retained temporary users/suppliers/incidents, synthetic config,
+  disabled env-file loading and temporary coverage outputs; no real data/services
+  or secrets. Owned artifacts cleaned. AnyIO and Starlette/httpx warnings remain;
+  reused Node module-type warning remains, no Jest warnings.
+- [TESTING.md](../TESTING.md) consolidates the pre-test case rationale, ordinary
+  commands versus verification wrapper, coverage denominators, AI-discovered label
+  fix, harness corrections, dependency findings and honest boundaries. READMEs and
+  technical context link it; root coverage files are ignored (Tracker already was).
+- Functional acceptance is complete. Native review START stopped at preflight with
+  `lens_context_budget_exceeded`: complete candidate evidence exceeds its budget;
+  no review authority or lineage was created and the same candidate cannot succeed
+  on retry. Smaller review candidates need a user decision before local commits.
+  No review approval, staging, commit, push, mode change or risk acceptance is claimed.
+  Dependency remediation is separate; full history remains above and in the task.
+
+## Bullet-proof Tests — R1–R4 review closure / R5 documentation
+
+- User authorized local commits only. The initial whole-candidate native preflight
+  budget stop above remains historical; four smaller code/test slices now have
+  native approval and exact acknowledgement, superseding that pending decision:
+
+  | Slice | Local commit | Native review | Informational advisory IDs |
+  | --- | --- | --- | --- |
+  | R1 | `a50cef8b413574c1ef7f74fb73e0bcf56511f171` | `review-671c85dde9867aae` | `R3-001` |
+  | R2 | `7dd69dde79893fae987018d38732fc8e58c6b885` | `review-b1870f9819319d87` | `R3-001`, `R3-002` |
+  | R3 | `809500c1b566339d5355dd2f2d36c83e431d0a2f` | `review-c392f7c0fd370909` | None |
+  | R4 | `b20649e1d9c9be446143c0a8b1bc03b8eed2472d` | `review-8725dab0a1e5a56f` | None |
+
+- No advisory required correction. Fresh slice checks passed Python 103/72/105
+  (19.37s/18.14s/0.34s respectively) and Jest 85 (0.322s), plus R4 type/lint
+  checks. These repeat existing cases, not new tests added to the final totals.
+  Full lock evidence was retained without formatting or dependency changes to fit
+  review. Code/test/config bytes have not changed since final functional acceptance;
+  BP-06A corrections preceded that acceptance. Intermediate guide snapshots changed.
+- R5 restores the final guide and README coverage pointers; technical context
+  already has the final commands. Final functional evidence and reused labels above
+  remain unchanged; no suites, coverage, build, browser, install or audit rerun here.
+  AnyIO, Starlette/httpx and Node warnings, six new low dev-package findings and
+  five high/one critical pre-existing findings remain disclosed, not resolved by
+  review approval. See the [testing guide](../TESTING.md) and
+  [task history](../odd/tasks/bullet-proof-tests.md).
+- R5 documentation commit/review is pending, with no R5 hash or final delivery
+  claimed. Parent owns task status, Git and native review. No push, PR or merge.
