@@ -6,7 +6,8 @@ import os
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from services.api.app.routers.incidents import router as incidents_router
@@ -17,6 +18,7 @@ from services.api.routes.auth import router as auth_router
 from services.api.routes.profiles import router as profiles_router
 from services.api.seed import seed_suppliers
 from services.api.auth_dependencies import get_current_user
+from services.api.database import StorageError
 
 
 DEFAULT_ORIGINS = (
@@ -38,6 +40,15 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="TrackFlow Operations API", version="1.1.0", lifespan=lifespan)
+
+
+@app.exception_handler(StorageError)
+@app.exception_handler(Exception)
+async def service_failure(_: Request, __: Exception) -> JSONResponse:
+    """Last resort only; HTTP/domain handlers retain their existing contracts."""
+    return JSONResponse(status_code=500, content={"detail": "Service unavailable."})
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_allowed_origins(),

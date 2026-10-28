@@ -33,16 +33,26 @@ async def analyze_incidents(
     if file.content_type not in {"text/csv", "application/csv", "application/vnd.ms-excel"}:
         raise HTTPException(status_code=415, detail="The uploaded file must use a CSV content type.")
 
-    raw_content = await file.read()
-    await file.close()
+    try:
+        try:
+            raw_content = await file.read()
+        finally:
+            await file.close()
+    except OSError:
+        raise HTTPException(500, "Service unavailable.") from None
     try:
         summary = analyze_csv_bytes(raw_content)
-    except EmptyCSVError as error:
-        raise HTTPException(status_code=400, detail=str(error)) from error
+    except EmptyCSVError:
+        raise HTTPException(status_code=400, detail="The CSV file is empty or has no records.") from None
     except UnicodeDecodeError as error:
         raise HTTPException(status_code=422, detail="The CSV file must use valid UTF-8 encoding.") from error
-    except (InvalidHeaderError, MalformedCSVError) as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
+    except InvalidHeaderError:
+        raise HTTPException(
+            status_code=422,
+            detail="Invalid CSV header: missing columns, unexpected columns or duplicate columns.",
+        ) from None
+    except MalformedCSVError:
+        raise HTTPException(status_code=422, detail="The CSV file is malformed.") from None
 
     global _last_result
     _last_result = summary

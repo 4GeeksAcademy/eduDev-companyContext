@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from json import JSONDecodeError
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -15,6 +16,10 @@ DEFAULT_DB_PATH = Path(__file__).resolve().parent / "data" / "suppliers.json"
 DB_PATH_ENV = "TRACKFLOW_SUPPLIERS_DB_PATH"
 
 
+class StorageError(OSError):
+    """Expected file/JSON storage failure, without sensitive diagnostics."""
+
+
 def database_path() -> Path:
     """Return the configured supplier database path."""
     configured = os.getenv(DB_PATH_ENV)
@@ -24,13 +29,16 @@ def database_path() -> Path:
 @contextmanager
 def open_database() -> Iterator[TinyDB]:
     """Open the supplier database and always close its file handle."""
-    path = database_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    database = TinyDB(path)
     try:
-        yield database
-    finally:
-        database.close()
+        path = database_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        database = TinyDB(path)
+        try:
+            yield database
+        finally:
+            database.close()
+    except (OSError, JSONDecodeError):
+        raise StorageError("Storage unavailable") from None
 
 
 def insert_supplier(data: dict[str, Any]) -> int:
