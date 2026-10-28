@@ -23,7 +23,7 @@ Implement 4Geeks AUTH-088 plus authorized API-042 and FE-019 extras in the exist
 - [x] BP-05A (done): Resolve confirmed inherited-key label validation bug; diagnose AbortError test realm mismatch and npm lockfile churn before further implementation. Authorized production surface: uis/talent-pipeline-tracker/lib/labels.ts only; preserve failing regression. Route: bounded read-only verifier for diagnosis, then delegated writer after approval.
 - [x] BP-06A (done): Correct new test/tooling integration blockers: legacy helper pytest import path, four Jest mock type signatures, narrow CommonJS setup lint compatibility. Preserve legacy/source behavior, no dependency changes. Route: delegated writer (multiple test/config files), focused reproduction and GREEN before final rerun.
 - [x] BP-06R (done; R5 acknowledgement explicitly deferred): Resolve native lens context budget by proposing smaller reviewable local commit candidates; local commit authorization is now granted; plan coherent slices before Git writes. Do not retry same candidate, truncate evidence, drop tests, disable RDD, or claim review approval. Large lockfile evidence may need separate scope evaluation. Route: delegated read-only planning then bounded authorized delivery.
-- [ ] BP-06 (in_progress, publication authorized): Run required final suites/coverage, verify >=70% authentication and >=60% each extra group, update TESTING.md/local READMEs/progress, inspect native review under user-owned RDD and report outcomes. Route: delegated verifier plus bounded documentation writer (full checks/independent verification).
+- [x] BP-06 (done; published, R5 acknowledgement explicitly deferred): Run required final suites/coverage, verify >=70% authentication and >=60% each extra group, update TESTING.md/local READMEs/progress, inspect native review under user-owned RDD and report outcomes. Route: delegated verifier plus bounded documentation writer (full checks/independent verification).
 
 ## Acceptance and verification
 - Root commands: uv run pytest and uv run pytest --cov; explicit coverage sources must include actual authentication business implementation, not only thin wrappers. Document exact denominator and unit-only coverage separately from legacy HTTP suites when needed.
@@ -80,5 +80,12 @@ Read-only runtime diagnosis mvs5upz8-n-cflt found no supported facade-only conti
 
 User selected commit + push + PR in the explicit confirmation prompt, accepting deferred documentary acknowledgement and no more review attempts. Destination verified: GitHub 4GeeksAcademy/eduDev-companyContext, base main, head feature/bullet-proof-tests. Prior PR23 is merged; fresh origin/main comparison contains only the five feature commits. Delivery strategy: one PR with coherent reviewed commits, as explicitly requested; generated locks account for6074additions/2283deletions of the current8620+/2288- total. No target PR template/contribution policy or type:* labels found; do not impose unrelated repository-specific labels/issue gates. No merge, no source/test changes, no repeated suites for passive status updates.
 
+## Published delivery
+
+- Tracking/publication-decision commit:12a2a803cb257b1840bf994c9f782f1d87797cb9. Initial push succeeded to origin/feature/bullet-proof-tests.
+- PR24: https://github.com/4GeeksAcademy/eduDev-companyContext/pull/24, head feature/bullet-proof-tests, base main. GitHub confirmed OPEN/non-draft/CLEAN and an empty statusCheckRollup; no remote CI success is claimed.
+- Commit, push and PR were explicitly authorized. R1-R4 native acknowledgements stand; R5 remains approved/unconsumed with user-authorized deferral. No further native review attempted, no mode or authority mutation, no merge.
+- All final functional evidence is unchanged; only passive documentation followed the verified code. Only unrelated pre-existing auth-frontend.md and centralized-incident-manager.md notes remain untracked and excluded.
+
 ## Next step
-Commit pending tracking/status documentation, push the authorized branch, create one PR against main, then record its actual URL/check status. R1-R4 approvals and functional evidence stand. R5 approved authority remains unconsumed and explicitly deferred; do not attempt another lifecycle operation.
+Human review of PR24 and instructor submission as appropriate. Merge requires separate authorization. R5 acknowledgement and dependency remediation remain disclosed follow-ups, not additional implementation work for this delivered assignment.
