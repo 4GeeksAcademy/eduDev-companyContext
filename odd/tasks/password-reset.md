@@ -82,7 +82,12 @@ Detailed observed checks are recorded in `memory-bank/progress.md`.
   do not remove tests or compress code to meet that heuristic.
 - Final audit passed: 56/56 API tests,25/25 frontend tests,lint/build and whitespace checks. No publication-sensitive values identified in the selected diff; both environment files are ignored/untracked.
 - Planned chain: `feature/password-reset` (draft tracker) -> `feat/password-reset-01-api` (572 changed lines) -> `feat/password-reset-02-ui` (300 changed lines) -> `docs/password-reset-03-evidence` (progress and commit evidence).
-- Commit identities and PR links: pending publication.
+- Local work-unit commits:
+  - Tracker baseline: `55870a02e905d9ef45cfbe999d9cdfbf77294f62`.
+  - PR-1/PR-2/PR-5 API behavior, tests and docs: `1b0cbd32fa936d9cc1007c9804f1672c4656ace0`.
+  - PR-3 Tracker behavior, tests and docs: `48a986f687d4d190b9b8fc78e5aaea13ec7c25f8`.
+  - PR-4 verification evidence: the documentation work unit on `docs/password-reset-03-evidence`.
+- PR links and publication confirmation: pending.
 - Merge, service shutdown and temporary test-data deletion are not authorized.
 
 ## Pre-push checklist
@@ -94,6 +99,7 @@ Detailed observed checks are recorded in `memory-bank/progress.md`.
   does not need reverting just to push; deployment needs its own valid URLs.
 
 ## Next step
-Finish the independent delivery audit, record coherent work-unit commits and open
+The independent delivery/privacy audit passed. Local tracker/API/UI commits are
+recorded above. Commit the evidence unit, then push the four branches and open
 one draft tracker plus its dependent child PRs. Do not merge. Test-service ownership
 and cleanup details remain in private session memory rather than published files.
