@@ -46,6 +46,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     try:
         claims = jwt.decode(token, secret, algorithms=["HS256"],
                             options={"require_sub": True, "require_exp": True})
+        if claims.get("purpose") not in (None, "access"):
+            raise ValueError
         subject = claims["sub"]
         if not isinstance(subject, str):
             raise ValueError
