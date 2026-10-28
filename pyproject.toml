@@ -23,3 +23,37 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["services"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "services/api/tests"]
+addopts = "--import-mode=importlib"
+pythonpath = [".", "services/api/tests"]
+
+[tool.coverage.run]
+branch = true
+source = [
+  "services.api.auth",
+  "services.api.auth_database",
+  "services.api.auth_dependencies",
+  "services.api.auth_models",
+  "services.api.email_delivery",
+  "services.api.routes.auth",
+  "services.api.routes.users",
+  "services.api.routes.profiles",
+  "services.api.app.routers.incident_management",
+  "services.api.incident_models",
+  "services.api.incident_store",
+  "packages.shared.incidents",
+  "services.api.database",
+  "services.api.models",
+  "services.api.routes.suppliers",
+]
+
+[tool.coverage.report]
+show_missing = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
