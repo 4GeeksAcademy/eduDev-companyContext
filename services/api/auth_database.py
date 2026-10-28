@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from tinydb import Query, TinyDB
 
-from services.api.auth import hash_password
+from services.api.auth import hash_password, verify_password
 from services.api.auth_models import (
     Profile, ProfileUpdate, RegistrationInput, Role, User, UserUpdate, normalize_email,
 )
@@ -101,11 +101,50 @@ def update_user(user_id: str, data: UserUpdate) -> User | None:
                 raise DuplicateEmailError("Email already registered")
             if "password" in data.model_fields_set:
                 changes["hashed_password"] = hash_password(data.password.get_secret_value())
+                changes["password_reset_id"] = None
             user = User.model_validate({**record, **changes})
             users[key] = user.model_dump(mode="json")
             database.storage.write(records)
             return user
         return None
+
+
+def change_password(user_id: str, current_password: str, new_password: str) -> bool:
+    """Verify the latest hash and replace credentials under the same process lock."""
+    with open_database() as database:
+        table = database.table("users")
+        record = table.get(Query().id == user_id)
+        if (record is None or not record["is_active"]
+                or not verify_password(current_password, record["hashed_password"])):
+            return False
+        hashed = hash_password(new_password)
+        table.update({"hashed_password": hashed, "password_reset_id": None},
+                     doc_ids=[record.doc_id])
+        return True
+
+
+def set_password_reset(user_id: str, reset_id: str) -> bool:
+    with open_database() as database:
+        table = database.table("users")
+        record = table.get(Query().id == user_id)
+        if record is None or not record["is_active"]:
+            return False
+        table.update({"password_reset_id": reset_id}, doc_ids=[record.doc_id])
+        return True
+
+
+def consume_password_reset(user_id: str, reset_id: str, password: str) -> bool:
+    """Compare, hash and update password + unused state in one locked write."""
+    with open_database() as database:
+        table = database.table("users")
+        record = table.get(Query().id == user_id)
+        if (record is None or not record["is_active"]
+                or record.get("password_reset_id") != reset_id):
+            return False
+        hashed = hash_password(password)
+        table.update({"hashed_password": hashed, "password_reset_id": None},
+                     doc_ids=[record.doc_id])
+        return True
 
 
 def delete_user(user_id: str) -> bool:

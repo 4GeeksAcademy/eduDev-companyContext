@@ -193,14 +193,102 @@ HTTP routes filter through `UserResponse`.
    A malformed or expired bearer token must also return **401** (automated fixtures
    cover these cases).
 
-The developer reports passing the manual flow from a PC via Tailscale at
-`http://100.75.110.66:8000/docs`: registration **201** (`user`, active, safe
+The developer reports passing the manual flow from a PC via the private test
+network and API `/docs`: registration **201** (`user`, active, safe
 response), login **200** with bearer token, Swagger **Authorize** success,
 `/auth/me` **200** with correct email/role/profile and no credentials, and
 `/suppliers` **200** with a supplier list; unauthenticated `/suppliers` returned
 **401**. These are human-reported results, not agent-browser observations.
 The additional incident walkthrough steps above are retained as instructions,
 not claimed as manually exercised.
+
+## Password recovery (PR-1)
+
+Public `POST /auth/forgot-password` accepts JSON `{ "email": "person@example.test" }`.
+Registered and unknown accounts receive the same **200** message; provider/config
+failures also receive that message. No token is returned. Invalid input returns
+credential-free **422**. Delivery is a bounded (10-second timeout) HTTPS call to
+Resend, not a log/console substitute. Do not log request bodies, reset URLs,
+provider errors, email addresses or credentials; keep proxy/access logs from
+capturing reset URL query strings.
+
+The Resend adapter identifies itself honestly as `User-Agent: TrackFlow/1.0`.
+A prior controlled, credential-free HEAD comparison returned 403 with default
+urllib identification versus 200 with this application header. That supports a
+compatibility correction, not proof of authenticated POST acceptance or email
+receipt. After API reload, the user separately confirmed real receipt and the
+reset/login/reuse/change flow; these are human-reported acceptance results.
+
+Configure these **server-only** environment variables in the ignored local `.env`
+and load it explicitly with `uv run --env-file .env ...`:
+
+| Variable | Purpose |
+| --- | --- |
+| `JWT_SECRET_KEY` | Existing private signing secret; no fallback |
+| `RESEND_API_KEY` | Private Resend API key; never expose in browser bundles |
+| `RESEND_FROM_EMAIL` | Resend-approved sender address (optionally display name) |
+| `FRONTEND_PUBLIC_URL` | Trusted frontend base URL, e.g. `http://localhost:3000`; HTTPS in deployment |
+| `PASSWORD_RESET_EXPIRE_MINUTES` | Optional finite duration, 15–60 minutes; default 30 |
+
+Without a verified sender domain, Resend testing is restricted to the Resend
+account owner's recipient address. The user confirmed the live-email flow on an
+isolated test account; browser interactions were also checked with mocked API
+responses. The link points to the Tracker's `/reset-password?token=...` page.
+See `memory-bank/progress.md` for evidence boundaries. Do not commit `.env` or keys.
+
+Public `POST /auth/reset-password` accepts JSON `{ "token": "<link token>",
+"new_password": "<new private password>" }`. It applies the existing 1–72 UTF-8
+byte password policy. Signature, expiry, reset purpose, active existing identity
+and matching unused persistent reset ID are required. Invalid/expired/reused
+links return **400**, invalid input **422**, success **200**. Password hashing and
+reset-state consumption use one user-record update under the existing RLock;
+new issuance supersedes earlier links (even if subsequent delivery fails).
+Session tokens cannot reset passwords; reset tokens cannot authenticate sessions.
+Existing session tokens are not revoked by password recovery.
+
+Run **one worker**: the RLock prevents concurrent consumption only within one
+process. TinyDB is neither multi-process coordinated nor crash-transactional.
+See the [Tracker README](../../uis/talent-pipeline-tracker/README.md) for the UI
+verification checklist. Delivery failures are intentionally invisible to callers;
+operators must validate configuration
+privately before enabling recovery. Generic bodies do not promise equal timing.
+
+Focused tests mock outbound HTTP and use temporary identity storage, synthetic
+secrets and explicitly expired signed tokens; no network or actual email:
+
+```bash
+uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_recovery.py' -v
+```
+
+## Authenticated password change (PR-2)
+
+`POST /auth/change-password` requires an active bearer identity and JSON:
+
+```json
+{"current_password": "<current private password>", "new_password": "<new private password>"}
+```
+
+Success returns **200** with `{"message": "Password changed successfully."}`.
+An incorrect current password returns **400**; absent/invalid authentication or a
+reset token used as bearer credentials returns **401**. Invalid input returns
+credential-free **422**. New passwords use the existing 1–72 UTF-8 byte policy;
+unknown fields are rejected. Failed validation/verification does not change the
+password or pending recovery state.
+
+Verification reads the latest stored hash under the identity RLock, then hashes
+and writes the new password plus cleared `password_reset_id` in one update.
+Successful password updates through existing `PUT /users/{id}` also clear pending
+recovery links; non-password updates preserve them. Existing access JWTs remain
+valid until their normal expiry (subject to existing active-identity checks).
+There is no new session/revocation infrastructure. The single-worker TinyDB
+limitations above still apply; no email configuration is needed for this route.
+
+Focused tests include concurrent changes, stale recovery links and existing PUT
+regressions, using temporary databases and synthetic credentials without mail:
+
+```bash
+uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_auth_password_change.py' -v
+```
 
 ## Tests
 
