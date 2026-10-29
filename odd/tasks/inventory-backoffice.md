@@ -28,7 +28,7 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - [x] T4a (done): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check. Commit: `9ce703a0a9c2987d395b9b3bb209550959fdb409`.
 - [x] T4 (done): Local and live Supabase/API/browser acceptance complete, development demo initialized, final setup/evidence documented and independently verified. Commit: `21d0bf882b604fb65741a14f1efac664b9622428`.
 
-- [ ] T5 (in_progress): Publish the verified feature branch and open one PR to `main`, as explicitly authorized by the user. Keep unrelated local task notes excluded; do not merge.
+- [x] T5 (done): Published `feat/inventory-backoffice` and opened [PR #25](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/25) to `main`. Publication plan commit: `b7a86388d96ee083ec557544037792471946759a`. Unrelated local task notes excluded; no merge.
 
 ## Acceptance and focused checks
 ### T1
@@ -158,5 +158,10 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - Verified destination: `4GeeksAcademy/eduDev-companyContext`, default/base `main`, head `feat/inventory-backoffice`. No existing PR for this branch at preflight; no repository PR template or issue/type-label gate found. Standard `enhancement` label is available.
 - Preflight review load:45files,2925additions+56deletions;1239generatedlocklines. Keep work-unit commits for review; no code shrinking or repeat functional checks.
 
+## Publication evidence
+- Bounded pre-push whitespace/scope checks passed; `.env` ignored and untracked. No current private configuration values found in the implementation commit diffs; unrelated local task notes excluded.
+- Normal push succeeded; branch tracks `origin/feat/inventory-backoffice`. PR #25 created and verified OPEN, not draft, with `enhancement` label and base `main`. Remote/local head matched at creation.
+- GitHub reported merge state CLEAN and no check runs (`statusCheckRollup: []`), not a claim of CI success. No merge or campus action performed.
+
 ## Next step
-Run bounded publication hygiene, commit this delivery record, push the existing branch without force and create one PR to main. Verify the returned PR identity and report actual CI state; no merge or campus action.
+Human review/merge and student-platform submission remain. No further automatic source/database work or test repetition is required. PR: https://github.com/4GeeksAcademy/eduDev-companyContext/pull/25
