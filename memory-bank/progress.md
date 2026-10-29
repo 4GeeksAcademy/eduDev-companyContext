@@ -981,3 +981,24 @@ PY
 - Python377/Jest85/typecheck/lint evidence stands; only passive status documentation
   changed afterward. Dependency findings remain disclosed. Unrelated task notes
   are excluded. Next: human PR review and instructor submission; merge is separate.
+
+## Backend Seed Quantities — T1 correction
+
+- Fresh inventory seeds now give the repeated SKU receipts of 20 and 10 units;
+  six SKUs, seven entries, three exits and all stable v1 seed keys are unchanged.
+  Existing rows remain untouched on rerun; no Supabase access or seed CLI ran.
+- Regression added before the source change: `uv run pytest tests/test_inventory_seed.py -q`
+  observed RED (one failure: repeated quantities were only `{20}`), then GREEN
+  (1/1 passed). It checks distinct positive repeated quantities, exact counts,
+  nonnegative net stock, attribution and preservation of entry IDs/quantities/dates.
+- Final `uv run pytest tests/test_inventory_seed.py tests/test_inventory_api.py -q`
+  passed 13/13. Tests used in-memory SQLite and temporary TinyDB paths; uv sync,
+  env-file loading and network resolution were disabled through environment flags.
+  Existing AnyIO CallSpec2 and Starlette/httpx deprecation warnings remain non-failing.
+- The implementation writer changed no dependencies, real data, task documents or
+  unrelated files. Independent verification repeated the scoped command: 13 passed;
+  native review approved the correction. Parent task tracking records delivery.
+- A subsequent authorized read-only Supabase aggregate query confirmed one
+  SKU/warehouse group with distinct positive receipt quantities; totals remained
+  6 SKUs, 8 entries and 4 exits. Read-only mode, SSL, rollback and close were confirmed.
+  No remote data changes were needed. Prior broader live evidence above is historical.
