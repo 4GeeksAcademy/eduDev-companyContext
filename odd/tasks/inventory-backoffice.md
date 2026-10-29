@@ -25,8 +25,8 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - [x] T1 (done): Implement the minimal authenticated SQLModel inventory API, isolated tests, explicit demo seed command and setup documentation. Commit: `02b7d776823c518eacd16496076734c3599a8615`.
 - [x] T2 (done): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication. Commit: `6dc75f6467b71052c91613717da22d213fcd85f4`.
 - [x] T3 (done): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms. Commit: `ea2a091ddc2b4ec775a96612b2e95e5976672b79`.
-- [ ] T4a (in_progress): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check.
-- [ ] T4 (pending): Resume remaining scoped API/UI integration, real Supabase verification when configured, and record delivery/setup evidence. Blocked by T4a and missing DATABASE_URL.
+- [x] T4a (done): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check. Commit: `9ce703a0a9c2987d395b9b3bb209550959fdb409`.
+- [ ] T4 (in_progress): Local API/UI integration and evidence complete; real Supabase verification remains blocked by missing DATABASE_URL.
 
 ## Acceptance and focused checks
 ### T1
@@ -123,7 +123,7 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - Real login/logout, safe return/apiPort, cross-tab removal, fresh login, hidden delayed validation and real invalid-token401 clear/redirect passed. Explicit auth500 injection retained valid token and Retry reached real API. Products/receipt/outbound loading/empty/nonJSON500/retry, detail500 disable/retry, delayed-departure cancellation, receipt400/500 input retention and history loading/empty/error/retry passed. Core write successes/real overstock400 were reused from the prior run, not repeated.
 - Zero unexpected console/page errors; nine deliberately injected/resource400/401/500 messages separated. Exactly one setup movement remained; intercepted error submissions did not persist. Expired-token-specific and optional outbound500 were not exercised; real invalid-token401 was.
 - Whitespace passed, pre/post source scope unchanged. Owned servers stopped and ports3001/3300/18000 closed; test stores removed. Logs/screenshots retained under `/tmp/inventory-t4a-l8xgkm3r/`. Local acceptance uses combined prior core-flow evidence, writer8layout matrix and this independent follow-up; no Supabase claim.
-- T4a correction and verification docs are ready for the authorized local commit. The original mobile FAIL is resolved; no current source blocker found. Non-failing Node/dependency deprecation and Next workspace-root warnings remain documented.
+- T4a correction and verification docs committed as `9ce703a0a9c2987d395b9b3bb209550959fdb409` (`fix(inventory): contain mobile tables and document verified flows`). The original mobile FAIL is resolved; no current source blocker found. Non-failing Node/dependency deprecation and Next workspace-root warnings remain documented.
 
 ## Next step
-Commit corrected UI and verification evidence locally, then wait for the intended TrackFlow DATABASE_URL in ignored root .env. T4 stays incomplete until authorized live connectivity/schema/seed and appropriate PostgreSQL checks are observed. Do not repeat passing local suites or publish without user authorization.
+Wait for the intended TrackFlow DATABASE_URL in ignored root .env. All implementation units and local verification evidence are committed; no push or PR. T4 stays incomplete until authorized live connectivity/schema/seed and appropriate PostgreSQL checks are observed. Do not repeat passing local suites or publish without user authorization.
