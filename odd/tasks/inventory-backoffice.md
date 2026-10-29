@@ -22,8 +22,8 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - Insufficient stock returns HTTP 400: `Insufficient stock for SKU '{sku}'. Available: {available}, requested: {quantity}.`
 
 ## Tasks
-- [ ] T1 (in_progress): Implement the minimal authenticated SQLModel inventory API, isolated tests, explicit demo seed command and setup documentation.
-- [ ] T2 (pending): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication.
+- [x] T1 (done): Implement the minimal authenticated SQLModel inventory API, isolated tests, explicit demo seed command and setup documentation. Commit: `02b7d776823c518eacd16496076734c3599a8615`.
+- [ ] T2 (in_progress): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication.
 - [ ] T3 (pending): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms.
 - [ ] T4 (pending): Run final scoped API/UI integration, real Supabase verification when configured, and record delivery/setup evidence.
 
@@ -64,7 +64,27 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - Parent spot-check read the inventory router and confirmed computed stock/warehouse scoping and the outbound transaction/row-lock shape; `git diff --check` passed. ASSESS returned unassessable (untracked declaration required), requiring an independent verifier; task `mvsjn0ou-6-t14z` is running the same focused combined command once and inspecting the bounded diff.
 - Independent verifier ran `uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py services/api/tests/test_auth_operational.py -q` once: 18 passed, 76 subtests passed in 8.69s; `git diff --check` passed. No concrete API violation found. Its initial unchanged-worktree warning was caused by the parent's concurrent authorized progress documentation update, not source changes; read-only reconciliation returned PASS and cleared the warning without repeating tests.
 - Native review `review-62c05b8c8695291b` approved and exact acknowledgement burned successfully. Two informational advisories only: quantity storage boundary and stock read snapshot; no correction offered. One earlier consent expired with no lineage/mutation, then fresh consent succeeded.
-- Real DATABASE_URL configuration, schema/seed execution and PostgreSQL concurrency checks remain pending; isolated SQLite cannot prove locking. User has now confirmed local work-unit commits, without push or PR. T1 remains in progress until its commit succeeds.
+- Real DATABASE_URL configuration, schema/seed execution and PostgreSQL concurrency checks remain pending; isolated SQLite cannot prove locking. User has now confirmed local work-unit commits, without push or PR. T1 committed successfully as `02b7d776823c518eacd16496076734c3599a8615` (`feat(inventory): add authenticated warehouse stock API`), with tests and setup docs. No push or PR.
+
+### T2 implementation and open blockers
+- Writer implemented minimal Next host, exact legacy static rewrites, inventory route session gate, safe return-path additions, local dependencies, focused tests and README. Products page is explicitly a temporary T2 landing, not the finished T3 view.
+- RED: focused Node command failed 2/12 (inventory return resolved to index.html and host config absent). GREEN and final focused run: `node --test uis/backoffice/tests/auth.test.mjs uis/backoffice/tests/session-guard.test.mjs uis/backoffice/tests/next-host.test.mjs` passed 12/12. `cd uis/backoffice && npx tsc --noEmit` passed; `git diff --check` passed.
+- `npm --prefix uis/backoffice install` completed but reported one critical-rated dependency. Read-only verifier `mvss4psy-9-4jc4` ran `npm --prefix uis/backoffice audit --json`: exit 1, Next 16.3.1 matches 13 advisory ranges. Audit offers Next 16.4.3 as a non-major fix; no dependency changes have been made. This is the minimum verified offered target, not a compatibility guarantee. No passing tests were repeated. Actual exploitability is conditional; lack of explicit image/cache/action usage does not prove framework endpoints unreachable.
+- Owned loopback static server on 3001 and Next dev --webpack on 3300 returned HTTP200 for inventory validation shell, legacy login/index, auth.js and styles.css; writer stopped both. This is not browser-session or full-build verification.
+- Next dev unexpectedly generated untracked `uis/backoffice/AGENTS.md` and `uis/backoffice/CLAUDE.md`. Parent confirmed neither tracked, read both, and found Next-generated instructions plus @AGENTS.md reference. Worker stopped for disposition. User selected option 2, explicitly authorizing removal of these two generated files and disabling regeneration; parent cleanup succeeded after confirming both files were still untracked and matched the inspected generated content. Bounded writer `mvsskjl7-a-isou` is applying Next16.4.3 and agentRules:false with focused regression/audit checks. Verifier confirmed the installed Next generator can recreate deleted files and the installed official guide documents top-level `agentRules: false` to prevent generation. This setting does not delete existing files. User selected removal plus disabling generation to preserve the existing project instructions.
+- T2 ASSESS returned unassessable because intended untracked files were not declared; independent verification is required. T2 remains in progress, not reviewed or committed. Backend and unrelated task notes untouched.
+
+### T2 correction evidence
+- Authorized generated files removed by parent after unchanged/untracked checks; writer set `agentRules: false` and pinned only the new backoffice's Next to `16.4.3`. Tracker/backend untouched.
+- Regression RED: the focused Node command passed 12 and failed 1 because agentRules was undefined. Identical command GREEN: 13/13 passed.
+- `npm --prefix uis/backoffice install --save-exact next@16.4.3` changed 3 packages; `npm --prefix uis/backoffice audit --json` exited 0 with zero vulnerabilities. React/TypeScript declarations unchanged.
+- `cd uis/backoffice && npx tsc --noEmit` and `git diff --check` passed. Owned Next dev startup on 3300 returned HTTP200 for the protected validation shell; AGENTS.md/CLAUDE.md absent before/during/after startup, owned process stopped. No full build or browser-auth verification claimed.
+- Parent spot-check read the session gate and confirmed generated files remain absent; whitespace check passed. ASSESS remains unassessable due intended-untracked declaration, so a separate scoped verifier is required before closing T2.
+
+### T2 acceptance evidence
+- Independent verifier `mvssnlki-b-o8df`: PASS. Focused Node command executed once: 13 passed, no failures/skips; `git diff --check` passed. Initial/final Git scope matched, no source drift. Reviewed exact proxy allowlist, safe login returns, gate lifecycle/SSR short-circuit, pinned versions and absent generated instructions. No blocking regressions.
+- Native review `review-df407c9d8728aa02`: four lenses approved; exact acknowledgement burned successfully. One informational advisory about React gate behavioral coverage, no correction. Browser gate verification remains part of T4; helper tests do not prove React browser behavior.
+- T2 is ready for its authorized local work-unit commit; full build and browser/API integration remain intentionally deferred to T3/T4.
 
 ## Next step
-Commit the verified T1 changes locally, record its identity, and start T2. Keep T2–T4 pending until that boundary; do not repeat the passing focused tests solely for bookkeeping.
+Commit T2 locally under existing authorization, record its identity, then implement T3. Keep T4 real integration pending. Do not repeat backend tests for frontend-only work.
