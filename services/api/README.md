@@ -465,9 +465,12 @@ without URLs or driver details; existing service startup/routes remain available
    ```
 
    The schema must already exist. Run only against the approved development target.
-   Six official briefing SKUs, seven entries (including repeated receipts) and
-   three exits cover LA/ZGZ and dispatch/loss. Stable seed keys skip existing demo
-   movements without replacing quantities, dates or attribution. Existing products
+   A fresh seed creates six official briefing SKUs, seven entries (including
+   receipts of 20 and 10 units for the same SKU) and three exits covering LA/ZGZ
+   and dispatch/loss. This quantity correction applies only to new seed movements;
+   rerunning does not update previously seeded rows, including existing Supabase data.
+   Stable seed keys skip existing demo movements without replacing quantities,
+   dates or attribution. Existing products
    are reused only when their domain fields match; a mismatch or insufficient
    stock aborts the transaction. No data is erased; this is not a reset command.
    Stop other seed processes; concurrent seed execution is not supported.

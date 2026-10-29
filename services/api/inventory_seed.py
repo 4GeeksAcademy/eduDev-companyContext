@@ -39,7 +39,7 @@ def seed_inventory(session: Session, user_uuid: str):
         for index, product in enumerate(products + products[:1]):
             key = f"trackflow-demo-entry-v1-{index}"
             if session.exec(select(StockEntry).where(StockEntry.seed_key == key)).first() is None:
-                data = EntryCreate(sku_id=product.id, quantity=20, reference=key, warehouse=product.warehouse)
+                data = EntryCreate(sku_id=product.id, quantity=10 if index == len(products) else 20, reference=key, warehouse=product.warehouse)
                 session.add(StockEntry(**data.model_dump(), seed_key=key, user_uuid=user.id))
         session.flush()
         for index, product in enumerate(products[:3]):
