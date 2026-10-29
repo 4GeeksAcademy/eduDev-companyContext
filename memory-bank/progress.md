@@ -1,5 +1,39 @@
 # Project Progress
 
+## Monorepo Containerization — T1 website adaptation
+
+- Added a minimal plain-JSX Next App Router website at `/uis/website/`, with
+  Next16.4.3 and React/ReactDOM19.2.8 matching the local backoffice manifest.
+  Existing static HTML, Web Components and CSS remain unchanged; the React page
+  reuses the stylesheet and preserves content, metadata, section anchors and links.
+  Configuration retains the trailing slash and disables generated agent rules.
+- `node --test uis/website/tests/site-smoke.test.mjs`: RED failed on missing
+  website package.json (HTTP explicitly skipped); GREEN with
+  `TRACKFLOW_WEBSITE_URL=http://127.0.0.1:3310/uis/website/` passed2/2, zero skips.
+  Tests cover real Next HTTP200, metadata, semantic landmarks, three service cards,
+  anchor targets, links, served CSS200 and unknown-route404.
+- `npm --prefix uis/website install --no-audit --no-fund` passed (22 packages).
+  Owned dev server used port3310 after an availability check; stopped afterward
+  and port availability reconfirmed. Next reported a non-failing multiple-lockfile
+  workspace-root inference warning. No API, secrets or existing servers used.
+- Independent verification passed both tests without skips and used existing
+  cached Playwright Core/Chromium without installs. At 375px and 1280px, content,
+  responsive cards, anchors, home/contact links, keyboard focus and skip link
+  passed; no overflow, console/page errors or failed resources. Static sources
+  were unchanged. Browser and owned dev server closed; port3310 free afterward.
+  Production build, containers and deployment remain deferred to later tasks.
+  No staging, commits or push; unrelated notes preserved.
+- User explicitly approved `uis/website/.gitignore` containing `.next/`.
+  `git check-ignore -v uis/website/.next/` confirmed that local rule excludes the
+  generated cache; it remains intact, not deleted. Independent website acceptance
+  is complete; production build and Docker integration remain deferred.
+  The non-failing Next workspace-root warning remains. A cached Playwright wrapper
+  import failed; directly importing its existing core resolved tooling startup.
+- Native review `review-ee589c538e3d4f4d` approved the website candidate and its
+  exact acknowledgement completed (authority consumed). Only passive status
+  documentation changed afterward. User authorized the local website commit
+  and continuation to Docker; no push, PR, merge or deployment in this unit.
+
 ## Current State
 
 - Hito 1: root corporate website and B2B form completed.
