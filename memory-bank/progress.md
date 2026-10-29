@@ -1,5 +1,38 @@
 # Project Progress
 
+## Monorepo Containerization — T5b production verification passed
+
+- Added explicit production mode to the existing UI recipe/launcher: cached separate
+  installs include build dependencies; website/backoffice build sequentially inside
+  Docker, then direct Next start leaves retain lifecycle/private legacy handling.
+  Default dev mode, root development Compose and API Dockerfile are unchanged.
+- New image-only production Compose has exactly ui/api, internal API DNS, one
+  non-reload worker, fixed isolated TinyDB paths/new named volume, allowlisted
+  API secrets, required JWT, configurable UI ports and bounded rotating logs.
+  Public proxy1/http://api:8000 is explicit at UI build and runtime.
+- `node --test tests/container-config.test.mjs uis/tests/start.test.mjs`:
+  RED10/17 passed,7 intended missing-production/mode failures; GREEN17/17,
+  final triangulation17/17, zero skips. Final tests use sanitized synthetic env,
+  COMPOSE_DISABLE_ENV_FILE=1 and explicit --env-file /dev/null. Default dev and
+  production TERM/three child-exit paths pass; invalid mode fails before launch.
+- `sh -n uis/start.sh` passed. At writer handoff, no image builds/browser/SSH,
+  real DB/mail, secrets, commits or review performed. README gives local builds,
+  transferred-image startup and an isolated synthetic project/loopback check.
+- Independent focused17/17, one build per amd64 image and isolated production
+  runtime/browser checks passed. Retained tags trackflow-t5b-verify-0552b97-0622-
+  ui:production (720b393714f3) and api:production (af504a8e775c). Internal API200,
+  website/login/config200, same-origin login/auth-me/15suppliers/redirects/signout
+  passed; API recreation retained the volume and user. No host source mutation.
+- Enforced limits UI512MiB/.75CPU,API256MiB/.25CPU: warmed252.3MiB total; separate
+  cgroup peaks sum287.2MiB, not necessarily simultaneous. Zero OOM/restarts. This
+  short local smoke does not establish coexistence with existing VPS workloads.
+  Owned fixtures cleaned,3340/3341 released; evidence/images retained under
+  /tmp/trackflow-t5b-verify-0552b97-0622/. Optional docker top -eo args failed;
+  plain docker top succeeded. Responsive/sustained-load/liveDB checks not performed.
+- T5b stays in progress pending native review and commit. Missing SQL/schema/RLS
+  means expected inventory503, not business acceptance. Known favicon404 retained;
+  no page exceptions, but no clean-console claim. T5 rollout is already authorized.
+
 ## Monorepo Containerization — T5a installation independently verified
 
 - Two authorized read-only SSH checks confirmed Ubuntu22.04/amd64,1CPU,

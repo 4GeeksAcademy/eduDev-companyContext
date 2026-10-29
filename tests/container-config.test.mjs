@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { resolve, join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const settings = {
+  TRACKFLOW_UI_IMAGE: 'trackflow-ui:synthetic', TRACKFLOW_API_IMAGE: 'trackflow-api:synthetic',
   COMPOSE_PROJECT_NAME: 'trackflow-contract', TRACKFLOW_BIND_ADDRESS: '127.0.0.1',
   WEBSITE_HOST_PORT: '3000', BACKOFFICE_HOST_PORT: '3001', API_HOST_PORT: '8000',
   TRACKFLOW_API_PROXY: '1', TRACKFLOW_API_ORIGIN: 'http://api:8000',
@@ -17,23 +17,14 @@ const settings = {
   TRACKFLOW_SUPPLIERS_DB_PATH: '/app/data/suppliers.json',
   TRACKFLOW_INCIDENTS_DB_PATH: '/app/data/incidents.json',
 };
-function config(overrides = {}) {
-  const directory = mkdtempSync(join(tmpdir(), 'trackflow-compose-contract-'));
-  try {
-    const fixture = join(directory, 'fixture.env');
-    writeFileSync(fixture, Object.entries({ ...settings, ...overrides })
-      .map(([key, value]) => `${key}=${value}`).join('\n'));
-    // Allowlist only CLI discovery variables: inherited secrets/Compose overrides
-    // cannot win over the synthetic fixture. Never use the real root .env.
-    const env = Object.fromEntries(['PATH', 'HOME', 'DOCKER_CONFIG'].filter(key => process.env[key])
-      .map(key => [key, process.env[key]]));
-    env.COMPOSE_DISABLE_ENV_FILE = '1';
-    return spawnSync('docker', ['compose', '--env-file', fixture, '--project-name',
-      `trackflow-contract-${process.pid}`, '-f', resolve('docker-compose.yml'),
-      'config', '--format', 'json'], { env, encoding: 'utf8' });
-  } finally {
-    rmSync(directory, { recursive: true, force: true });
-  }
+function config(overrides = {}, file = 'docker-compose.yml') {
+  // No ambient application secrets, Compose overrides or automatic dotenv reads.
+  const env = Object.fromEntries(['PATH', 'HOME'].filter(key => process.env[key])
+    .map(key => [key, process.env[key]]));
+  Object.assign(env, settings, overrides, { COMPOSE_DISABLE_ENV_FILE: '1' });
+  return spawnSync('docker', ['compose', '--env-file', '/dev/null', '--project-name',
+    `trackflow-contract-${process.pid}`, '-f', resolve(file),
+    'config', '--format', 'json'], { env, encoding: 'utf8' });
 }
 function rendered() {
   const result = config();
@@ -89,7 +80,7 @@ test('environment is allowlisted and TinyDB paths target isolated storage', () =
   assert.deepEqual(ui.environment, { BACKOFFICE_LEGACY_PORT: '3002',
     TRACKFLOW_API_PROXY: '1', TRACKFLOW_API_ORIGIN: 'http://api:8000' });
   const apiKeys = Object.keys(settings).filter(k => !['COMPOSE_PROJECT_NAME', 'TRACKFLOW_BIND_ADDRESS',
-    'WEBSITE_HOST_PORT', 'BACKOFFICE_HOST_PORT', 'API_HOST_PORT', 'BACKOFFICE_LEGACY_PORT', 'TRACKFLOW_API_PROXY', 'TRACKFLOW_API_ORIGIN'].includes(k));
+    'TRACKFLOW_UI_IMAGE', 'TRACKFLOW_API_IMAGE', 'WEBSITE_HOST_PORT', 'BACKOFFICE_HOST_PORT', 'API_HOST_PORT', 'BACKOFFICE_LEGACY_PORT', 'TRACKFLOW_API_PROXY', 'TRACKFLOW_API_ORIGIN'].includes(k));
   assert.deepEqual(Object.keys(api.environment).sort(), apiKeys.sort());
   for (const key of apiKeys) assert.equal(api.environment[key], settings[key]);
   assert.equal(ui.environment.NEXT_PUBLIC_INVENTORY_API_URL, undefined);
@@ -118,6 +109,54 @@ test('empty signing secret fails with actionable setup guidance', () => {
   const result = config({ JWT_SECRET_KEY: '' });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /JWT_SECRET_KEY/);
+});
+test('production is image-only, internal, persistent and single-worker', () => {
+  const result = config({}, 'docker-compose.production.yml');
+  assert.equal(result.status, 0, result.stderr);
+  const c = JSON.parse(result.stdout);
+  assert.deepEqual(Object.keys(c.services).sort(), ['api', 'ui']);
+  const { ui, api } = c.services;
+  assert.equal(ui.image, settings.TRACKFLOW_UI_IMAGE);
+  assert.equal(api.image, settings.TRACKFLOW_API_IMAGE);
+  const development = rendered();
+  assert.deepEqual(Object.keys(api.environment).sort(), Object.keys(development.services.api.environment).sort());
+  assert.equal(api.environment.JWT_SECRET_KEY, settings.JWT_SECRET_KEY);
+  assert.deepEqual(Object.keys(c.volumes), ['production_api_data']);
+  assert.equal(c.networks.trackflow.name, `trackflow-contract-${process.pid}_network`);
+  assert.equal(ui.volumes, undefined);
+  assert.equal(api.ports, undefined);
+  assert.deepEqual(api.command, ['uvicorn', 'services.api.main:app', '--host', '0.0.0.0', '--port', '8000', '--workers', '1']);
+  assert.deepEqual(api.volumes.map(v => [v.type, v.source, v.target]), [['volume', 'production_api_data', '/app/data']]);
+  assert.deepEqual(ui.environment, { TRACKFLOW_UI_MODE: 'production', BACKOFFICE_LEGACY_PORT: '3002', TRACKFLOW_API_PROXY: '1', TRACKFLOW_API_ORIGIN: 'http://api:8000' });
+  for (const service of [ui, api]) {
+    assert.equal(service.build, undefined);
+    assert.equal(service.env_file, undefined);
+    assert.equal(service.restart, 'unless-stopped');
+    assert.deepEqual(Object.keys(service.networks), ['trackflow']);
+    assert.equal(service.logging.options['max-file'], '3');
+  }
+  assert.deepEqual(ui.ports.map(p => [p.host_ip, p.published, p.target]), [['127.0.0.1', '3000', 3000], ['127.0.0.1', '3001', 3001]]);
+  for (const key of ['USERS', 'SUPPLIERS', 'INCIDENTS']) assert.equal(api.environment[`TRACKFLOW_${key}_DB_PATH`], `/app/data/${key.toLowerCase()}.json`);
+  const missing = config({ JWT_SECRET_KEY: '' }, 'docker-compose.production.yml');
+  assert.notEqual(missing.status, 0);
+  assert.match(missing.stderr, /JWT_SECRET_KEY/);
+  for (const key of ['TRACKFLOW_UI_IMAGE', 'TRACKFLOW_API_IMAGE']) {
+    assert.notEqual(config({ [key]: '' }, 'docker-compose.production.yml').status, 0);
+  }
+  const changed = config({ WEBSITE_HOST_PORT: '13300', BACKOFFICE_HOST_PORT: '13301' }, 'docker-compose.production.yml');
+  assert.equal(changed.status, 0, changed.stderr);
+  assert.deepEqual(JSON.parse(changed.stdout).services.ui.ports.map(p => p.published), ['13300', '13301']);
+});
+test('UI image defaults to dev and builds sequentially with only public proxy args', () => {
+  const image = readFileSync('uis/Dockerfile', 'utf8');
+  assert.match(image, /FROM node:24-alpine/);
+  assert.match(image, /ARG TRACKFLOW_UI_MODE=development/);
+  assert.match(image, /npm ci --include=dev/g);
+  assert.match(image, /npm run build &&.*backoffice.*npm run build/s);
+  assert.match(image, /ARG TRACKFLOW_API_PROXY=0/);
+  assert.match(image, /ARG TRACKFLOW_API_ORIGIN=/);
+  assert.doesNotMatch(image, /JWT_SECRET_KEY|DATABASE_URL|RESEND/);
+  assert.match(image, /CMD \["sh", "\/app\/uis\/start.sh"\]/);
 });
 test('API image uses uv virtualenv, exact source copies and single reload process', () => {
   const image = readFileSync('services/Dockerfile', 'utf8');

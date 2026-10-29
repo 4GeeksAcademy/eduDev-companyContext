@@ -200,6 +200,75 @@ real credentials or root `.env`:
 node --test tests/container-config.test.mjs
 ```
 
+### Production images (T5b — local verification pending)
+
+Development remains the default. Build production images **locally**, then transfer
+these tags to the target Docker host using your approved image transport. No VPS
+build, source mounts or backend credentials belong in the UI build:
+
+```bash
+docker build -t trackflow-ui:production -f uis/Dockerfile \
+  --build-arg TRACKFLOW_UI_MODE=production \
+  --build-arg TRACKFLOW_API_PROXY=1 \
+  --build-arg TRACKFLOW_API_ORIGIN=http://api:8000 ./uis
+docker build -t trackflow-api:production -f services/Dockerfile \
+  --build-context shared=./shared \
+  --build-context packages_shared=./packages/shared ./services
+```
+
+The UI installs build dependencies per app, builds website then backoffice inside
+Docker, and uses direct `next start` leaf processes with the existing private
+legacy server/lifecycle handling. Production selection rejects unknown modes and
+requires the exact public proxy settings above. Rebuild when changing rewrites:
+Next reads them at **build time**, not just runtime. No host `.next` output.
+
+On the target host, provide operator-managed settings privately, then use only:
+
+```bash
+docker compose -f docker-compose.production.yml up -d --no-build
+docker compose -f docker-compose.production.yml down  # retain persistent data
+```
+
+| Production setting | Contract |
+| --- | --- |
+| `TRACKFLOW_UI_IMAGE` / `TRACKFLOW_API_IMAGE` | Required transferred image tags, e.g. `trackflow-ui:production` / `trackflow-api:production` |
+| `COMPOSE_PROJECT_NAME` | Set a dedicated name, e.g. `trackflow-production`; keep it stable for persistence |
+| `JWT_SECRET_KEY` | Required private durable random secret, API only; no fallback |
+| `DATABASE_URL` | Optional blank for isolated checks; real PostgreSQL/schema/RLS readiness still missing |
+| `TRACKFLOW_BIND_ADDRESS` | Defaults to `127.0.0.1`; choose exposure deliberately for the target host |
+| `WEBSITE_HOST_PORT` / `BACKOFFICE_HOST_PORT` | Defaults `3000` / `3001` |
+| Public proxy / legacy settings | Fixed `1`, `http://api:8000`, private port `3002` at runtime; same values baked into UI |
+| Other API settings | Explicit allowlist as in development table; expiry defaults30, mail blank, CORS defaults localhost3000/3001 |
+
+Only UI ports are published. API is internal service DNS `api:8000`, single-worker
+Uvicorn without reload (TinyDB). A new project-scoped `production_api_data` volume
+stores all three JSON stores at fixed `/app/data` paths; no host records are imported.
+Supplier startup bootstrap remains unchanged. Both services restart unless stopped
+and rotate JSON logs at5MiB x3. Memory/CPU budgets remain provisional until measured
+on the1CPU/~1GiB target alongside existing services; no fit claim or hard cap yet.
+No new TLS/domain/firewall platform is included.
+
+For a disposable **synthetic-only** local check, use a unique owned project name
+and free loopback ports; this bypasses root dotenv and inherited application secrets:
+
+```bash
+env -i PATH="$PATH" HOME="$HOME" COMPOSE_DISABLE_ENV_FILE=1 \
+  COMPOSE_PROJECT_NAME=trackflow-t5b-synthetic \
+  TRACKFLOW_UI_IMAGE=trackflow-ui:production TRACKFLOW_API_IMAGE=trackflow-api:production \
+  JWT_SECRET_KEY=synthetic-local-check-only DATABASE_URL= \
+  TRACKFLOW_BIND_ADDRESS=127.0.0.1 WEBSITE_HOST_PORT=3340 BACKOFFICE_HOST_PORT=3341 \
+  docker compose --env-file /dev/null -f docker-compose.production.yml up -d --no-build
+```
+
+This creates only that project's network/new data volume. Use the same settings
+and explicit env-file for subsequent `ps`, `logs`, `stats` and `down`; remove only
+that owned synthetic volume after checking ownership, never unknown project data.
+No real DB/mail/provider calls are needed. Blank SQL configuration means inventory503,
+not full business acceptance. API startup `create_all` is **not** a production
+migration strategy. Favicon404 remains known; production build/runtime/memory,
+independent checks, review and commit are pending. VPS rollout is already authorized
+but not performed by this packaging unit; no100% assignment-completion claim.
+
 ### Incident Analyzer
 
 Create the isolated Python environment and install only the API dependencies:
