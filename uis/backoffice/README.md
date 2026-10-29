@@ -8,6 +8,50 @@ local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
 
+## Container versus local hosting
+
+The [shared UI image](../README.md#ui-development-container) runs the website on
+3000 and this Next dev host on3001. Its builtin Node legacy asset server binds
+only `127.0.0.1:3002`; `BACKOFFICE_LEGACY_PORT=3002` also selects that rewrite
+upstream. Only fixed HTML/JS/CSS assets are served, never repository/config files.
+The launcher stops siblings on an unexpected exit and reaps owned children.
+Isolated Docker startup/routing/shutdown and synthetic proxy authentication
+passed. Configured PostgreSQL, hot reload and VPS acceptance remain separate.
+
+The independent local commands below remain unchanged: the root http-server
+upstream uses3001 and Next uses another port. Without an environment override,
+Next rewrites still default to3001. `BACKOFFICE_LEGACY_PORT` accepts only integer
+ports1–65535; it must differ from the browser-facing Next port. Changing the
+rewrite environment does not reconfigure the existing local `npm run legacy`.
+
+## Opt-in same-origin API routing (T3b)
+
+Set server-side `TRACKFLOW_API_PROXY=1` and `TRACKFLOW_API_ORIGIN` to a
+credential-free HTTP(S) origin (Compose: `http://api:8000`), then restart Next.
+Missing or invalid enabled origins fail configuration clearly. Leave
+`NEXT_PUBLIC_INVENTORY_API_URL` unset so inventory shares auth's `/api` base.
+
+All five legacy pages load relative `api-config.js` before modules; the Next root
+layout loads `/uis/backoffice/api-config.js` with `beforeInteractive`. That dynamic
+route returns fixed JavaScript selecting `/api` only in mode1, otherwise a harmless
+200 no-op. Both responses are JavaScript/no-store. Static root hosting serves a
+no-op file, preserving defaults and existing manual overrides. The script remains
+outside the legacy rewrite/server allowlist; no upstream URL or secrets reach it.
+
+Only `/api/auth`, `/api/suppliers`, `/api/inventory` and `/api/api/incidents`
+are proxied to their corresponding backend paths. The doubled incident prefix
+preserves existing analyzer/manager clients. No users/profiles or catchall proxy
+is provided. Local mode without opt-in retains hostname/validated apiPort behavior.
+
+Focused Node tests passed27/27 and TypeScript passed. Synthetic Compose/browser
+checks confirmed real login, auth/me, supplier rows, logout and same-origin traffic;
+blank DATABASE_URL showed the expected inventory-unavailable message. Use the
+documented `localhost` URL for Next dev: literal127.0.0.1 was rejected by its HMR
+origin defaults. No browser-security or authentication changes were needed.
+The strict console check failed on cosmetic `/favicon.ico`404 (plus expected
+inventory503); functional assertions passed, but a clean console is not claimed.
+T4 hot reload and separately authorized PostgreSQL/VPS work remain pending.
+
 ## Inventory host
 
 From the repository root, install the isolated host dependencies:
@@ -42,7 +86,8 @@ The legacy script runs exactly
 `cd ../.. && ./node_modules/.bin/http-server . -p 3001 -a 127.0.0.1`
 from the backoffice package. It needs the existing root http-server installation.
 Next rewrites an explicit allowlist of backoffice HTML/JS/CSS files to
-`http://127.0.0.1:3001`; it does not proxy the repository, API, config or secrets.
+`http://127.0.0.1:3001`; it does not proxy the repository, config or secrets. Optional API rewrites are
+separate from this unchanged legacy allowlist.
 Do not expose the upstream publicly. Ports must differ to avoid recursion.
 Top-level `agentRules: false` disables Next's automatic agent-instruction generation
 so the existing project instructions remain authoritative.
@@ -69,8 +114,8 @@ Use the same browser-reachable identity/inventory API service for login and
 inventory. The existing auth helper defaults to the page hostname on port 8000;
 optional validated `?apiPort=8001` changes only the port and survives login return.
 Custom `window.TRACKFLOW_API_BASE_URL` must be configured consistently on login,
-legacy pages and the inventory host before auth calls; the host adds no custom
-configuration injector. Optionally configure `NEXT_PUBLIC_INVENTORY_API_URL`
+legacy pages and the inventory host before auth calls; the opt-in script above
+provides this consistently for same-origin proxy mode. Optionally configure `NEXT_PUBLIC_INVENTORY_API_URL`
 before starting/building Next for all inventory requests; otherwise they reuse
 `getApiBase()` (dynamic browser hostname and validated apiPort). This URL MUST
 identify the intended same authentication service/identity store as legacy login

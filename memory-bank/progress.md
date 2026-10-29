@@ -1,5 +1,321 @@
 # Project Progress
 
+## Monorepo Containerization — T5 limited initial VPS runtime
+
+- Reused exact retained T5b images, no rebuild or publication; streamed save/gzip/
+  SSH/load stages all exited0. Local/remote IDs matched720b393714f3 and af504a8e775c.
+  Source packaging commit b57dfb08d2e982a524d6da051548aecc5893d8d8; T5b is complete.
+- New owned `/opt/trackflow-containerization/` contains exact committed production
+  Compose, resources.override.yml, deployment-marker.json, empty docker-config/
+  and exclusive-created root:root0600 deployment.env. Fresh server-CSPRNG JWT
+  stayed private; no readback/hash/copy. SQL/mail blank, public UI CORS configured.
+- Project trackflow-production: exactly running UI/API, network
+  trackflow-production_network, retained trackflow-production_production_api_data
+  volume mounted only by API. No source binds/API publishing. Caps verified:
+  UI512MiB/.75CPU, API256MiB/.25CPU. Native config --quiet/up --no-build --pull never.
+- Fresh resources350MiB available RAM/1816MiB free swap/9838739456bytes disk before;
+  warmed249MiB available/1770MiB free swap/8031633408bytes disk after. Docker UI/API
+  memory158.9/78.98MiB; restart0/OOMfalse. All22 baseline service PID/start pairs and
+  seven listeners preserved; only planned3000/3001 listeners added.
+- Early API readiness failed connection/proxy500; bounded follow-up passed internal
+  OpenAPI200/proxy401 without restart. VPS and external website/login/assets/config
+  returned200, anonymous auth/me401; config exposes only /api. No public auth traffic.
+- [Evidence and public URLs](../docs/evidence/containerization/README.md) include
+  sanitized current VPS observations and reused synthetic local text/browser PNG.
+  A labelled faithful rendering of captured local Compose output is now included
+  as local-containers.png; it is not a fresh terminal or live-state capture.
+- Independent live verification passed: exact images/two services, zero OOM or
+  restarts, correct caps/mounts/API isolation and internal API200. Parent external
+  website/login200 and proxy401 also passed. Current available RAM282MiB, free
+  swap1754MiB, free disk8031506432bytes; containers146.1/72.38MiB. Historical
+  service-identity preservation is writer-recorded, not independently reconstructed.
+- T5 IN PROGRESS: private SQL/operator admin setup remains pending. Blank SQL implies inventory503, not current authenticated acceptance.
+  HTTP/noTLS, historical favicon404 and short-smoke/no sustained-load limits retained.
+  No migrations/mail/accounts or pre-existing workload changes. Evidence delivery
+  is separate from private configuration and full business acceptance.
+  Later rollout evidence supersedes historical APP NOT DEPLOYED statements below.
+
+## Monorepo Containerization — T5b production verification passed
+
+- Added explicit production mode to the existing UI recipe/launcher: cached separate
+  installs include build dependencies; website/backoffice build sequentially inside
+  Docker, then direct Next start leaves retain lifecycle/private legacy handling.
+  Default dev mode, root development Compose and API Dockerfile are unchanged.
+- New image-only production Compose has exactly ui/api, internal API DNS, one
+  non-reload worker, fixed isolated TinyDB paths/new named volume, allowlisted
+  API secrets, required JWT, configurable UI ports and bounded rotating logs.
+  Public proxy1/http://api:8000 is explicit at UI build and runtime.
+- `node --test tests/container-config.test.mjs uis/tests/start.test.mjs`:
+  RED10/17 passed,7 intended missing-production/mode failures; GREEN17/17,
+  final triangulation17/17, zero skips. Final tests use sanitized synthetic env,
+  COMPOSE_DISABLE_ENV_FILE=1 and explicit --env-file /dev/null. Default dev and
+  production TERM/three child-exit paths pass; invalid mode fails before launch.
+- `sh -n uis/start.sh` passed. At writer handoff, no image builds/browser/SSH,
+  real DB/mail, secrets, commits or review performed. README gives local builds,
+  transferred-image startup and an isolated synthetic project/loopback check.
+- Independent focused17/17, one build per amd64 image and isolated production
+  runtime/browser checks passed. Retained tags trackflow-t5b-verify-0552b97-0622-
+  ui:production (720b393714f3) and api:production (af504a8e775c). Internal API200,
+  website/login/config200, same-origin login/auth-me/15suppliers/redirects/signout
+  passed; API recreation retained the volume and user. No host source mutation.
+- Enforced limits UI512MiB/.75CPU,API256MiB/.25CPU: warmed252.3MiB total; separate
+  cgroup peaks sum287.2MiB, not necessarily simultaneous. Zero OOM/restarts. This
+  short local smoke does not establish coexistence with existing VPS workloads.
+  Owned fixtures cleaned,3340/3341 released; evidence/images retained under
+  /tmp/trackflow-t5b-verify-0552b97-0622/. Optional docker top -eo args failed;
+  plain docker top succeeded. Responsive/sustained-load/liveDB checks not performed.
+- T5b stays in progress pending native review and commit. Missing SQL/schema/RLS
+  means expected inventory503, not business acceptance. Known favicon404 retained;
+  no page exceptions, but no clean-console claim. T5 rollout is already authorized.
+
+## Monorepo Containerization — T5a installation independently verified
+
+- Two authorized read-only SSH checks confirmed Ubuntu22.04/amd64,1CPU,
+  957MiBRAM/391MiBavailable,2GiBswap and9.6GiBdiskfree. Docker/Compose were
+  absent across the inspected package/binary/service/socket locations; UID0.
+  Existing TCP listeners22/53/18789/43947 must be preserved.
+- User authorized installing missing Docker/Compose without changing or restarting
+  existing services. The initial installer attempt stopped before SSH/APT because
+  its policy prohibits consuming .env, making no remote changes. Key-only SSH
+  resolved that transport blocker; the later successful installation is below.
+- No credential contents were displayed or copied. Earlier read-only checks used
+  canonical runtime credential loading with strict existing-host verification;
+  this does not override the separate writer policy. Do not route around it.
+- User separately authorized a dedicated SSH identity. Local ssh-keygen succeeded
+  at /home/lab/.ssh/trackflow_4geeks_ed25519 without overwriting existing files;
+  no private key output. Public .pub read was also blocked by tool policy.
+  Human reported ssh-copy-id completion and supplied the nonsecret target.
+  One strict key-only SSH check on port22 succeeded with UID0 and exit0, without
+  password fallback, dotenv loading or protected-file content retrieval.
+- Subsequent strict key-only installation succeeded (SSH exit0, no stderr).
+  New official Docker key0644/deb822 source were created; verified HTTPS key
+  retrieval and signed APT update passed (exit0). Fresh bounded checks found no
+  remaining package conflicts, native nft rules, restrictive iptables policies,
+  custom route tables or default Docker bridge-subnet overlap.
+- APT simulation/install each exited0: exactly5 new packages,0 upgrades/removals,
+  no additional dependencies. Existing package versions remained unchanged.
+  Engine/CLI:5:29.9.2-1~ubuntu.22.04~jammy;
+  containerd.io:2.4.2-3~ubuntu.22.04~jammy;
+  Buildx plugin:0.38.1-1~ubuntu.22.04~jammy;
+  Compose plugin:5.6.1-1~ubuntu.22.04~jammy.
+  Install used inspected explicit versions, no recommends/remove/upgrade and
+  process-only noninteractive/list-only needrestart settings.
+- New Docker service/socket and containerd service active; Unix API ping OK,
+  Compose5.6.1 (>=2.17), Buildx v0.38.1 available. All20 existing running services
+  retained PID/start timestamps; all7 listener records/owners preserved, zero new
+  listeners. No Docker TCP API listener and zero containers. No hello-world pull,
+  application tests/builds or manual firewall changes. New repository files and
+  package-managed runtime/services/socket/bridge/network effects remain installed.
+  No auth helper was needed or created; no dotenv/key contents were accessed.
+- Independent verification subsequently passed in one key-only SSH session:
+  five installed package versions, local daemon ping/version, Compose/Buildx and
+  active new services. One hello-world smoke exited0 with no network, binds or
+  published ports,32MiB memory and16PID limit. Its container was removed; zero
+  containers remain. Public hello-world image retained at digest
+  sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef.
+  TCP ports22/53/18789/43947 stayed unchanged; no Docker TCP API listener.
+- Historical20servicePID/starttime,7TCP/UDP-owner and package-version preservation
+  is writer-recorded, not independently reconstructed without baseline artifacts.
+  Native ASSESS was unassessable due unrelated untracked notes; its conservative
+  separate-verifier requirement was satisfied. Scoped diff/readback and whitespace
+  checks passed. No application tests/builds were repeated for this passive record.
+- Runtime preparation is verified. APP NOT DEPLOYED.
+  T5 requires separate deployment authorization. Production runtime, actual app
+  configuration and live PostgreSQL remain unverified and outside installation
+  scope. No push, PR or merge.
+
+## Monorepo Containerization — T4 local verification closure
+
+- Disposable committed-source copies proved website marker/restoration through
+  automatic document reload, backoffice component updates in place and Uvicorn API
+  reload. No image build/container recreation; IDs unchanged and restart counts0.
+  An initial verifier-only zero-navigation assertion was too strict; the focused
+  website follow-up saved both successful observations. Favicon404 remains known.
+- Original source untouched; owned containers/volumes/network/fixtures cleaned.
+  Root .env ignored/untracked, zero history commits in available local refs;
+  contents were not read. Actual environment completeness/live PostgreSQL unverified.
+- Functional local checks are complete with disclosed warnings. This closure is
+  documentation-only: structural readback and diff checks, no repeated suites or
+  native source review. VPS installation self-checks subsequently passed as
+  recorded above; independent runtime verification also passed. Application
+  deployment remains pending.
+
+## Monorepo Containerization — T3b scoped browser evidence
+
+- Proxy27/27 tests and TypeScript passed. On documented localhost, real synthetic
+  login/auth-me/suppliers succeeded, inventory showed expected503 without PostgreSQL,
+  and logout/private-route redirect passed. Config preceded auth; browser requests
+  stayed on the backoffice origin. No auth/layout fix was needed for the earlier
+  dev hang: localhost resolves Next's HMR-origin rejection of literal127.0.0.1.
+- Functional browser assertions passed; the strict console command still failed
+  on cosmetic favicon404, with expected inventory503 separately identified. Zero
+  page exceptions. No claim of clean console or clean verifier exit.
+- Owned containers/volumes/network/browser cleaned; known generated type imports
+  restored. Native T3b review `review-ef2fad0868e2eceb` approved four lenses and
+  exact acknowledgement completed. Informational R4-build-runtime is a later
+  production-config follow-up, not a correction. Only passive status docs changed
+  afterward. Local commit and T4 hot reload are next. Real PostgreSQL and the
+  selected4Geeks VPS remain unverified; no real credentials used.
+
+## Monorepo Containerization — T3b proxy implementation
+
+- Added opt-in Next same-origin routing with a fixed public `/api` configuration
+  script, harmless disabled/static no-ops, early script loading on five legacy
+  pages/root layout, and exactly four API rewrite families. Enabled upstreams must
+  be credential-free HTTP(S) origins; local hostname/apiPort defaults are unchanged.
+- Compose UI adds only nonsecret TRACKFLOW_API_PROXY/TRACKFLOW_API_ORIGIN through
+  interpolation. Root README documents intended values1/http://api:8000; no dotenv,
+  template, tracker, backend, dependency, allowlist or auth/inventory helper edits.
+- Authorized focused Node command: RED21/26 (four intended missing implementation
+  failures plus one test missing a required AbortSignal, corrected in test only);
+  GREEN26/26; expanded origin/required-setting triangulation27/27, zero skips.
+  Local `tsc --noEmit --incremental false` actually passed; static script syntax
+  passed. Existing Node module-type warnings remain non-failing.
+- No apps/containers/builds/real data started or used; synthetic Compose config
+  fixtures clean themselves. Parent task edits and unrelated notes are preserved.
+  T3 runtime evidence below is retained. Real Compose/browser proxy acceptance,
+  T4 hot reload, configured PostgreSQL and VPS remain pending; no full-platform claim.
+
+## Monorepo Containerization — T3 review closure
+
+- Packaging/runtime verification passed under synthetic-only inputs; see T3
+  evidence below. Native review `review-9f4d67b3294f8d18` approved and its exact
+  acknowledgement completed. Only passive status docs changed afterward.
+- Local work-unit commit is next. Browser proxy, hot reload, configured PostgreSQL
+  and VPS remain pending; no complete platform or production claim.
+
+## Monorepo Containerization — T1 website adaptation
+
+- Added a minimal plain-JSX Next App Router website at `/uis/website/`, with
+  Next16.4.3 and React/ReactDOM19.2.8 matching the local backoffice manifest.
+  Existing static HTML, Web Components and CSS remain unchanged; the React page
+  reuses the stylesheet and preserves content, metadata, section anchors and links.
+  Configuration retains the trailing slash and disables generated agent rules.
+- `node --test uis/website/tests/site-smoke.test.mjs`: RED failed on missing
+  website package.json (HTTP explicitly skipped); GREEN with
+  `TRACKFLOW_WEBSITE_URL=http://127.0.0.1:3310/uis/website/` passed2/2, zero skips.
+  Tests cover real Next HTTP200, metadata, semantic landmarks, three service cards,
+  anchor targets, links, served CSS200 and unknown-route404.
+- `npm --prefix uis/website install --no-audit --no-fund` passed (22 packages).
+  Owned dev server used port3310 after an availability check; stopped afterward
+  and port availability reconfirmed. Next reported a non-failing multiple-lockfile
+  workspace-root inference warning. No API, secrets or existing servers used.
+- Independent verification passed both tests without skips and used existing
+  cached Playwright Core/Chromium without installs. At 375px and 1280px, content,
+  responsive cards, anchors, home/contact links, keyboard focus and skip link
+  passed; no overflow, console/page errors or failed resources. Static sources
+  were unchanged. Browser and owned dev server closed; port3310 free afterward.
+  Production build, containers and deployment remain deferred to later tasks.
+  No staging, commits or push; unrelated notes preserved.
+- User explicitly approved `uis/website/.gitignore` containing `.next/`.
+  `git check-ignore -v uis/website/.next/` confirmed that local rule excludes the
+  generated cache; it remains intact, not deleted. Independent website acceptance
+  is complete; production build and Docker integration remain deferred.
+  The non-failing Next workspace-root warning remains. A cached Playwright wrapper
+  import failed; directly importing its existing core resolved tooling startup.
+- Native review `review-ee589c538e3d4f4d` approved the website candidate and its
+  exact acknowledgement completed (authority consumed). Only passive status
+  documentation changed afterward. User authorized the local website commit
+  and continuation to Docker; no push, PR, merge or deployment in this unit.
+
+## Monorepo Containerization — T2 writer evidence
+
+- Added one Node24 Alpine UI Dockerfile with `./uis` context, separate `npm ci`
+  installs and explicit website/backoffice copies. Docker ignores exclude direct/
+  nested dependencies, Next caches, environment files and logs; tracker is excluded.
+- POSIX launcher runs both Next dev leaf commands on0.0.0.0:3000/3001 and a
+  private allowlisted builtin Node asset server on127.0.0.1:3002. Unexpected exits
+  fail visibly, terminate siblings and reap owned PIDs. Local root http-server is
+  unchanged; validated rewrite configuration retains default3001 outside container.
+- `node --test uis/backoffice/tests/next-host.test.mjs uis/backoffice/tests/legacy-server.test.mjs uis/tests/start.test.mjs`:
+  RED2 passed/4 failed (configured-port assertion, missing server and launcher);
+  initial GREEN6/6; expanded final8/8, zero skips. Existing Node module-type warning
+  remains non-failing. Tests cover every allowlisted asset200/MIME, HEAD, unsupported
+  methods, config/unknown/traversal denial and exact rewrite/server allowlist parity.
+- Launcher tests copy only the launcher into owned temporary fixture trees and use
+  fake Node leaves: TERM cleanup and each of three unexpected child exits pass,
+  including a clean child exit. All recorded PIDs are absent after launcher exit;
+  fixture trees are cleaned. HTTP test uses OS-allocated loopback port and confirms
+  rebind after close. No real apps, API, data or existing processes were touched.
+- `sh -n uis/start.sh` and `node --check uis/backoffice/legacy-server.mjs` passed.
+  Packaging/docs have no meaningful behavioral RED; source inspection supplements
+  focused tests. The writer ran no Docker, installs, broad suites or Git delivery.
+- Independent verification repeated8/8 tests and built the image on the local
+  rootless daemon: `docker --context rootless build -f uis/Dockerfile -t
+  trackflow-ui:t2-verify-4545d9e uis` passed. Image169d1d1b728a was retained.
+  Default-command containers exposed Next3000/3001; legacy3002 bound loopback only.
+  No app-root .env or host .next was present before startup.
+- Container website smoke passed2/2; backoffice login/auth.js/CSS and inventory
+  validation shell returned200, private/config paths404. Normal stop exited0;
+  terminating website CLI triggered fail-fast exit1 with no running container
+  processes. Both owned containers removed and host3310/3311 released.
+  Source status unchanged, diff check passed. Node module-type/telemetry notices
+  and deprecated docker --time spelling were non-blocking.
+- Bind-mount hot reload, API/authenticated/full-stack integration, production
+  serving and VPS remain deferred. Native review `review-e00d2b1f129846a1`
+  approved all four lenses; exact acknowledgement completed. Non-blocking
+  `R3-shutdown-escalation` at `uis/tests/start.test.mjs:29` remains informational
+  follow-up, not a correction. Only passive status docs changed afterward;
+  local work-unit commit is next.
+
+## Monorepo Containerization — T3 packaging writer
+
+- Added Python3.11-slim/uv API image, unchanged requirements in `/opt/venv`,
+  exact shared Python module copies via additional contexts, single Uvicorn reload.
+  Ignores exclude caches, env, tests, logs and local JSON/database artifacts.
+- Root Compose defines only ui/api, project-scoped network/five named volumes,
+  source binds, isolated UI dependencies/caches and TinyDB `/app/data`. A tmpfs
+  masks host legacy source data. API environment is allowlisted; UI gets only
+  private legacy port. Existing root `.env` was neither read nor changed.
+- Initially authored a template and narrow ignore exception. After access
+  restriction, the exception was removed: the template remains untouched, ignored
+  and outside delivery. Current setup uses independently documented README settings.
+  Missing JWT fails interpolation; blank DATABASE_URL leaves inventory unavailable.
+  Existing API startup may create inventory schema if an operator configures SQL.
+- `node --test tests/container-config.test.mjs`: observed RED0/4 (missing Compose
+  and Dockerfile), initial GREEN4/4, expanded GREEN5/5 without skips. Real Compose
+  JSON checks topology/mounts/env, host-port overrides and missing-secret failure;
+  Dockerfile/ignore directives use structural checks, not image-runtime claims.
+  Run-owned synthetic temp fixtures were cleaned in finally; no daemon used.
+- Writer ran no image build/start, backend suites, installs, real DB operations,
+  browser checks or Git delivery. Parent owns isolated runtime verification.
+  T3b browser proxy and T4 full-stack/hot-reload acceptance remain pending.
+  Parent task-doc edits and both unrelated untracked notes remain untouched.
+
+### T3 bounded UI mount correction
+
+- Replaced the whole `./uis` bind with only website/backoffice directories and
+  read-only start.sh at matching `/app/uis/` paths. Tracker stays outside the
+  runtime mount set; four nested dependency/cache volumes and API topology unchanged.
+- Synthetic Compose tests now set `COMPOSE_DISABLE_ENV_FILE=1` and assert the
+  exact UI bind allowlist, including launcher read-only access.
+- `node --test tests/container-config.test.mjs`: RED4/5 (broad bind differs from
+  narrow allowlist); GREEN5/5, zero skips. Temporary synthetic fixtures cleaned.
+  No repository dotenv/template/tracker access or runtime creation in this correction.
+  Image/runtime verification remains pending parent continuation.
+
+### T3 independent runtime acceptance and documentation normalization
+
+- Independent verifier reported PASS: both images built with named contexts;
+  standalone API/shared imports passed without source mounts and with network none.
+  API openapi/website/login200, Uvicorn0.0.0.0:8000 plus reloader, exact three UI
+  binds/four nested volumes and API storage/tmpfs passed. UI Node fetch to
+  `http://api:8000/openapi.json` returned200. Synthetic registration201/form login200
+  and authenticated inventory503 passed with empty DATABASE_URL.
+- No remote DB or repository dotenv reads/hashes. Retained images:
+  `trackflow-t3-verify-cf2fa4d621-api:latest` (`c38700e711d6`) and
+  `trackflow-t3-verify-cf2fa4d621-ui:latest` (`f092edb99e1f`). Owned two containers,
+  five volumes, network and temporary config removed. Ports3320/3321/8320 had no
+  listeners; initial plain-bind EADDRINUSE was transient, followed by refused
+  connections and successful reusable binds.
+- Next dev regenerated two tracked next-env.d.ts imports. Parent restored only
+  those two lines and confirmed empty file diff; no behavior correction needed.
+- Final passive normalization removed only the template ignore exception and
+  documented public settings independently in README. No protected file access,
+  runtime creation or test rerun; prior config5/5 evidence remains valid.
+  Native T3 review/commit, browser proxy T3b, hot reload T4, configured PG and VPS
+  remain pending. Parent task document and unrelated notes preserved.
+
 ## Current State
 
 - Hito 1: root corporate website and B2B form completed.

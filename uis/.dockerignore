@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+.next
+**/.next
+.env*
+**/.env*
+*.log
+**/*.log
+.git
+**/.git
+coverage
+**/coverage
+.cache
+**/.cache
+talent-pipeline-tracker

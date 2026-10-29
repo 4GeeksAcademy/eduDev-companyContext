@@ -1,0 +1,61 @@
+services:
+  ui:
+    build:
+      context: ./uis
+    init: true
+    environment:
+      BACKOFFICE_LEGACY_PORT: ${BACKOFFICE_LEGACY_PORT:?Set BACKOFFICE_LEGACY_PORT in .env}
+      TRACKFLOW_API_PROXY: ${TRACKFLOW_API_PROXY:?Set TRACKFLOW_API_PROXY to 1 for same-origin API routing}
+      TRACKFLOW_API_ORIGIN: ${TRACKFLOW_API_ORIGIN:?Set TRACKFLOW_API_ORIGIN to the internal API origin}
+    ports:
+      - "${TRACKFLOW_BIND_ADDRESS:?Set TRACKFLOW_BIND_ADDRESS}:${WEBSITE_HOST_PORT:?Set WEBSITE_HOST_PORT}:3000"
+      - "${TRACKFLOW_BIND_ADDRESS:?Set TRACKFLOW_BIND_ADDRESS}:${BACKOFFICE_HOST_PORT:?Set BACKOFFICE_HOST_PORT}:3001"
+    volumes:
+      - ./uis/website:/app/uis/website
+      - ./uis/backoffice:/app/uis/backoffice
+      - ./uis/start.sh:/app/uis/start.sh:ro
+      - website_modules:/app/uis/website/node_modules
+      - website_next:/app/uis/website/.next
+      - backoffice_modules:/app/uis/backoffice/node_modules
+      - backoffice_next:/app/uis/backoffice/.next
+    networks:
+      - trackflow
+  api:
+    build:
+      context: ./services
+      additional_contexts:
+        shared: ./shared
+        packages_shared: ./packages/shared
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set a private JWT_SECRET_KEY in .env}
+      DATABASE_URL: ${DATABASE_URL:-}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:?Set ACCESS_TOKEN_EXPIRE_MINUTES}
+      PASSWORD_RESET_EXPIRE_MINUTES: ${PASSWORD_RESET_EXPIRE_MINUTES:?Set PASSWORD_RESET_EXPIRE_MINUTES}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
+      FRONTEND_PUBLIC_URL: ${FRONTEND_PUBLIC_URL:-}
+      TRACKFLOW_CORS_ORIGINS: ${TRACKFLOW_CORS_ORIGINS:?Set TRACKFLOW_CORS_ORIGINS}
+      TRACKFLOW_USERS_DB_PATH: ${TRACKFLOW_USERS_DB_PATH:?Set TRACKFLOW_USERS_DB_PATH under /app/data}
+      TRACKFLOW_SUPPLIERS_DB_PATH: ${TRACKFLOW_SUPPLIERS_DB_PATH:?Set TRACKFLOW_SUPPLIERS_DB_PATH under /app/data}
+      TRACKFLOW_INCIDENTS_DB_PATH: ${TRACKFLOW_INCIDENTS_DB_PATH:?Set TRACKFLOW_INCIDENTS_DB_PATH under /app/data}
+    ports:
+      - "${TRACKFLOW_BIND_ADDRESS:?Set TRACKFLOW_BIND_ADDRESS}:${API_HOST_PORT:?Set API_HOST_PORT}:8000"
+    volumes:
+      - ./services:/app/services
+      - ./shared:/app/shared:ro
+      - ./packages/shared:/app/packages/shared:ro
+      - api_data:/app/data
+      # Hide pre-existing host TinyDB files underneath the services source bind.
+      - type: tmpfs
+        target: /app/services/api/data
+    networks:
+      - trackflow
+networks:
+  trackflow:
+    name: ${COMPOSE_PROJECT_NAME:-trackflow}_network
+volumes:
+  website_modules:
+  website_next:
+  backoffice_modules:
+  backoffice_next:
+  api_data:
