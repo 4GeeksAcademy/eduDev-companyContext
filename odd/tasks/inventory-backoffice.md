@@ -26,7 +26,7 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - [x] T2 (done): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication. Commit: `6dc75f6467b71052c91613717da22d213fcd85f4`.
 - [x] T3 (done): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms. Commit: `ea2a091ddc2b4ec775a96612b2e95e5976672b79`.
 - [x] T4a (done): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check. Commit: `9ce703a0a9c2987d395b9b3bb209550959fdb409`.
-- [ ] T4 (in_progress): Local API/UI integration and evidence complete; real Supabase verification remains blocked by missing DATABASE_URL.
+- [ ] T4 (in_progress): Local API/UI integration complete; configured Supabase passed read-only auth/TLS/SELECT1. User authorized minimal development schema/demo initialization and a bounded real integration check.
 
 ## Acceptance and focused checks
 ### T1
@@ -125,5 +125,29 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - Whitespace passed, pre/post source scope unchanged. Owned servers stopped and ports3001/3300/18000 closed; test stores removed. Logs/screenshots retained under `/tmp/inventory-t4a-l8xgkm3r/`. Local acceptance uses combined prior core-flow evidence, writer8layout matrix and this independent follow-up; no Supabase claim.
 - T4a correction and verification docs committed as `9ce703a0a9c2987d395b9b3bb209550959fdb409` (`fix(inventory): contain mobile tables and document verified flows`). The original mobile FAIL is resolved; no current source blocker found. Non-failing Node/dependency deprecation and Next workspace-root warnings remain documented.
 
+### Live development database authorization
+- User saved DATABASE_URL in ignored root .env. First attempt found no assignment and made no network call; after correction, one read-only attempt passed URL parsing, authentication, active TLS and SELECT1. The three expected inventory tables were absent. No credentials/target identifiers were emitted or stored.
+- User confirmed this is TrackFlow's development database and explicitly authorized creating the three tables and loading demo data; reiterated bootcamp simplicity. No production infrastructure, load tests or unrelated tables are in scope.
+- Existing TinyDB store contains two active profiled users. Reuse an existing active identity for explicitly labeled demo movements; do not create SQL users, modify passwords or invent user UUIDs. Do not expose identity data in logs.
+- Initialize only SKU/StockEntry/StockExit tables and their required indexes/FKs. Enable RLS on these new Supabase tables without public policies so data access stays through the backend; use the configured privileged backend connection, not public API keys. Preserve any pre-existing unrelated database objects.
+
+### Live setup and partial smoke evidence
+- Worker `mvsv7blx-m-2h85` ran `.venv/bin/python -B /tmp/trackflow-live-t4.py` against intended development Supabase with unchanged source. Created exactly3inventory tables and model indexes; verified2SKU foreign keys. RLS enabled transactionally on each, zero public policies. No unrelated remote objects altered.
+- Existing seed produced6SKUs/7entries/3exits; second seed invocation left counts unchanged. Authenticated actualAPI reads200 and missing-bearer401 passed. One receipt and matching dispatch201 persisted; excessive exit400 did not mutate stock/counts. Fresh-session persistence confirmed final6SKUs/8entries/4exits. These labeled demo rows are retained.
+- Bounded two-transaction PostgreSQL NOWAIT check produced expected lock conflict55P03; both rolled back. This is not load testing.
+- Browser products/inbound/selected-outbound-stock passed using a helper-generated token for an existing active identity. Password login was not repeated. History test assertion failed because exact standaloneSKU locator mismatched rendered `name (SKU)`; parent source readback confirmed the combined text. No application defect established and no source edits/retries performed.
+- Existing identity store byte-for-byte unchanged; owned servers stopped/ports3300,3001,18000closed; unrelated temporary stores removed. Git scope unchanged and whitespace passed. Live history/final console verification still pending; do not rerun schema/seed or mutation tests.
+
+### Live read-only follow-up acceptance
+- Initial independent follow-up did not execute because the verifier could not create a disposable harness under its role. Parent prepared `/tmp/trackflow-live-history-readonly.py` with no setup/seed/mutation operations, explicit PostgreSQL read-only transactions, API lifespan off and browser GET/HEAD/OPTIONS-only routing. No source changes were needed.
+- Verifier `mvsvk2vs-o-gqi0` executed exactly once: `git status --short`; `.venv/bin/python -B /tmp/trackflow-live-history-readonly.py`; `git diff --check`; `git status --short`. All exited0; Git scope unchanged.
+- ActualPostgreSQL TLS/read-only transactions,3RLS flags and2SKU foreign keys passed. Counts remained6SKUs/8entries/4exits. Real browser rendered6productrows and12historyrows with matching combined name/SKU,quantity,movement,warehouse,timestamp and nonempty owner. Zero console/page errors. Prior history assertion was solely a locator mismatch, now resolved.
+- Identity file byte-for-byte unchanged; ownedservers stopped/portsclosed,tempstoresremoved,engine disposed. Auth was helper-generated token preload, not another password-login test; actualpasswordlogin remains covered by earlier localintegration. Expired-token-specific and optional outbound500 remain not exercised, with real invalid-token401 and other negative states covered.
+- All functional implementation checks are complete for current scope. Final passive setup/evidence documentation and local work-unit commit remain; no extra tests/builds/remote writes are needed.
+
+### Final documentation
+- Documentation writer updated only `services/api/README.md` and `uis/backoffice/README.md`: completed live evidence, retained isolated-test distinctions/explicit unexercised cases, manual three-table RLS before seed and TLS requirement. No automatic-RLS or production-migration claim.
+- Writer structural readback/link check and `git diff --check` passed; no runtime checks repeated for passive documentation. Parent reviewed the complete two-file diff and whitespace; no credential/target identifiers included.
+
 ## Next step
-Wait for the intended TrackFlow DATABASE_URL in ignored root .env. All implementation units and local verification evidence are committed; no push or PR. T4 stays incomplete until authorized live connectivity/schema/seed and appropriate PostgreSQL checks are observed. Do not repeat passing local suites or publish without user authorization.
+Commit final T4 evidence/setup docs locally, record commit identity and close tasks. No functional blocker remains in current scope. Publishing remains a separate user decision.

@@ -438,12 +438,26 @@ without URLs or driver details; existing service startup/routes remain available
 
 1. Install with `uv sync`. Set the intended development database's private
    `DATABASE_URL` in ignored root `.env` (never commit or share it). Use a
-   PostgreSQL connection URL, including the provider's required SSL options.
+   PostgreSQL connection URL with `sslmode=require`, or set `PGSSLMODE=require`
+   in the startup environment to require TLS.
 2. Run `uv run --env-file .env uvicorn services.api.main:app --port 8000`.
    Only this explicit flag loads `.env`; plain `uv run` does not. When configured,
    startup runs SQLModel `create_all` for inventory metadata, **not a seed**.
    This is development setup, not a production migration strategy.
-3. Register/login through the existing auth API. To add the optional demo, stop
+3. For a new dedicated development database, enable RLS on these three tables
+   **before seeding**. SQLModel `create_all` does not enable RLS automatically.
+   Run only on the intended development target; do not alter unrelated tables:
+
+   ```sql
+   ALTER TABLE public.inventory_sku ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.inventory_stock_entry ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.inventory_stock_exit ENABLE ROW LEVEL SECURITY;
+   ```
+
+   Add no anon/authenticated policies: access is through FastAPI's privileged
+   PostgreSQL connection, not public Supabase clients. This is manual setup,
+   not automatic initialization or migrations.
+4. Register/login through the existing auth API. To add the optional demo, stop
    the API and run this explicit command with that existing active identity ID:
 
    ```bash
@@ -499,9 +513,28 @@ uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py services/
 
 These tests override only the inventory session with local SQLite, isolate TinyDB
 stores, and never connect to Supabase. PostgreSQL SQL compilation checks the lock
-clause but **SQLite cannot prove concurrent PostgreSQL locking**. Real target
-configuration, schema initialization, seed and concurrent outbound integration are
-pending; no live database check is claimed. No frontend is included in T1.
+clause but **SQLite cannot prove concurrent PostgreSQL locking**. These isolated
+checks remain distinct from the completed live development acceptance below.
+
+The intended TrackFlow development Supabase target is configured in ignored root
+`.env`; URL/authentication/TLS/SELECT 1 passed. Authorized setup created exactly
+`inventory_sku`, `inventory_stock_entry`, and `inventory_stock_exit`, with model
+indexes, two SKU foreign keys and RLS enabled on all three, without public policies.
+The privileged backend connection works; no SQL user table or auth migration was added.
+Initial seed counts were 6 SKUs/7 entries/3 exits; a second seed was idempotent.
+Real API receipt/dispatch returned 201, excessive exit returned 400 without mutation,
+and fresh-session persistence passed, retaining 6 SKUs/8 entries/4 exits.
+A bounded two-transaction PostgreSQL NOWAIT check returned expected `55P03`;
+both transactions rolled back. This was not a load test or concurrent HTTP load test.
+
+Independent read-only PostgreSQL/real API/production Next follow-up passed all
+6 product rows and 12 history rows/fields with zero console/page errors and unchanged
+counts. The initial history assertion mismatched rendered `name (SKU)`, not an app
+defect. Live browser auth used a helper-generated preloaded token, not a password-login
+retest; real password login passed earlier isolated browser checks. Expired-token-specific
+and optional outbound 500 cases were not exercised; real invalid-token 401 and other
+negative cases were covered. Identity storage was unchanged; owned servers stopped
+and temporary stores were removed. No functional blocker remains; no push or PR.
 
 ## Tests
 

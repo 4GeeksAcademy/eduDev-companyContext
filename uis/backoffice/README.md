@@ -100,7 +100,7 @@ and CLAUDE.md absent before/during/after startup, then stopped. Legacy rewrite s
 above is earlier evidence, not rerun by the correction; neither check proves browser
 authentication or complete T2 acceptance.
 
-## Inventory source verification and T4 handoff
+## Inventory source verification and T4 acceptance
 
 Run from the repository root:
 
@@ -114,7 +114,7 @@ git diff --check
 
 Native Node tests mock fetch/storage and exercise real request serialization,
 bearer/session handling, readable API errors, cancellation and form helpers. They
-are not browser integration evidence. T4 must check all four guarded routes,
+are not browser integration evidence. T4 acceptance covered all four guarded routes,
 keyboard/narrow/wide layouts, SKU prefill, delayed selection/departure cancellation,
 stock warning/400 feedback, duplicate submission, success reset and history refresh.
 Local browser verification passed using the production build, real FastAPI auth
@@ -126,10 +126,28 @@ separately from real API outcomes; no unexpected console/page errors remained.
 The mobile table overflow found during verification was corrected with a positioned
 scroll container. Verification-owned servers and temporary stores were cleaned.
 Expired-token-specific and optional outbound HTTP 500 cases were not exercised;
-real invalid-token HTTP 401 was verified. `DATABASE_URL` is still absent, so real
-Supabase connectivity, schema/seed execution and PostgreSQL concurrency remain
-pending until an authorized target is configured. No live database/provider calls
-were made. See [API inventory setup and isolated-test boundaries](../../services/api/README.md#inventory-api-t1).
+real invalid-token HTTP 401 was verified.
+
+**Live development acceptance: PASS.** The intended TrackFlow Supabase target is
+configured in ignored root `.env`; URL/authentication/TLS/SELECT 1 passed. Authorized
+setup created only the three inventory tables, model indexes and two SKU foreign
+keys, with RLS enabled/no public policies. The privileged FastAPI PostgreSQL
+connection works; no SQL user table or auth migration was introduced. Initial seed
+6 SKUs/7 entries/3 exits was idempotent on rerun. Real API receipt/dispatch 201,
+overstock 400 without mutation and fresh-session persistence passed, leaving
+6 SKUs/8 entries/4 exits. PostgreSQL two-transaction NOWAIT returned expected
+`55P03`, with both rolled back; this was not a load test.
+
+Live browser products/inbound/outbound stock passed. The initial history assertion
+expected standalone SKU text, but the UI renders `name (SKU)`; no app defect was
+found. Corrected independent read-only follow-up using actual PostgreSQL, real API
+and production Next passed 6 products and 12 history rows with all required fields
+and zero console/page errors. Counts and the identity file stayed unchanged;
+owned servers stopped and temporary stores were removed. Live checks preloaded a
+helper-generated token, not a password-login retest; real password login passed
+in the earlier isolated browser run. The expired-token-specific/optional outbound
+500 limits above still apply. No functional blocker remains; no push or PR.
+See [API inventory setup, manual RLS/TLS requirements and verification boundaries](../../services/api/README.md#inventory-api-t1).
 
 ## Run Locally — legacy static-only mode
 
