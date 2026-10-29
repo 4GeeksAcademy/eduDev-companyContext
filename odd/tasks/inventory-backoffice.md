@@ -28,6 +28,8 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - [x] T4a (done): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check. Commit: `9ce703a0a9c2987d395b9b3bb209550959fdb409`.
 - [x] T4 (done): Local and live Supabase/API/browser acceptance complete, development demo initialized, final setup/evidence documented and independently verified. Commit: `21d0bf882b604fb65741a14f1efac664b9622428`.
 
+- [ ] T5 (in_progress): Publish the verified feature branch and open one PR to `main`, as explicitly authorized by the user. Keep unrelated local task notes excluded; do not merge.
+
 ## Acceptance and focused checks
 ### T1
 - Six routes: GET/POST `/inventory/products`, GET `/inventory/products/{id}`, POST `/inventory/orders/inbound`, POST `/inventory/orders/outbound`, GET `/inventory/orders`.
@@ -151,5 +153,10 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 
 - Final T4 documentation committed as `21d0bf882b604fb65741a14f1efac664b9622428` (`docs(inventory): record verified Supabase integration and setup`). Independent structural verifier `mvsvqcmg-q-d90q` returned PASS, confirmed only four intended documentation files, no secrets/target identifiers, accurate manual RLS/TLS and live/isolated boundaries. Committed-range whitespace check passed; no runtime checks repeated.
 
+## Publication authorization
+- User explicitly authorized remaining commit, push and PR operations, then selected `delivery_strategy=single-pr` (option3). No tracker/child PRs or merge.
+- Verified destination: `4GeeksAcademy/eduDev-companyContext`, default/base `main`, head `feat/inventory-backoffice`. No existing PR for this branch at preflight; no repository PR template or issue/type-label gate found. Standard `enhancement` label is available.
+- Preflight review load:45files,2925additions+56deletions;1239generatedlocklines. Keep work-unit commits for review; no code shrinking or repeat functional checks.
+
 ## Next step
-Implementation and scoped verification are complete. All feature tasks are done; no unresolved functional blocker. Optional manual use and user-authorized publication/submission remain. No push/PR performed; no further automatic code, database or test work.
+Run bounded publication hygiene, commit this delivery record, push the existing branch without force and create one PR to main. Verify the returned PR identity and report actual CI state; no merge or campus action.
