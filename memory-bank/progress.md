@@ -1,5 +1,19 @@
 # Project Progress
 
+## Monorepo Containerization — T4 local verification closure
+
+- Disposable committed-source copies proved website marker/restoration through
+  automatic document reload, backoffice component updates in place and Uvicorn API
+  reload. No image build/container recreation; IDs unchanged and restart counts0.
+  An initial verifier-only zero-navigation assertion was too strict; the focused
+  website follow-up saved both successful observations. Favicon404 remains known.
+- Original source untouched; owned containers/volumes/network/fixtures cleaned.
+  Root .env ignored/untracked, zero history commits in available local refs;
+  contents were not read. Actual environment completeness/live PostgreSQL unverified.
+- Functional local checks are complete with disclosed warnings. This closure is
+  documentation-only: structural readback and diff checks, no repeated suites or
+  native source review. VPS4Geeks/OpenClaw access/preflight and deployment remain.
+
 ## Monorepo Containerization — T3b scoped browser evidence
 
 - Proxy27/27 tests and TypeScript passed. On documented localhost, real synthetic

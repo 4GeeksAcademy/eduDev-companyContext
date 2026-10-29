@@ -49,10 +49,12 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   (feat(docker): compose FastAPI with isolated development storage).
   Use existing API requirements, Python3.11/uv, additional shared-module contexts,
   two services, explicit environment allowlists and isolated data/dependency volumes.
-- [ ] T3b — Connect browser requests through the Next API proxy. **In progress; reviewed, commit pending.**
-  Code27/27, typecheck and bounded functional browser assertions passed on localhost.
+- [x] T3b — Connect browser requests through the Next API proxy. **Done, with disclosed warning.**
+  Code27/27, typecheck, bounded functional browser assertions and native review passed.
   Strict console assertion failed on cosmetic favicon404; warning retained below.
-- [ ] T4 — Verify local integration and document reproducible setup. **Pending.**
+  Commit: d4404a0d3a9923e632031e64f9765878342ee80c
+  (feat(ui): proxy backoffice API requests through Next).
+- [ ] T4 — Verify local integration and document reproducible setup. **Checks complete; commit pending.**
   Prove browser/API integration and bind-edit hot reload without image rebuilding;
   check setup, ignored secrets and remaining assignment criteria. Real PostgreSQL
   and live data are separate authorization boundaries, never implied by HTTP503.
@@ -170,6 +172,23 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   Informational R4-build-runtime at the API-config route:4-5 is a later production
   configuration follow-up, not a correction or reason to rerun this review.
 
+### T4
+
+- Disposable committed-source fixture proved backoffice marker/restoration in
+  place and API title marker/restoration through Uvicorn reload. Container/image
+  IDs unchanged, restart counts0. No builds or original protected-source edits.
+- Website initially hit an overly strict verifier zero-navigation assertion;
+  automatic document reload is valid for this assignment. Focused follow-up
+  observed both marker and restoration automatically, one document navigation
+  each, no manual refresh. Parent read nonempty saved JSON confirming both.
+- Evidence: /tmp/trackflow-t4-436f3f3d-kzsmkgy9/{compose-ps.txt,identities.json}
+  and /tmp/trackflow-web-91819337-uq2imyx0/website-evidence.json.
+- Owned containers/volumes/network/fixtures removed; test ports released. Original
+  source unchanged. Known favicon404 disclosed; no new page errors observed.
+- Root .env is ignored/untracked; zero commits touching it in available local Git
+  refs. No dotenv contents read. Actual user configuration/live PostgreSQL not
+  verified. Documentation-only closure uses readback/diff checks, not new suites.
+
 ## Current boundary and next step
 
 - T3 setup docs now use an independently authored README settings table. Both
@@ -180,11 +199,12 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   authority for target sha256:1c1b1b9a5279acd158953435c23b2291d43162d05108fa1453b0d6f44b70b009.
   Only passive status docs changed after review; source stayed unchanged.
 - T3 committed successfully as 5a52c85; only unrelated task notes remained.
-  Next: local T3b commit, then only remaining T4 hot-reload/setup acceptance. Preserve the favicon console-warning follow-up;
-  do not add cosmetic features or rerun completed proxy/auth checks.
+  T3b committed as d4404a0. Next: commit T4's passive verification evidence,
+  then request safe read-only VPS access/preflight. Do not restart completed
+  local tests, access protected dotenv files or deploy before authorization.
   Never include ignored template or unrelated task notes.
-- Next.js production builds, bind-edit hot reload, configured PostgreSQL and
-  VPS acceptance remain pending. Bounded browser proxy/auth behavior is verified
-  with the documented favicon warning; no full clean-console claim.
-- Commits: T1 4545d9e; T2 8397d13; T3 5a52c85.
+- Local synthetic packaging, proxy/auth and bind-edit reload are verified with
+  disclosed warnings. Actual user environment, production builds/configuration,
+  live PostgreSQL and VPS acceptance remain pending. No clean-console claim.
+- Commits: T1 4545d9e; T2 8397d13; T3 5a52c85; T3b d4404a0.
   No push, PR, merge or VPS actions.

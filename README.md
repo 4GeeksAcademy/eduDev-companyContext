@@ -186,8 +186,12 @@ No backend secrets or upstream origins are emitted by the configuration script.
 **Boundary:** T3 packaging/runtime and T3b focused tests plus synthetic browser
 proxy/authentication checks passed on the documented `localhost` URL. A cosmetic
 favicon404 failed the strict console assertion; a clean console is not claimed.
-Hot-reload/final setup checks remain T4. Configured PostgreSQL and production/VPS
-acceptance are separate; the current checks do not establish complete readiness.
+Hot reload was verified on disposable committed-source copies without rebuilding
+images or recreating containers: website changes/restoration triggered automatic
+Next document reload; backoffice updated in place; Uvicorn reloaded API changes.
+Original source remained unchanged. Root `.env` is ignored/untracked and absent
+from the available local Git history. Real `.env` completeness, configured
+PostgreSQL and production/VPS acceptance remain separate and unverified.
 
 Focused configuration checks use temporary synthetic environment fixtures, no daemon,
 real credentials or root `.env`:
