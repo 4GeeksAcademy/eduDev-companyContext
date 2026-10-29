@@ -1,5 +1,41 @@
 # Project Progress
 
+## Monorepo Containerization — T3b scoped browser evidence
+
+- Proxy27/27 tests and TypeScript passed. On documented localhost, real synthetic
+  login/auth-me/suppliers succeeded, inventory showed expected503 without PostgreSQL,
+  and logout/private-route redirect passed. Config preceded auth; browser requests
+  stayed on the backoffice origin. No auth/layout fix was needed for the earlier
+  dev hang: localhost resolves Next's HMR-origin rejection of literal127.0.0.1.
+- Functional browser assertions passed; the strict console command still failed
+  on cosmetic favicon404, with expected inventory503 separately identified. Zero
+  page exceptions. No claim of clean console or clean verifier exit.
+- Owned containers/volumes/network/browser cleaned; known generated type imports
+  restored. Native T3b review `review-ef2fad0868e2eceb` approved four lenses and
+  exact acknowledgement completed. Informational R4-build-runtime is a later
+  production-config follow-up, not a correction. Only passive status docs changed
+  afterward. Local commit and T4 hot reload are next. Real PostgreSQL and the
+  selected4Geeks VPS remain unverified; no real credentials used.
+
+## Monorepo Containerization — T3b proxy implementation
+
+- Added opt-in Next same-origin routing with a fixed public `/api` configuration
+  script, harmless disabled/static no-ops, early script loading on five legacy
+  pages/root layout, and exactly four API rewrite families. Enabled upstreams must
+  be credential-free HTTP(S) origins; local hostname/apiPort defaults are unchanged.
+- Compose UI adds only nonsecret TRACKFLOW_API_PROXY/TRACKFLOW_API_ORIGIN through
+  interpolation. Root README documents intended values1/http://api:8000; no dotenv,
+  template, tracker, backend, dependency, allowlist or auth/inventory helper edits.
+- Authorized focused Node command: RED21/26 (four intended missing implementation
+  failures plus one test missing a required AbortSignal, corrected in test only);
+  GREEN26/26; expanded origin/required-setting triangulation27/27, zero skips.
+  Local `tsc --noEmit --incremental false` actually passed; static script syntax
+  passed. Existing Node module-type warnings remain non-failing.
+- No apps/containers/builds/real data started or used; synthetic Compose config
+  fixtures clean themselves. Parent task edits and unrelated notes are preserved.
+  T3 runtime evidence below is retained. Real Compose/browser proxy acceptance,
+  T4 hot reload, configured PostgreSQL and VPS remain pending; no full-platform claim.
+
 ## Monorepo Containerization — T3 review closure
 
 - Packaging/runtime verification passed under synthetic-only inputs; see T3

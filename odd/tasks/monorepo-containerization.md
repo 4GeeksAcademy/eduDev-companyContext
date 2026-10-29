@@ -43,19 +43,24 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   process lifecycle handling and Docker ignore rules.
   Commit: 8397d13416bc2ae89bbefce1e5bab7ace561ccd3
   (feat(docker): package website and backoffice in one UI image).
-- [ ] T3 — Package FastAPI and compose development services. **In progress.**
-  Implementation, scoped runtime checks and native review passed; commit pending.
+- [x] T3 — Package FastAPI and compose development services. **Done.**
+  Scoped runtime checks and native review passed.
+  Commit: 5a52c85e675b15341b7093d6526d69957a338171
+  (feat(docker): compose FastAPI with isolated development storage).
   Use existing API requirements, Python3.11/uv, additional shared-module contexts,
   two services, explicit environment allowlists and isolated data/dependency volumes.
-- [ ] T3b — Connect browser requests through the Next API proxy. **Pending.**
-  Same-origin browser paths, internal service-name URL, opt-in configuration;
-  preserve static/local apiPort behavior and shared login/session/inventory identity.
+- [ ] T3b — Connect browser requests through the Next API proxy. **In progress; reviewed, commit pending.**
+  Code27/27, typecheck and bounded functional browser assertions passed on localhost.
+  Strict console assertion failed on cosmetic favicon404; warning retained below.
 - [ ] T4 — Verify local integration and document reproducible setup. **Pending.**
   Prove browser/API integration and bind-edit hot reload without image rebuilding;
   check setup, ignored secrets and remaining assignment criteria. Real PostgreSQL
   and live data are separate authorization boundaries, never implied by HTTP503.
 - [ ] T5 — Deploy to existing VPS and prepare evidence. **Pending authorization.**
-  Confirm SSH target, ports/services, production config and side effects first.
+  User selected the 4Geeks VPS previously used by eduDev-openclaw; Engram16421
+  records connection variables in that project's ignored .env.local (unread).
+  Historical1CPU/~1GiBRAM+2GiBswap is not current capacity proof. Confirm SSH
+  target, existing OpenClaw workload, ports/config and side effects first.
   Collect local/VPS evidence; publishing/PR/merge are separate delivery decisions.
 
 ## Implementation decisions
@@ -74,8 +79,19 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   or suppliers; test startup's supplier bootstrap affects only new isolated storage.
 - Compose requires BuildKit/Compose2.17+. Explicit environment allowlists keep
   backend secrets out of UI. Empty DATABASE_URL deliberately yields inventory503.
-- Browser API proxy is separate T3b: Docker DNS is not browser DNS. Config script
-  must be harmless under static/local hosting, not introduce missing-script404s.
+- T3b uses /uis/backoffice/api-config.js: static file is a no-op; a dynamic
+  Next route returns fixed window.TRACKFLOW_API_BASE_URL='/api' only with
+  server-side TRACKFLOW_API_PROXY=1, otherwise harmless200. Never serialize
+  upstream URLs/secrets. Legacy pages load it before modules; root Next layout
+  uses beforeInteractive. Keep it outside the legacy rewrite/server allowlist.
+- Add only the four used API families: /api/auth, /api/suppliers, /api/inventory,
+  /api/api/incidents to corresponding backend paths. The doubled incident prefix
+  preserves existing client paths. Validate server-only TRACKFLOW_API_ORIGIN as
+  a credential-free HTTP(S) origin; Compose gets values through root.env variables.
+  Existing auth/inventory helpers already accept '/api'; preserve their source.
+- T3b tests cover dynamic/no-op config, script ordering, origin validation/fixed
+  rewrites, relative API helpers and unchanged local apiPort behavior. Synthetic
+  config contract tests include only the two new nonsecret UI variables.
 
 ## Verification evidence
 
@@ -126,6 +142,34 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   No secret-integrity hash claim is made. Build/runtime checks were not repeated
   unnecessarily after passive documentation normalization.
 
+### T3b
+
+- Writer RED21/26 included four implementation failures and a missing test
+  AbortSignal; fixture corrected, GREEN26/26 then27/27; local tsc passed.
+  Independent27/27, UI-only image build and enabled/disabled config HTTP passed.
+- Four enabled families reached401; users/profiles404; config200/no-store exposes
+  only '/api', disabled200no-op removes routing. No internal origin in browser JS.
+- Browser hang at127.0.0.1 was traced to Next's dev-origin HMR rejection. A single
+  script A/B did not resolve it; documented localhost produced HMR101 and correct
+  hydration/redirect without source changes or disabled browser security.
+- Final bounded browser assertions passed on localhost: registration201, actual
+  login200, auth/me200, suppliers200 with visible rows, inventory503 with visible
+  unavailable message (no PostgreSQL). Signout cleared the session and private
+  navigation returned to same-origin login. Config preceded first auth request;
+  every observed browser request stayed on backoffice origin. Zero page exceptions.
+- Verification caveats: an earlier broad alert selector collided with Next's
+  route-announcer. The final strict-console assertion still exited nonzero due
+  to favicon.ico404; follow-up identified the cosmetic resource, not proxy/auth
+  failure. HEAD has no favicon/icon asset and T3b adds none. Keep this warning
+  visible; do not claim a clean console or a clean verifier-command exit.
+- Owned browser/2containers/5volumes/network/tempconfig cleaned;3330/3331/8330
+  released. Retained image trackflow-t3b-verify-d667720d-ui:latest. Parent restored
+  only the2generated next-env imports. No other scoped source mutation reported.
+- Review review-ef2fad0868e2eceb approved four lenses; exact acknowledgement
+  burned authority for target sha256:88b08820cbf12ea631f98a97611235e11720bb54f5b2670249faaa5ffc201909.
+  Informational R4-build-runtime at the API-config route:4-5 is a later production
+  configuration follow-up, not a correction or reason to rerun this review.
+
 ## Current boundary and next step
 
 - T3 setup docs now use an independently authored README settings table. Both
@@ -135,8 +179,12 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
 - T3 review review-9f4d67b3294f8d18 approved and exact acknowledgement burned
   authority for target sha256:1c1b1b9a5279acd158953435c23b2291d43162d05108fa1453b0d6f44b70b009.
   Only passive status docs changed after review; source stayed unchanged.
-- Next: local T3 work-unit commit, then bounded T3b browser/API mapping.
+- T3 committed successfully as 5a52c85; only unrelated task notes remained.
+  Next: local T3b commit, then only remaining T4 hot-reload/setup acceptance. Preserve the favicon console-warning follow-up;
+  do not add cosmetic features or rerun completed proxy/auth checks.
   Never include ignored template or unrelated task notes.
-- Next.js production builds, browser proxy, bind-edit hot reload, configured
-  PostgreSQL and VPS acceptance are not established by the current packaging tests.
-- Commits: T1 4545d9e; T2 8397d13. No push, PR, merge or VPS actions.
+- Next.js production builds, bind-edit hot reload, configured PostgreSQL and
+  VPS acceptance remain pending. Bounded browser proxy/auth behavior is verified
+  with the documented favicon warning; no full clean-console claim.
+- Commits: T1 4545d9e; T2 8397d13; T3 5a52c85.
+  No push, PR, merge or VPS actions.

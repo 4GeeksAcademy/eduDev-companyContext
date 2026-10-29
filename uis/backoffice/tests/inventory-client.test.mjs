@@ -26,6 +26,17 @@ test('all inventory operations use current bearer, configured base, signals and 
   await createMovement('inbound', { sku_id: 3, warehouse: 'LA', quantity: 1, reference: 'receipt' }, signal);
   assert.ok(calls[4].url.endsWith('/orders/inbound'));
 });
+test('inventory reuses relative same-origin base without changing the hostname fallback', async () => {
+  window.TRACKFLOW_API_BASE_URL = '/api';
+  const signal = new AbortController().signal;
+  await listProducts(signal); await listOrders(signal);
+  assert.deepEqual(calls.map(call => call.url), ['/api/inventory/products', '/api/inventory/orders']);
+  delete window.TRACKFLOW_API_BASE_URL;
+  window.location.search = '?apiPort=65536';
+  await listProducts(signal);
+  assert.equal(calls.at(-1).url, 'http://warehouse.test:8000/inventory/products');
+});
+
 test('FastAPI errors are readable, carry status and have robust fallbacks', async () => {
   for (const [body, expected] of [[JSON.stringify({detail:'Insufficient stock'}), /Insufficient stock/], [JSON.stringify({detail:[{loc:['body','quantity'],msg:'Must be positive'}]}), /quantity: Must be positive/], ['not JSON', /failed.*400/i], ['', /failed.*400/i], [JSON.stringify({detail:{private:'object'}}), /failed.*400/i]]) {
     globalThis.fetch = async () => new Response(body, {status:400});

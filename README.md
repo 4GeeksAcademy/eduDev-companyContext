@@ -140,6 +140,8 @@ Requires Docker with BuildKit and Docker Compose 2.17+ supporting
 | `TRACKFLOW_BIND_ADDRESS` | `127.0.0.1` (loopback only) |
 | `WEBSITE_HOST_PORT` / `BACKOFFICE_HOST_PORT` / `API_HOST_PORT` | `3000` / `3001` / `8000` |
 | `BACKOFFICE_LEGACY_PORT` | `3002` (private upstream) |
+| `TRACKFLOW_API_PROXY` | `1` (opt in to same-origin backoffice API routing) |
+| `TRACKFLOW_API_ORIGIN` | `http://api:8000` (server-only internal API origin) |
 | `JWT_SECRET_KEY` | Blank initially; supply a private random key before starting, no fallback |
 | `DATABASE_URL` | Blank; inventory503 unless existing PostgreSQL is configured |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` / `PASSWORD_RESET_EXPIRE_MINUTES` | `30` / `30` |
@@ -175,9 +177,17 @@ imports, API/website/login HTTP200, UI-to-API service DNS, registration/login an
 expected inventory503 with blank SQL configuration. Next dev may regenerate the
 two imports in `uis/backoffice/next-env.d.ts`; review generated changes separately.
 
-**Boundary:** T3 packaging/runtime checks passed. Browser API routing is still T3b;
-Docker service DNS is not browser DNS. Full-stack browser/hot-reload acceptance is
-T4, not complete platform readiness. Production/VPS configuration is separate.
+T3b implements opt-in same-origin backoffice routing: the browser receives only
+`/api`, while Next forwards four fixed auth/supplier/inventory/incident families to
+the validated server-only origin. Restart Next after changing proxy settings.
+Independent static hosting and local Next without opt-in retain hostname/apiPort defaults.
+No backend secrets or upstream origins are emitted by the configuration script.
+
+**Boundary:** T3 packaging/runtime and T3b focused tests plus synthetic browser
+proxy/authentication checks passed on the documented `localhost` URL. A cosmetic
+favicon404 failed the strict console assertion; a clean console is not claimed.
+Hot-reload/final setup checks remain T4. Configured PostgreSQL and production/VPS
+acceptance are separate; the current checks do not establish complete readiness.
 
 Focused configuration checks use temporary synthetic environment fixtures, no daemon,
 real credentials or root `.env`:

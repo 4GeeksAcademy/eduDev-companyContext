@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 const settings = {
   COMPOSE_PROJECT_NAME: 'trackflow-contract', TRACKFLOW_BIND_ADDRESS: '127.0.0.1',
   WEBSITE_HOST_PORT: '3000', BACKOFFICE_HOST_PORT: '3001', API_HOST_PORT: '8000',
+  TRACKFLOW_API_PROXY: '1', TRACKFLOW_API_ORIGIN: 'http://api:8000',
   BACKOFFICE_LEGACY_PORT: '3002', JWT_SECRET_KEY: 'synthetic-test-only-secret',
   DATABASE_URL: '', ACCESS_TOKEN_EXPIRE_MINUTES: '30', PASSWORD_RESET_EXPIRE_MINUTES: '30',
   RESEND_API_KEY: '', RESEND_FROM_EMAIL: '', FRONTEND_PUBLIC_URL: 'http://localhost:3001',
@@ -85,9 +86,10 @@ test('Compose defines isolated two-service development topology', () => {
 });
 test('environment is allowlisted and TinyDB paths target isolated storage', () => {
   const { services: { api, ui } } = rendered();
-  assert.deepEqual(ui.environment, { BACKOFFICE_LEGACY_PORT: '3002' });
+  assert.deepEqual(ui.environment, { BACKOFFICE_LEGACY_PORT: '3002',
+    TRACKFLOW_API_PROXY: '1', TRACKFLOW_API_ORIGIN: 'http://api:8000' });
   const apiKeys = Object.keys(settings).filter(k => !['COMPOSE_PROJECT_NAME', 'TRACKFLOW_BIND_ADDRESS',
-    'WEBSITE_HOST_PORT', 'BACKOFFICE_HOST_PORT', 'API_HOST_PORT', 'BACKOFFICE_LEGACY_PORT'].includes(k));
+    'WEBSITE_HOST_PORT', 'BACKOFFICE_HOST_PORT', 'API_HOST_PORT', 'BACKOFFICE_LEGACY_PORT', 'TRACKFLOW_API_PROXY', 'TRACKFLOW_API_ORIGIN'].includes(k));
   assert.deepEqual(Object.keys(api.environment).sort(), apiKeys.sort());
   for (const key of apiKeys) assert.equal(api.environment[key], settings[key]);
   assert.equal(ui.environment.NEXT_PUBLIC_INVENTORY_API_URL, undefined);
@@ -104,6 +106,13 @@ test('host publishing and API settings honor synthetic overrides', () => {
   assert.deepEqual(ui.ports.map(p => p.published), ['13000', '13001']);
   assert.equal(api.environment.ACCESS_TOKEN_EXPIRE_MINUTES, '45');
   assert.equal(api.environment.FRONTEND_PUBLIC_URL, '');
+});
+test('missing proxy settings fail with actionable setup guidance', () => {
+  for (const key of ['TRACKFLOW_API_PROXY', 'TRACKFLOW_API_ORIGIN']) {
+    const result = config({ [key]: '' });
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes(key));
+  }
 });
 test('empty signing secret fails with actionable setup guidance', () => {
   const result = config({ JWT_SECRET_KEY: '' });

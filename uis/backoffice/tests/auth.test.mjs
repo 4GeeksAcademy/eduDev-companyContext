@@ -135,6 +135,17 @@ test('API configuration preserves deployment defaults and validates ports', () =
   assert.equal(auth.getApiBase(), 'https://api.example.test');
 });
 
+test('relative proxy base preserves exact auth, supplier and incident fetch paths', async () => {
+  window.TRACKFLOW_API_BASE_URL = '/api';
+  await auth.login('synthetic@example.test', 'synthetic');
+  await auth.getCurrentUser();
+  await auth.protectedFetch('/suppliers');
+  await auth.protectedFetch('/api/incidents');
+  assert.deepEqual(calls.map(call => call.url), [
+    '/api/auth/login', '/api/auth/me', '/api/suppliers', '/api/api/incidents',
+  ]);
+});
+
 test('return targets allow only local backoffice pages, preserving apiPort', () => {
   for (const target of ['https://evil.test/suppliers.html', '//evil.test', '/uis/backoffice/suppliers.html',
     '../suppliers.html', 'javascript:alert(1)', 'login.html', 'suppliers.html#fragment', 'suppliers.html\\evil']) {

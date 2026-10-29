@@ -23,7 +23,7 @@
 - The Next inventory host serves the four `/backoffice/inventory/` routes and proxies only allowlisted legacy assets/login on the same browser origin to loopback `127.0.0.1:3001` locally (validated `BACKOFFICE_LEGACY_PORT` override). The shared UI image sets3002 for its private allowlisted Node legacy server, leaving Next on3001 and the website on3000. Root static serving remains independent; it cannot render App Router routes.
 - Keep the public website and internal backoffice layouts separate.
 - Preserve static public-site Web Components and CSS; the minimal Next website reuses styles and reproduces content without changing the independent static host.
-- Build the UI image with context `./uis`, not the repository root. Only website/backoffice and the launcher are copied. Root Compose now supplies separate per-app node_modules and .next named volumes; browser/API routing remains T3b. See [UI container startup](../uis/README.md#ui-development-container). Isolated UI Docker build, startup, routing and shutdown passed; full-stack Compose verification remains pending.
+- Build the UI image with context `./uis`, not the repository root. Only website/backoffice and the launcher are copied. Root Compose now supplies separate per-app node_modules and .next named volumes; opt-in browser/API routing is verified in T3b with synthetic authentication (favicon console warning retained). See [UI container startup](../uis/README.md#ui-development-container). Isolated UI Docker build, startup, routing and shutdown passed; full-stack Compose verification remains pending.
 - Keep the Hito 4 operations overview on static sample data; the separate incident page calls the incident API directly.
 - Reuse `shared/incident_analysis.py` from both CLI and API for aggregation/export. Legacy CSV validation now lives in standard-library `packages/shared/incident_validation.py`, with compatible analyzer reexports. Manager rules in `packages/shared/incidents.py` feed Pydantic schemas in `services/api/incident_models.py`; keep legacy and manager enums distinct.
 - Keep uploaded incident source files transient and retain only the last successful aggregate summary in process memory.
@@ -40,7 +40,8 @@
 - Root `.env` interpolation uses explicit service allowlists, no wholesale env_file.
   Configure ignored root `.env` using the root README settings table; merge only
   missing keys privately and never overwrite existing values.
-  UI gets only the private legacy port; JWT is required with no fallback.
+  UI gets only the private legacy port and nonsecret TRACKFLOW_API_PROXY/
+  TRACKFLOW_API_ORIGIN; JWT is required with no fallback.
 - TinyDB paths must all stay under named `/app/data`; a tmpfs masks legacy source
   data. Existing host records are not imported. Blank `DATABASE_URL` leaves
   inventory unavailable; configured startup retains existing schema creation behavior.
@@ -51,8 +52,13 @@
   `/app/uis/` paths, excluding tracker and whole-tree mounts; four nested named
   dependency/cache volumes are unchanged. Independent synthetic T3 image/runtime
   checks passed, including standalone imports without mounts/network and UI fetch
-  to API service DNS. Browser proxy T3b/hot reload T4/configured PostgreSQL remain
-  pending. Next dev may regenerate two imports in backoffice next-env.d.ts;
+  to API service DNS. T3b now implements a fixed `/api` browser configuration script and four
+  allowlisted API rewrites to a validated server-only HTTP(S) origin. Disabled
+  Next/static modes preserve existing hostname/apiPort/manual overrides. Focused
+  Node tests and synthetic browser login/session/supplier/logout assertions pass
+  on localhost. Strict console checking still failed on favicon404; no clean-console
+  claim. Hot reload T4 and configured PostgreSQL remain pending. Next dev may
+  regenerate two imports in backoffice next-env.d.ts;
   the parent restored only that observed generated delta after verification.
 
 ## Commands
