@@ -4,7 +4,9 @@
 
 | Area | Technology |
 | --- | --- |
-| Root site and Hito 4 UIs | Static HTML, CSS, and browser JavaScript |
+| Root/public website and legacy Hito 4 backoffice | Preserved static HTML, CSS, and browser JavaScript |
+| Backoffice inventory | Next.js 16.4.3 App Router, React 19.2.8, TypeScript; separate host in `uis/backoffice/` |
+| Inventory API/storage | FastAPI, SQLModel and PostgreSQL/Supabase; existing TinyDB authentication |
 | Hito 2 utilities | TypeScript compiled with `tsc`; `tsx` for the console demo |
 | Hito 3 UI | Next.js, React, TypeScript, and Tailwind CSS in its own folder |
 | Local static server | `http-server` from the root development dependencies |
@@ -15,7 +17,8 @@
 
 ## Architecture Decisions
 
-- Keep each UI isolated under `uis/<name>/` with its own entry page, styles, scripts, and README.
+- Keep each UI isolated under `uis/<name>/` with its own entry point, styles, scripts, and README.
+- The Next inventory host serves the four `/backoffice/inventory/` routes and proxies only allowlisted legacy assets/login on the same browser origin to loopback `127.0.0.1:3001`. Root static serving remains independent; it cannot render App Router routes.
 - Keep the public website and internal backoffice layouts separate.
 - Use native Web Components for small reusable public-site elements; no framework is needed.
 - Keep the Hito 4 operations overview on static sample data; the separate incident page calls the incident API directly.
@@ -80,6 +83,32 @@ After `npm run serve`, open:
 - Incident analysis: `http://localhost:3000/uis/backoffice/incident-analysis.html`
 - Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
 - Incident manager: `http://localhost:3000/uis/backoffice/incidents.html` — see [delivery guide](../docs/centralized-incident-manager.md).
+
+### Inventory setup and verification
+
+See the [backoffice README](../uis/backoffice/README.md#inventory-host) for isolated
+package setup, API URL/apiPort alignment, CORS and exact host commands. Root
+`npm run build` compiles Hito 2; inventory uses
+`npm --prefix uis/backoffice run build`. For browser verification, reuse a successful
+production build with `npm --prefix uis/backoffice run start -- --hostname 127.0.0.1 --port 3300`
+and the separate `npm --prefix uis/backoffice run legacy` upstream (3001).
+Choose an explicit available browser port; do not restart unrelated processes.
+
+The [API inventory guide](../services/api/README.md#inventory-api-t1) documents
+`DATABASE_URL`, explicit environment loading, schema setup and optional attributed
+seed. Runtime inventory has no SQLite/TinyDB fallback; missing configuration returns
+safe 503 responses while legacy APIs remain usable. Focused isolated checks:
+
+```bash
+uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py services/api/tests/test_auth_operational.py -q
+node --test uis/backoffice/tests/inventory-client.test.mjs uis/backoffice/tests/inventory-form.test.mjs uis/backoffice/tests/auth.test.mjs
+cd uis/backoffice && npx tsc --noEmit
+```
+
+Use the [UI verification skill](../.agents/skills/verify-trackflow-ui/SKILL.md) for
+static versus Next browser checks. Final inventory browser evidence is pending;
+`DATABASE_URL` is currently absent. Isolated SQLite/session-override evidence does
+not establish live Supabase connectivity or PostgreSQL concurrency behavior.
 
 ## Constraints
 

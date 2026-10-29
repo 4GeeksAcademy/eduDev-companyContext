@@ -24,8 +24,9 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 ## Tasks
 - [x] T1 (done): Implement the minimal authenticated SQLModel inventory API, isolated tests, explicit demo seed command and setup documentation. Commit: `02b7d776823c518eacd16496076734c3599a8615`.
 - [x] T2 (done): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication. Commit: `6dc75f6467b71052c91613717da22d213fcd85f4`.
-- [ ] T3 (in_progress): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms.
-- [ ] T4 (pending): Run final scoped API/UI integration, real Supabase verification when configured, and record delivery/setup evidence.
+- [x] T3 (done): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms. Commit: `ea2a091ddc2b4ec775a96612b2e95e5976672b79`.
+- [ ] T4a (in_progress): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check.
+- [ ] T4 (pending): Resume remaining scoped API/UI integration, real Supabase verification when configured, and record delivery/setup evidence. Blocked by T4a and missing DATABASE_URL.
 
 ## Acceptance and focused checks
 ### T1
@@ -96,7 +97,33 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 ### T3 acceptance evidence
 - Independent verifier `mvst1tux-e-xkdg`: PASS. Exact focused Node command ran once: 16/16 passed (104.46ms), no skips; whitespace passed and initial/final Git scope identical. Read-back found no concrete blocking rubric violation. Helper checks are not React/browser proof.
 - Native four-lens review `review-34271c6025855046` approved and exact acknowledgement burned. Informational advisories only: form interaction coverage, prefill, response shape and ambiguous write retry; no correction offered. Final browser checks remain applicable independently of review.
-- T3 is ready for the authorized local work-unit commit; no full build or backend suite repetition needed for bookkeeping.
+- T3 committed as `ea2a091ddc2b4ec775a96612b2e95e5976672b79` (`feat(inventory): add authenticated stock management views`), with tests/docs and approved generated imports. No full build or backend suite repetition needed for bookkeeping.
+
+### T4 verification progress
+- Documentation worker updated technical context, the existing verify-trackflow-ui skill and backoffice README to distinguish static vs Next hosting, production-build reuse, isolated vs live database evidence, and owned-process cleanup. Structural readback/links/package-script comparison and `git diff --check` passed. No meaningful RED for passive docs, no tests/builds run for them.
+- Parent read the complete updated skill and reran whitespace check. ASSESS remained unassessable because unrelated untracked task notes lack declaration; the final independent verifier also inspects these docs structurally.
+- Cached Node Playwright packages and Chromium executables were located without installation. Independent verifier `mvstflyl-g-xzjs` is running one bounded real-browser + real local FastAPI/auth integration using explicit temporary SQLite session override and isolated TinyDB files. No source writes, no .env reads, no real data mutations or Supabase calls; production Next build is reused without rebuild.
+- Redacted recheck confirms DATABASE_URL still absent/empty. Real Supabase connectivity/schema/seed and PostgreSQL concurrency remain pending and cannot be inferred from local SQLite results.
+
+### T4 browser evidence and mobile blocker
+- Verifier `mvstflyl-g-xzjs` reused the production build and actual FastAPI/auth via a temporary SQLite session override and isolated TinyDB files. All4 unauthenticated redirects/safe login return, six SKUs/warehouse stock/labels, inbound reset+one write under double-submit, reactive outbound stock, stale selection cancellation, exact insufficient-stock400 without write, valid dispatch/loss, reset/fresh stock, and read-only history fields passed.
+- All4 routes passed desktop1440 overflow/control checks. At390px products document.scrollWidth was718: FAIL. Root cause unconfirmed; remaining mobile/session/error/console completion checks were skipped at the stop. Keyboard SKU→quantity passed. Intentional400 was the only recorded console error; final page-error assertion not reached.
+- Harness `/tmp/inventory-t4-n4934sjv/run.py` ran twice: first a harness assertion incorrectly expected next without apiPort; corrected once, second reached the app's mobile failure. No source edits. Only delay injections (350ms inbound,600ms product detail), no fabricated core API outcomes.
+- Evidence: `/tmp/inventory-t4-n4934sjv/retry.log`, desktop screenshots and owned server logs. All owned servers stopped; ports3001/3300/18000 closed; temporary stores removed. Whitespace passed and Git scope unchanged. Docs/skill links structurally verified.
+
+### T4a focused correction evidence
+- Writer measured the actual cause: absolute screen-reader action labels had a containing block outside the static table scroller. Added only `position: relative` and one explanatory CSS comment; no data/control hiding or page overflow suppression.
+- `LAYOUT_PROBE=1 .venv/bin/python -B /tmp/inventory-t4a-layout/run.py` reproduced RED (718px document at390 viewport), then a temporary CSS probe reduced width390 (not final acceptance).
+- `npm --prefix uis/backoffice run build` passed; actual rebuilt UI without injected CSS passed eight layouts (four routes at390/1440). Products document390/wrapper316/table717; history document390/table837; desktop documents1440. Internal horizontal scroll, named action focus, history reachability and form controls passed; no console/page errors.
+- An initial GREEN harness attempt reused fixture identifiers and received409; harness corrected to fresh isolated storage, then passed. No application change for that harness error. All owned servers stopped, ports3001/3300/18000 closed; temp harness/stores retained. Parent confirmed the one-property CSS diff and whitespace pass.
+- Native review `review-0b0f96754d4f8a40` approved the CSS correction and updated verification docs; exact acknowledgement burned successfully, no findings. Independent verifier `mvstt5td-i-vfdj` is spot-checking mobile containment plus the previously skipped session/error/departure checks, using the existing rebuilt app and a fresh disposable harness. No core inventory CRUD repeat or rebuild requested; T4a commit awaits that evidence.
+
+### T4 independent local follow-up
+- Verifier `mvstt5td-i-vfdj`: PASS, one isolated invocation `.venv/bin/python /tmp/inventory-t4a-l8xgkm3r/run.py` reusing the current production build. Independent products/history390px containment and internal scrolling passed; keyboard action focus stayed visible (3px solid).
+- Real login/logout, safe return/apiPort, cross-tab removal, fresh login, hidden delayed validation and real invalid-token401 clear/redirect passed. Explicit auth500 injection retained valid token and Retry reached real API. Products/receipt/outbound loading/empty/nonJSON500/retry, detail500 disable/retry, delayed-departure cancellation, receipt400/500 input retention and history loading/empty/error/retry passed. Core write successes/real overstock400 were reused from the prior run, not repeated.
+- Zero unexpected console/page errors; nine deliberately injected/resource400/401/500 messages separated. Exactly one setup movement remained; intercepted error submissions did not persist. Expired-token-specific and optional outbound500 were not exercised; real invalid-token401 was.
+- Whitespace passed, pre/post source scope unchanged. Owned servers stopped and ports3001/3300/18000 closed; test stores removed. Logs/screenshots retained under `/tmp/inventory-t4a-l8xgkm3r/`. Local acceptance uses combined prior core-flow evidence, writer8layout matrix and this independent follow-up; no Supabase claim.
+- T4a correction and verification docs are ready for the authorized local commit. The original mobile FAIL is resolved; no current source blocker found. Non-failing Node/dependency deprecation and Next workspace-root warnings remain documented.
 
 ## Next step
-Commit T3 locally, record its identity, then perform T4 scoped browser/integration and documentation verification. Real Supabase configuration remains pending; do not claim full delivery without the live check.
+Commit corrected UI and verification evidence locally, then wait for the intended TrackFlow DATABASE_URL in ignored root .env. T4 stays incomplete until authorized live connectivity/schema/seed and appropriate PostgreSQL checks are observed. Do not repeat passing local suites or publish without user authorization.

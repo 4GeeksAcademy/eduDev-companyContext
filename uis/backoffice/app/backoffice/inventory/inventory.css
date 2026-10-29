@@ -6,7 +6,8 @@
 .inventory a[aria-current] { font-weight: bold; text-decoration-thickness: .2em; }
 .inventory section { background: white; border: 1px solid #c6d1dc; border-radius: .5rem; padding: clamp(.75rem, 2vw, 1.5rem); }
 .inventory h1, .inventory h2 { line-height: 1.2; }
-.inventory .table-scroll { overflow-x: auto; }
+/* Keep absolutely positioned accessible labels inside the table's scroll container. */
+.inventory .table-scroll { position: relative; overflow-x: auto; }
 .inventory table { width: 100%; border-collapse: collapse; text-align: left; }
 .inventory th, .inventory td { padding: .75rem; border-bottom: 1px solid #c6d1dc; vertical-align: top; }
 .inventory caption { text-align: left; padding-bottom: .75rem; }

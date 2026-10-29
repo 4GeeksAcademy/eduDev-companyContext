@@ -2,7 +2,7 @@
 
 Internal operations interface for TrackFlow's Los Angeles and Zaragoza teams.
 Legacy operations remain static; a minimal Next.js App Router host adds the
-inventory session boundary without replacing those pages.
+four authenticated inventory views without replacing those pages.
 The overview uses local sample data; the incident and supplier pages connect to the
 local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
@@ -24,6 +24,19 @@ npm --prefix uis/backoffice run legacy
 # Browser-facing Next host, port 3000
 npm --prefix uis/backoffice run dev -- --hostname 0.0.0.0 --port 3000
 ```
+
+For verification, prefer the existing successful production build rather than dev:
+
+```bash
+# Separate terminal from the legacy upstream; choose an available browser port
+npm --prefix uis/backoffice run start -- --hostname 127.0.0.1 --port 3300
+```
+
+This requires a matching prior `npm --prefix uis/backoffice run build`; do not
+silently rebuild or restart existing servers during verification. Root
+`npm run serve` only serves static files, not inventory App Router routes.
+Follow the [static-versus-Next UI verification workflow](../../.agents/skills/verify-trackflow-ui/SKILL.md),
+including process ownership, API alignment and truthful evidence boundaries.
 
 The legacy script runs exactly
 `cd ../.. && ./node_modules/.bin/http-server . -p 3001 -a 127.0.0.1`
@@ -104,8 +117,19 @@ bearer/session handling, readable API errors, cancellation and form helpers. The
 are not browser integration evidence. T4 must check all four guarded routes,
 keyboard/narrow/wide layouts, SKU prefill, delayed selection/departure cancellation,
 stock warning/400 feedback, duplicate submission, success reset and history refresh.
-Real Supabase/PostgreSQL verification remains separate and requires an authorized
-configured target; no live database or provider calls are needed for these tests.
+Local browser verification passed using the production build, real FastAPI auth
+and inventory routes, isolated TinyDB stores, and an explicit temporary SQLite
+session override. Core movements, stock warnings/real HTTP 400, history, session
+handling, retries, selection/departure cancellation, duplicate prevention, keyboard
+access, and 390/1440px layouts passed. Error/empty/delay injections were identified
+separately from real API outcomes; no unexpected console/page errors remained.
+The mobile table overflow found during verification was corrected with a positioned
+scroll container. Verification-owned servers and temporary stores were cleaned.
+Expired-token-specific and optional outbound HTTP 500 cases were not exercised;
+real invalid-token HTTP 401 was verified. `DATABASE_URL` is still absent, so real
+Supabase connectivity, schema/seed execution and PostgreSQL concurrency remain
+pending until an authorized target is configured. No live database/provider calls
+were made. See [API inventory setup and isolated-test boundaries](../../services/api/README.md#inventory-api-t1).
 
 ## Run Locally — legacy static-only mode
 
