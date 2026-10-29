@@ -15,9 +15,9 @@ export function getApiBase() {
   ).replace(/\/$/, '');
 }
 
-// Deliberately accept relative page names, never arbitrary URL destinations.
+// Exact inventory paths plus legacy relative pages, never arbitrary destinations.
 export function safeReturnTarget(next) {
-  const match = /^(?:\.\/)?(index\.html|suppliers\.html|incident-analysis\.html|incidents\.html)(\?[^#\\]*)?$/.exec(next ?? '');
+  const match = /^(?:\.\/)?(index\.html|suppliers\.html|incident-analysis\.html|incidents\.html|\/backoffice\/inventory\/(?:products|orders(?:\/inbound|\/outbound)?))(\?[^#\\]*)?$/.exec(next ?? '');
   const page = match ? match[1] : 'index.html';
   const query = new URLSearchParams(match?.[2] ?? '');
   const port = apiPort(window.location.search) ?? apiPort(query.toString());
@@ -28,11 +28,12 @@ export function safeReturnTarget(next) {
 
 function redirectToLogin() {
   const { pathname, search } = window.location;
-  const page = pathname.endsWith('/') ? 'index.html' : pathname.split('/').pop();
+  const inventory = pathname.startsWith('/backoffice/inventory/');
+  const page = inventory ? pathname : pathname.endsWith('/') ? 'index.html' : pathname.split('/').pop();
   const query = new URLSearchParams({ next: safeReturnTarget(page + search) });
   const port = apiPort(search);
   if (port) query.set('apiPort', port);
-  window.location.replace(`login.html?${query}`);
+  window.location.replace(`${inventory ? '/uis/backoffice/' : ''}login.html?${query}`);
 }
 
 export function logout() {
@@ -46,13 +47,13 @@ function unauthorized(token) {
   throw new Error('Please sign in to continue.');
 }
 
-export async function protectedFetch(path, options = {}) {
+export async function protectedFetch(path, options = {}, apiBase = getApiBase()) {
   if (!/^\/(?!\/)/.test(path)) throw new Error('Expected an API-relative path.');
   const token = getToken();
   if (!token) unauthorized(token);
   const headers = new Headers(options.headers);
   headers.set('Authorization', `Bearer ${token}`);
-  const response = await fetch(`${getApiBase()}${path}`, { ...options, headers });
+  const response = await fetch(`${apiBase.replace(/\/$/, '')}${path}`, { ...options, headers });
   if (response.status === 401) unauthorized(token);
   return response;
 }

@@ -1,12 +1,155 @@
 # TrackFlow Backoffice
 
-Static internal operations interface for TrackFlow's Los Angeles and Zaragoza teams.
+Internal operations interface for TrackFlow's Los Angeles and Zaragoza teams.
+Legacy operations remain static; a minimal Next.js App Router host adds the
+four authenticated inventory views without replacing those pages.
 The overview uses local sample data; the incident and supplier pages connect to the
 local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
 
-## Run Locally
+## Inventory host
+
+From the repository root, install the isolated host dependencies:
+
+```bash
+npm --prefix uis/backoffice install
+```
+
+Run these in **separate terminals** (no process manager):
+
+```bash
+# Private legacy upstream: repo-root serving directory, loopback only, port 3001
+npm --prefix uis/backoffice run legacy
+# Browser-facing Next host, port 3000
+npm --prefix uis/backoffice run dev -- --hostname 0.0.0.0 --port 3000
+```
+
+For verification, prefer the existing successful production build rather than dev:
+
+```bash
+# Separate terminal from the legacy upstream; choose an available browser port
+npm --prefix uis/backoffice run start -- --hostname 127.0.0.1 --port 3300
+```
+
+This requires a matching prior `npm --prefix uis/backoffice run build`; do not
+silently rebuild or restart existing servers during verification. Root
+`npm run serve` only serves static files, not inventory App Router routes.
+Follow the [static-versus-Next UI verification workflow](../../.agents/skills/verify-trackflow-ui/SKILL.md),
+including process ownership, API alignment and truthful evidence boundaries.
+
+The legacy script runs exactly
+`cd ../.. && ./node_modules/.bin/http-server . -p 3001 -a 127.0.0.1`
+from the backoffice package. It needs the existing root http-server installation.
+Next rewrites an explicit allowlist of backoffice HTML/JS/CSS files to
+`http://127.0.0.1:3001`; it does not proxy the repository, API, config or secrets.
+Do not expose the upstream publicly. Ports must differ to avoid recursion.
+Top-level `agentRules: false` disables Next's automatic agent-instruction generation
+so the existing project instructions remain authoritative.
+
+Open `http://localhost:3000/backoffice/inventory/products` for live SKUs and
+stock status (low below 10 units, healthy at 10 or more). Row links preselect a
+SKU for goods receipt/stock entry or dispatch/loss/stock exit. The four views are:
+
+- `/backoffice/inventory/products`: read-only SKU stock table.
+- `/backoffice/inventory/orders/inbound`: goods receipt with reference.
+- `/backoffice/inventory/orders/outbound`: fresh selected-SKU stock, dispatch tracking or loss.
+- `/backoffice/inventory/orders`: read-only movement history with user attribution.
+
+Stock exits warn above displayed stock; the backend remains authoritative and
+HTTP 400 feedback appears beside quantity. Successful movements reset the form;
+selecting a SKU again fetches fresh outbound stock. No product administration is included. The shared inventory layout
+validates `/auth/me` before mounting private content; transient failures offer
+retry/sign-out, departure aborts validation, and cross-tab changes revalidate.
+No bearer token is placed in a URL or manually forwarded by the host.
+
+Legacy login remains at `/uis/backoffice/login.html`, on the same browser-facing
+origin as inventory, so existing `trackflow.auth.token` storage is reused.
+Use the same browser-reachable identity/inventory API service for login and
+inventory. The existing auth helper defaults to the page hostname on port 8000;
+optional validated `?apiPort=8001` changes only the port and survives login return.
+Custom `window.TRACKFLOW_API_BASE_URL` must be configured consistently on login,
+legacy pages and the inventory host before auth calls; the host adds no custom
+configuration injector. Optionally configure `NEXT_PUBLIC_INVENTORY_API_URL`
+before starting/building Next for all inventory requests; otherwise they reuse
+`getApiBase()` (dynamic browser hostname and validated apiPort). This URL MUST
+identify the intended same authentication service/identity store as legacy login
+and the session gate. It does not reconfigure either of them. For a non-default
+local API port, use matching `?apiPort=8001` on legacy login and inventory links,
+even when the inventory API URL is explicitly configured.
+No query parameter may supply an arbitrary API hostname. Allow the exact Next
+browser origin in API CORS. No external fonts or network assets are used.
+
+Focused checks (repository root):
+
+```bash
+node --test uis/backoffice/tests/auth.test.mjs uis/backoffice/tests/session-guard.test.mjs uis/backoffice/tests/next-host.test.mjs
+cd uis/backoffice && npx tsc --noEmit
+```
+
+T2 observed 12/12 Node tests and TypeScript passing. A bounded Next dev HTTP
+smoke (3300, private upstream 3001) returned 200 for the protected landing's
+validation shell, legacy login/index, auth.js and styles.css; both owned servers
+were stopped. This is not browser-auth acceptance. The T2 foundation did not run a full build or four-route browser/API checks. The initial Next 16.3.1 installation
+matched Tracker metadata but reported one critical audit finding. With explicit
+authorization, only Next was upgraded to the audit-offered 16.4.3 pin; React/ReactDOM
+remain 19.2.8 and TypeScript tooling is unchanged. The subsequent npm audit reported
+zero vulnerabilities. Correction checks passed 13/13 Node tests and TypeScript;
+one owned Next dev start returned the protected validation shell with AGENTS.md
+and CLAUDE.md absent before/during/after startup, then stopped. Legacy rewrite smoke
+above is earlier evidence, not rerun by the correction; neither check proves browser
+authentication or complete T2 acceptance.
+
+## Inventory source verification and T4 acceptance
+
+Run from the repository root:
+
+```bash
+node --test uis/backoffice/tests/inventory-client.test.mjs uis/backoffice/tests/inventory-form.test.mjs uis/backoffice/tests/auth.test.mjs
+cd uis/backoffice && npx tsc --noEmit
+# Back at repository root:
+npm --prefix uis/backoffice run build
+git diff --check
+```
+
+Native Node tests mock fetch/storage and exercise real request serialization,
+bearer/session handling, readable API errors, cancellation and form helpers. They
+are not browser integration evidence. T4 acceptance covered all four guarded routes,
+keyboard/narrow/wide layouts, SKU prefill, delayed selection/departure cancellation,
+stock warning/400 feedback, duplicate submission, success reset and history refresh.
+Local browser verification passed using the production build, real FastAPI auth
+and inventory routes, isolated TinyDB stores, and an explicit temporary SQLite
+session override. Core movements, stock warnings/real HTTP 400, history, session
+handling, retries, selection/departure cancellation, duplicate prevention, keyboard
+access, and 390/1440px layouts passed. Error/empty/delay injections were identified
+separately from real API outcomes; no unexpected console/page errors remained.
+The mobile table overflow found during verification was corrected with a positioned
+scroll container. Verification-owned servers and temporary stores were cleaned.
+Expired-token-specific and optional outbound HTTP 500 cases were not exercised;
+real invalid-token HTTP 401 was verified.
+
+**Live development acceptance: PASS.** The intended TrackFlow Supabase target is
+configured in ignored root `.env`; URL/authentication/TLS/SELECT 1 passed. Authorized
+setup created only the three inventory tables, model indexes and two SKU foreign
+keys, with RLS enabled/no public policies. The privileged FastAPI PostgreSQL
+connection works; no SQL user table or auth migration was introduced. Initial seed
+6 SKUs/7 entries/3 exits was idempotent on rerun. Real API receipt/dispatch 201,
+overstock 400 without mutation and fresh-session persistence passed, leaving
+6 SKUs/8 entries/4 exits. PostgreSQL two-transaction NOWAIT returned expected
+`55P03`, with both rolled back; this was not a load test.
+
+Live browser products/inbound/outbound stock passed. The initial history assertion
+expected standalone SKU text, but the UI renders `name (SKU)`; no app defect was
+found. Corrected independent read-only follow-up using actual PostgreSQL, real API
+and production Next passed 6 products and 12 history rows with all required fields
+and zero console/page errors. Counts and the identity file stayed unchanged;
+owned servers stopped and temporary stores were removed. Live checks preloaded a
+helper-generated token, not a password-login retest; real password login passed
+in the earlier isolated browser run. The expired-token-specific/optional outbound
+500 limits above still apply. No functional blocker remains; no push or PR.
+See [API inventory setup, manual RLS/TLS requirements and verification boundaries](../../services/api/README.md#inventory-api-t1).
+
+## Run Locally — legacy static-only mode
 
 Start the API from the repository root in one terminal:
 
@@ -56,13 +199,16 @@ priority override.
 
 Open `http://localhost:3000/uis/backoffice/login.html?apiPort=8001` for standalone
 sign-in. Login sends form-urlencoded credentials to `/auth/login`, validates the
-bearer response and stores `trackflow.auth.token` in localStorage. Only the four
-explicitly allowed relative backoffice page names are accepted as `next`; `apiPort` is retained.
+bearer response and stores `trackflow.auth.token` in localStorage. The four
+explicitly allowed relative backoffice page names and only these exact root-relative
+inventory paths are accepted as `next`: `/backoffice/inventory/products`,
+`/backoffice/inventory/orders`, `/backoffice/inventory/orders/inbound`, and
+`/backoffice/inventory/orders/outbound`. `apiPort` is retained across login and inventory navigation.
 Configure `window.TRACKFLOW_API_BASE_URL` consistently **on every page, including
 login**, before its module loads. No query parameter can override the API host.
 
 `auth.js` exports `getApiBase`, `getToken`, `setToken`, `logout`, `login(email,
-password, { signal })`, `safeReturnTarget(next)`, `protectedFetch(path, options)`
+password, { signal })`, `safeReturnTarget(next)`, `protectedFetch(path, options, apiBase?)`
 and `getCurrentUser(options)`. Protected paths are API-relative (`/suppliers`);
 the wrapper returns an unconsumed Response and preserves supplied Headers/body.
 Callers set JSON Content-Type themselves; multipart boundaries remain automatic.
@@ -79,7 +225,7 @@ Tracker registration/profile remain in the independent Next app. Different origi
 
 Run `node --test uis/backoffice/tests/*.test.mjs` from the repository root.
 Tests exercise auth and gate lifecycle with minimal browser/fetch/storage fakes.
-No build step is required.
+Legacy static-only mode needs no build. The inventory host uses Next.js.
 
 ## Incident manager — T4 (source implementation)
 

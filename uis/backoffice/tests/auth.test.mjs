@@ -18,6 +18,23 @@ beforeEach(() => {
   };
 });
 
+test('inventory returns and login redirects stay exact and same-origin', async () => {
+  for (const route of ['products', 'orders', 'orders/inbound', 'orders/outbound']) {
+    const path = `/backoffice/inventory/${route}`;
+    assert.equal(auth.safeReturnTarget(path), `${path}?apiPort=8001`);
+    window.location.pathname = path;
+    await assert.rejects(auth.getCurrentUser());
+    const target = new URL(redirects.at(-1), window.location.origin);
+    assert.equal(target.pathname, '/uis/backoffice/login.html');
+    assert.equal(target.searchParams.get('next'), `${path}?apiPort=8001`);
+  }
+  for (const path of ['/backoffice/inventory/products/', '/backoffice/inventory/products/../orders',
+    '//evil.test/backoffice/inventory/products', '/backoffice/inventory/%70roducts',
+    '/backoffice/inventory/products%3f', '/backoffice/inventory/products\\evil']) {
+    assert.equal(auth.safeReturnTarget(path), 'index.html?apiPort=8001');
+  }
+});
+
 test('module imports without browser globals', async () => {
   delete globalThis.window;
   await import('../auth.js?server-safe');

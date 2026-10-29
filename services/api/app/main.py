@@ -19,6 +19,8 @@ from services.api.routes.profiles import router as profiles_router
 from services.api.seed import seed_suppliers
 from services.api.auth_dependencies import get_current_user
 from services.api.database import StorageError
+from services.api.inventory_database import initialize_inventory
+from services.api.routes.inventory import router as inventory_router
 
 
 DEFAULT_ORIGINS = (
@@ -36,6 +38,7 @@ def _allowed_origins() -> list[str]:
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     seed_suppliers()
+    initialize_inventory()
     yield
 
 
@@ -62,3 +65,4 @@ app.include_router(suppliers_router, dependencies=[Depends(get_current_user)])
 app.include_router(users_router)
 app.include_router(auth_router)
 app.include_router(profiles_router)
+app.include_router(inventory_router)

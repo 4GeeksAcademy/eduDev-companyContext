@@ -425,6 +425,117 @@ These tests use `raise_server_exceptions=False` to inspect Starlette's last-reso
 JSON response: its server-error middleware otherwise re-raises after sending the
 response. Production exception propagation is not disabled.
 
+## Inventory API (T1)
+
+The same app now exposes six authenticated internal routes. All active roles may
+operate inventory; `user_uuid` is the current TinyDB `User.id`, not a SQL user.
+Inventory requires a **PostgreSQL/Supabase `DATABASE_URL`** in the server environment.
+There is no runtime SQLite or TinyDB inventory fallback. Missing/invalid config or
+SQL connection failure returns **503** `{"detail":"Inventory service unavailable."}`
+without URLs or driver details; existing service startup/routes remain available.
+
+### Development setup
+
+1. Install with `uv sync`. Set the intended development database's private
+   `DATABASE_URL` in ignored root `.env` (never commit or share it). Use a
+   PostgreSQL connection URL with `sslmode=require`, or set `PGSSLMODE=require`
+   in the startup environment to require TLS.
+2. Run `uv run --env-file .env uvicorn services.api.main:app --port 8000`.
+   Only this explicit flag loads `.env`; plain `uv run` does not. When configured,
+   startup runs SQLModel `create_all` for inventory metadata, **not a seed**.
+   This is development setup, not a production migration strategy.
+3. For a new dedicated development database, enable RLS on these three tables
+   **before seeding**. SQLModel `create_all` does not enable RLS automatically.
+   Run only on the intended development target; do not alter unrelated tables:
+
+   ```sql
+   ALTER TABLE public.inventory_sku ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.inventory_stock_entry ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.inventory_stock_exit ENABLE ROW LEVEL SECURITY;
+   ```
+
+   Add no anon/authenticated policies: access is through FastAPI's privileged
+   PostgreSQL connection, not public Supabase clients. This is manual setup,
+   not automatic initialization or migrations.
+4. Register/login through the existing auth API. To add the optional demo, stop
+   the API and run this explicit command with that existing active identity ID:
+
+   ```bash
+   uv run --env-file .env python -m services.api.inventory_seed --user-uuid <existing-user-id>
+   ```
+
+   The schema must already exist. Run only against the approved development target.
+   Six official briefing SKUs, seven entries (including repeated receipts) and
+   three exits cover LA/ZGZ and dispatch/loss. Stable seed keys skip existing demo
+   movements without replacing quantities, dates or attribution. Existing products
+   are reused only when their domain fields match; a mismatch or insufficient
+   stock aborts the transaction. No data is erased; this is not a reset command.
+   Stop other seed processes; concurrent seed execution is not supported.
+
+### HTTP contract
+
+| Route | Success | Request fields |
+| --- | --- | --- |
+| `GET /inventory/products` | 200 product array | none |
+| `POST /inventory/products` | 201 product | name, sku, client_name, category, warehouse |
+| `GET /inventory/products/{id}` | 200 product | none |
+| `POST /inventory/orders/inbound` | 201 inbound record | sku_id, quantity, reference, warehouse |
+| `POST /inventory/orders/outbound` | 201 outbound record | sku_id, quantity, exit_type, tracking_number, warehouse |
+| `GET /inventory/orders` | 200 movement array, newest first | none |
+
+Products contain `id`, `name`, `sku`, `client_name`, `category`, `warehouse`, and
+computed `current_stock`. Category is fashion/electronics/cosmetics; warehouse is
+LA/ZGZ. SKU codes are unique (duplicate POST: **409**). Text must be nonblank.
+Requests reject unknown fields (**422**). Quantities must be positive strict JSON
+integers, never booleans, fractions or numeric strings. Movement warehouse must
+match the SKU row (**400**). Unknown SKU/product is **404**.
+
+Inbound requires nonblank `reference`. Outbound `exit_type` is dispatch/loss:
+dispatch requires nonblank `tracking_number`; loss requires null (or omission).
+Both movement responses contain `id`, `sku_id`, `name`, `sku`, `client_name`,
+`category`, `quantity`, `warehouse`, UTC `created_at`, and `user_uuid`.
+`order_type: "inbound"` adds `reference`; `order_type: "outbound"` adds
+`exit_type` and nullable `tracking_number`. History has no generic `product_id`.
+
+Stock is summed entries minus exits by **sku_id AND warehouse**, never a stored
+column. Outbound locks the SKU with PostgreSQL `SELECT FOR UPDATE` before checking
+stock and inserting, in the same transaction. Insufficient stock is **400**:
+`Insufficient stock for SKU '{sku}'. Available: {available}, requested: {quantity}.`
+All validation precedes persistence. Product listing uses grouped aggregates;
+history uses two joined queries, not per-movement product lookups.
+
+### Verification boundaries
+
+```bash
+uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py -q
+uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py services/api/tests/test_auth_operational.py -q
+```
+
+These tests override only the inventory session with local SQLite, isolate TinyDB
+stores, and never connect to Supabase. PostgreSQL SQL compilation checks the lock
+clause but **SQLite cannot prove concurrent PostgreSQL locking**. These isolated
+checks remain distinct from the completed live development acceptance below.
+
+The intended TrackFlow development Supabase target is configured in ignored root
+`.env`; URL/authentication/TLS/SELECT 1 passed. Authorized setup created exactly
+`inventory_sku`, `inventory_stock_entry`, and `inventory_stock_exit`, with model
+indexes, two SKU foreign keys and RLS enabled on all three, without public policies.
+The privileged backend connection works; no SQL user table or auth migration was added.
+Initial seed counts were 6 SKUs/7 entries/3 exits; a second seed was idempotent.
+Real API receipt/dispatch returned 201, excessive exit returned 400 without mutation,
+and fresh-session persistence passed, retaining 6 SKUs/8 entries/4 exits.
+A bounded two-transaction PostgreSQL NOWAIT check returned expected `55P03`;
+both transactions rolled back. This was not a load test or concurrent HTTP load test.
+
+Independent read-only PostgreSQL/real API/production Next follow-up passed all
+6 product rows and 12 history rows/fields with zero console/page errors and unchanged
+counts. The initial history assertion mismatched rendered `name (SKU)`, not an app
+defect. Live browser auth used a helper-generated preloaded token, not a password-login
+retest; real password login passed earlier isolated browser checks. Expired-token-specific
+and optional outbound 500 cases were not exercised; real invalid-token 401 and other
+negative cases were covered. Identity storage was unchanged; owned servers stopped
+and temporary stores were removed. No functional blocker remains; no push or PR.
+
 ## Tests
 
 See the root [testing guide](../../TESTING.md) for the endpoint case plan,
