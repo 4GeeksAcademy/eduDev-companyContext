@@ -47,13 +47,13 @@ function unauthorized(token) {
   throw new Error('Please sign in to continue.');
 }
 
-export async function protectedFetch(path, options = {}) {
+export async function protectedFetch(path, options = {}, apiBase = getApiBase()) {
   if (!/^\/(?!\/)/.test(path)) throw new Error('Expected an API-relative path.');
   const token = getToken();
   if (!token) unauthorized(token);
   const headers = new Headers(options.headers);
   headers.set('Authorization', `Bearer ${token}`);
-  const response = await fetch(`${getApiBase()}${path}`, { ...options, headers });
+  const response = await fetch(`${apiBase.replace(/\/$/, '')}${path}`, { ...options, headers });
   if (response.status === 401) unauthorized(token);
   return response;
 }

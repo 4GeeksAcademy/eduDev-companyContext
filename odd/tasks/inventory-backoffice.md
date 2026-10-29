@@ -23,8 +23,8 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 
 ## Tasks
 - [x] T1 (done): Implement the minimal authenticated SQLModel inventory API, isolated tests, explicit demo seed command and setup documentation. Commit: `02b7d776823c518eacd16496076734c3599a8615`.
-- [ ] T2 (in_progress): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication.
-- [ ] T3 (pending): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms.
+- [x] T2 (done): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication. Commit: `6dc75f6467b71052c91613717da22d213fcd85f4`.
+- [ ] T3 (in_progress): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms.
 - [ ] T4 (pending): Run final scoped API/UI integration, real Supabase verification when configured, and record delivery/setup evidence.
 
 ## Acceptance and focused checks
@@ -84,7 +84,19 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 ### T2 acceptance evidence
 - Independent verifier `mvssnlki-b-o8df`: PASS. Focused Node command executed once: 13 passed, no failures/skips; `git diff --check` passed. Initial/final Git scope matched, no source drift. Reviewed exact proxy allowlist, safe login returns, gate lifecycle/SSR short-circuit, pinned versions and absent generated instructions. No blocking regressions.
 - Native review `review-df407c9d8728aa02`: four lenses approved; exact acknowledgement burned successfully. One informational advisory about React gate behavioral coverage, no correction. Browser gate verification remains part of T4; helper tests do not prove React browser behavior.
-- T2 is ready for its authorized local work-unit commit; full build and browser/API integration remain intentionally deferred to T3/T4.
+- T2 committed as `6dc75f6467b71052c91613717da22d213fcd85f4` (`feat(backoffice): add Next.js host with shared session protection`). Most changed lines are the generated package lock. Full build and browser/API integration remain intentionally deferred to T3/T4. No push/PR.
+
+### T3 implementation evidence and generated-file disposition
+- Writer implemented four inventory routes, central authenticated API client, typed payload/form helpers, responsive scoped CSS and setup documentation. Shared protectedFetch gained an optional explicit API base; existing callers remain unchanged.
+- RED: 10 existing tests passed, two new test modules failed because implementation modules were absent. GREEN: `node --test uis/backoffice/tests/inventory-client.test.mjs uis/backoffice/tests/inventory-form.test.mjs uis/backoffice/tests/auth.test.mjs` passed 16/16, including errors/cancellation/stale401 and quantity/tracking/stock-warning helpers. No assertion RED claimed for the absent modules.
+- `cd uis/backoffice && npx tsc --noEmit`, `npm --prefix uis/backoffice run build`, and `git diff --check` passed. All four routes generated. Module-type and workspace-root warnings remain non-failing; no browser or real database verification claimed.
+- Required Next production build changed only two imports in `uis/backoffice/next-env.d.ts` from `.next/dev/types/` to `.next/types/`. This file was omitted from the writer's T3 allowed surfaces, so the worker stopped. Parent confirmed the exact generated diff; no revert performed. User approved retaining the two generated production-type imports. Disposition cleared; no revert or repeat build is needed.
+- Parent spot-check inspected outbound form cancellation, selection/reset and inline400 handling; whitespace passed. ASSESS returned unassessable (untracked declaration), requiring an independent verifier before closing T3.
+
+### T3 acceptance evidence
+- Independent verifier `mvst1tux-e-xkdg`: PASS. Exact focused Node command ran once: 16/16 passed (104.46ms), no skips; whitespace passed and initial/final Git scope identical. Read-back found no concrete blocking rubric violation. Helper checks are not React/browser proof.
+- Native four-lens review `review-34271c6025855046` approved and exact acknowledgement burned. Informational advisories only: form interaction coverage, prefill, response shape and ambiguous write retry; no correction offered. Final browser checks remain applicable independently of review.
+- T3 is ready for the authorized local work-unit commit; no full build or backend suite repetition needed for bookkeeping.
 
 ## Next step
-Commit T2 locally under existing authorization, record its identity, then implement T3. Keep T4 real integration pending. Do not repeat backend tests for frontend-only work.
+Commit T3 locally, record its identity, then perform T4 scoped browser/integration and documentation verification. Real Supabase configuration remains pending; do not claim full delivery without the live check.

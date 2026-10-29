@@ -8,7 +8,7 @@ local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
 
-## Inventory host (T2 foundation)
+## Inventory host
 
 From the repository root, install the isolated host dependencies:
 
@@ -34,9 +34,18 @@ Do not expose the upstream publicly. Ports must differ to avoid recursion.
 Top-level `agentRules: false` disables Next's automatic agent-instruction generation
 so the existing project instructions remain authoritative.
 
-Open `http://localhost:3000/backoffice/inventory/products`. This is only a
-**temporary landing**, not the product table. Orders/history/inbound/outbound
-views and the inventory API client are T3 work. The shared inventory layout
+Open `http://localhost:3000/backoffice/inventory/products` for live SKUs and
+stock status (low below 10 units, healthy at 10 or more). Row links preselect a
+SKU for goods receipt/stock entry or dispatch/loss/stock exit. The four views are:
+
+- `/backoffice/inventory/products`: read-only SKU stock table.
+- `/backoffice/inventory/orders/inbound`: goods receipt with reference.
+- `/backoffice/inventory/orders/outbound`: fresh selected-SKU stock, dispatch tracking or loss.
+- `/backoffice/inventory/orders`: read-only movement history with user attribution.
+
+Stock exits warn above displayed stock; the backend remains authoritative and
+HTTP 400 feedback appears beside quantity. Successful movements reset the form;
+selecting a SKU again fetches fresh outbound stock. No product administration is included. The shared inventory layout
 validates `/auth/me` before mounting private content; transient failures offer
 retry/sign-out, departure aborts validation, and cross-tab changes revalidate.
 No bearer token is placed in a URL or manually forwarded by the host.
@@ -48,8 +57,13 @@ inventory. The existing auth helper defaults to the page hostname on port 8000;
 optional validated `?apiPort=8001` changes only the port and survives login return.
 Custom `window.TRACKFLOW_API_BASE_URL` must be configured consistently on login,
 legacy pages and the inventory host before auth calls; the host adds no custom
-configuration injector. T3 will add `NEXT_PUBLIC_INVENTORY_API_URL` for its client;
-that setting must point to the same service, not a different identity store.
+configuration injector. Optionally configure `NEXT_PUBLIC_INVENTORY_API_URL`
+before starting/building Next for all inventory requests; otherwise they reuse
+`getApiBase()` (dynamic browser hostname and validated apiPort). This URL MUST
+identify the intended same authentication service/identity store as legacy login
+and the session gate. It does not reconfigure either of them. For a non-default
+local API port, use matching `?apiPort=8001` on legacy login and inventory links,
+even when the inventory API URL is explicitly configured.
 No query parameter may supply an arbitrary API hostname. Allow the exact Next
 browser origin in API CORS. No external fonts or network assets are used.
 
@@ -63,8 +77,7 @@ cd uis/backoffice && npx tsc --noEmit
 T2 observed 12/12 Node tests and TypeScript passing. A bounded Next dev HTTP
 smoke (3300, private upstream 3001) returned 200 for the protected landing's
 validation shell, legacy login/index, auth.js and styles.css; both owned servers
-were stopped. This is not browser-auth acceptance. Full build and four-route
-browser/API checks remain deferred to T3/T4. The initial Next 16.3.1 installation
+were stopped. This is not browser-auth acceptance. The T2 foundation did not run a full build or four-route browser/API checks. The initial Next 16.3.1 installation
 matched Tracker metadata but reported one critical audit finding. With explicit
 authorization, only Next was upgraded to the audit-offered 16.4.3 pin; React/ReactDOM
 remain 19.2.8 and TypeScript tooling is unchanged. The subsequent npm audit reported
@@ -73,6 +86,26 @@ one owned Next dev start returned the protected validation shell with AGENTS.md
 and CLAUDE.md absent before/during/after startup, then stopped. Legacy rewrite smoke
 above is earlier evidence, not rerun by the correction; neither check proves browser
 authentication or complete T2 acceptance.
+
+## Inventory source verification and T4 handoff
+
+Run from the repository root:
+
+```bash
+node --test uis/backoffice/tests/inventory-client.test.mjs uis/backoffice/tests/inventory-form.test.mjs uis/backoffice/tests/auth.test.mjs
+cd uis/backoffice && npx tsc --noEmit
+# Back at repository root:
+npm --prefix uis/backoffice run build
+git diff --check
+```
+
+Native Node tests mock fetch/storage and exercise real request serialization,
+bearer/session handling, readable API errors, cancellation and form helpers. They
+are not browser integration evidence. T4 must check all four guarded routes,
+keyboard/narrow/wide layouts, SKU prefill, delayed selection/departure cancellation,
+stock warning/400 feedback, duplicate submission, success reset and history refresh.
+Real Supabase/PostgreSQL verification remains separate and requires an authorized
+configured target; no live database or provider calls are needed for these tests.
 
 ## Run Locally — legacy static-only mode
 
@@ -128,13 +161,12 @@ bearer response and stores `trackflow.auth.token` in localStorage. The four
 explicitly allowed relative backoffice page names and only these exact root-relative
 inventory paths are accepted as `next`: `/backoffice/inventory/products`,
 `/backoffice/inventory/orders`, `/backoffice/inventory/orders/inbound`, and
-`/backoffice/inventory/orders/outbound`. `apiPort` is retained; the last three
-routes are reserved for T3 and are not implemented by this foundation.
+`/backoffice/inventory/orders/outbound`. `apiPort` is retained across login and inventory navigation.
 Configure `window.TRACKFLOW_API_BASE_URL` consistently **on every page, including
 login**, before its module loads. No query parameter can override the API host.
 
 `auth.js` exports `getApiBase`, `getToken`, `setToken`, `logout`, `login(email,
-password, { signal })`, `safeReturnTarget(next)`, `protectedFetch(path, options)`
+password, { signal })`, `safeReturnTarget(next)`, `protectedFetch(path, options, apiBase?)`
 and `getCurrentUser(options)`. Protected paths are API-relative (`/suppliers`);
 the wrapper returns an unconsumed Response and preserves supplied Headers/body.
 Callers set JSON Content-Type themselves; multipart boundaries remain automatic.
