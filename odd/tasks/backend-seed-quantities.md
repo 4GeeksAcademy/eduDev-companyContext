@@ -14,10 +14,10 @@ Meet the TrackFlow backend briefing's requirement for two receipts of the same S
 - Preserve unrelated untracked task notes `odd/tasks/auth-frontend.md` and `odd/tasks/centralized-incident-manager.md`.
 
 ## Tasks
-- [x] T1 (implemented and tested; commit authorized): Added the distinct-quantity regression test, observed RED, minimally corrected the repeated seed entry, observed GREEN and updated scoped documentation.
+- [x] T1 (committed in `4997cd6`): Added the distinct-quantity regression test, observed RED, minimally corrected the repeated seed entry, observed GREEN and updated scoped documentation.
 - [x] T2 (verified): Inspected the bounded diff, completed native review and independent focused verification.
 - [x] T3 (verified): Queried the configured development database read-only; repeated-SKU receipts have distinct positive quantities.
-- [ ] T4 (in progress): Complete scoped pre-commit checks, commit the correction and publish its branch without merge.
+- [x] T4 (published): Completed scoped pre-commit checks, committed the correction as `4997cd62d53eb15f13311570fef690448ea93302` and pushed `fix/backend-seed-quantities`; remote/local commit identities matched. No PR or merge performed.
 
 ## Acceptance and checks
 - Fresh isolated seed contains at least two receipts of the same SKU with different positive quantities.
@@ -63,4 +63,4 @@ Meet the TrackFlow backend briefing's requirement for two receipts of the same S
 User explicitly authorized commit and push after the bounded read-only database check. PR #25 is already MERGED (fresh GitHub check), so this correction needs a separate branch rather than being treated as an update to that open PR. No PR creation or merge is authorized. Keep code, regression test and scoped docs together; exclude unrelated untracked task notes.
 
 ## Next step
-Commit and push the scoped correction on `fix/backend-seed-quantities`. Database compliance is confirmed and no mutation is needed. PR creation, merge and student-platform submission remain outside authorization.
+Code, test and scoped documentation are published on `fix/backend-seed-quantities`; this final passive tracking update records the observed delivery. Database compliance is confirmed and no mutation is needed. PR creation, merge and student-platform submission remain outside authorization. Create/review a follow-up PR before expecting the correction on `main`.
