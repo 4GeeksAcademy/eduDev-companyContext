@@ -35,12 +35,21 @@ the upstream and rewrites; never set it to either Next port. Any unexpected chil
 exit fails the launcher and stops its siblings; termination is forwarded and
 owned children are reaped. The image is for development, not production serving.
 
-Future Compose source mounts should target `/app/uis`, with separate volumes at
+Root Compose binds only `./uis/website` to `/app/uis/website`,
+`./uis/backoffice` to `/app/uis/backoffice` and read-only `./uis/start.sh` to
+`/app/uis/start.sh`. Neither the whole UI tree nor the tracker is mounted.
+Separate named volumes remain at
 `/app/uis/website/node_modules`, `/app/uis/backoffice/node_modules`,
 `/app/uis/website/.next` and `/app/uis/backoffice/.next` so mounts do not hide
-installed dependencies or mix host caches. Compose, API routing and full-stack
-integration belong to T3; no API proxy is added here. Browser API URLs must remain
-browser-reachable and match backend CORS; Docker service names are not browser DNS.
+installed dependencies or mix host caches. See the [root Compose setup](../README.md#development-compose-stack-t3-packaging)
+for environment and isolated API data configuration. UI receives only
+`BACKOFFICE_LEGACY_PORT`, never backend credentials. T3 packaging adds no API proxy:
+browser routing remains T3b and full-stack/hot-reload verification remains T4.
+Browser API URLs must remain browser-reachable and match backend CORS;
+Docker service names are not browser DNS. Independent synthetic T3 runtime checks
+passed website/login200 and a server-side UI fetch to `http://api:8000/openapi.json`.
+Next dev may regenerate two imports in `backoffice/next-env.d.ts`; this expected
+generated output is not a browser-routing fix.
 
 Focused checks (no Docker or API required):
 

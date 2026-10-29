@@ -23,12 +23,37 @@
 - The Next inventory host serves the four `/backoffice/inventory/` routes and proxies only allowlisted legacy assets/login on the same browser origin to loopback `127.0.0.1:3001` locally (validated `BACKOFFICE_LEGACY_PORT` override). The shared UI image sets3002 for its private allowlisted Node legacy server, leaving Next on3001 and the website on3000. Root static serving remains independent; it cannot render App Router routes.
 - Keep the public website and internal backoffice layouts separate.
 - Preserve static public-site Web Components and CSS; the minimal Next website reuses styles and reproduces content without changing the independent static host.
-- Build the UI image with context `./uis`, not the repository root. Only website/backoffice and the launcher are copied. Future source mounts require separate per-app node_modules and .next volumes; Compose/API integration remains T3. See [UI container startup](../uis/README.md#ui-development-container). Isolated UI Docker build, startup, routing and shutdown passed; full-stack Compose verification remains pending.
+- Build the UI image with context `./uis`, not the repository root. Only website/backoffice and the launcher are copied. Root Compose now supplies separate per-app node_modules and .next named volumes; browser/API routing remains T3b. See [UI container startup](../uis/README.md#ui-development-container). Isolated UI Docker build, startup, routing and shutdown passed; full-stack Compose verification remains pending.
 - Keep the Hito 4 operations overview on static sample data; the separate incident page calls the incident API directly.
 - Reuse `shared/incident_analysis.py` from both CLI and API for aggregation/export. Legacy CSV validation now lives in standard-library `packages/shared/incident_validation.py`, with compatible analyzer reexports. Manager rules in `packages/shared/incidents.py` feed Pydantic schemas in `services/api/incident_models.py`; keep legacy and manager enums distinct.
 - Keep uploaded incident source files transient and retain only the last successful aggregate summary in process memory.
 - Keep supplier persistence small: one schema module, TinyDB helper functions, one router, and one shared idempotent seed function.
 - Preserve root Hito 1 and Hito 2 files and `uis/talent-pipeline-tracker/` as independent milestone deliverables.
+
+### Development Compose packaging
+
+- Root `docker-compose.yml` defines only ui/api on a project-named network.
+  API context stays `./services`; BuildKit additional contexts `shared` and
+  `packages_shared` copy only required Python runtime sources. Compose2.17+ required.
+- Python3.11-slim installs unchanged requirements via uv into `/opt/venv`;
+  Uvicorn reload runs a single process tree with fixed internal port8000.
+- Root `.env` interpolation uses explicit service allowlists, no wholesale env_file.
+  Configure ignored root `.env` using the root README settings table; merge only
+  missing keys privately and never overwrite existing values.
+  UI gets only the private legacy port; JWT is required with no fallback.
+- TinyDB paths must all stay under named `/app/data`; a tmpfs masks legacy source
+  data. Existing host records are not imported. Blank `DATABASE_URL` leaves
+  inventory unavailable; configured startup retains existing schema creation behavior.
+- `node --test tests/container-config.test.mjs` renders Compose with synthetic
+  temporary env fixtures only; no daemon, real `.env`, API or database is used.
+  Tests explicitly disable automatic dotenv loading with `COMPOSE_DISABLE_ENV_FILE=1`.
+  UI binds only website/backoffice directories and read-only start.sh at matching
+  `/app/uis/` paths, excluding tracker and whole-tree mounts; four nested named
+  dependency/cache volumes are unchanged. Independent synthetic T3 image/runtime
+  checks passed, including standalone imports without mounts/network and UI fetch
+  to API service DNS. Browser proxy T3b/hot reload T4/configured PostgreSQL remain
+  pending. Next dev may regenerate two imports in backoffice next-env.d.ts;
+  the parent restored only that observed generated delta after verification.
 
 ## Commands
 

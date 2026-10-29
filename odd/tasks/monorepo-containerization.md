@@ -1,163 +1,142 @@
 # Monorepo containerization
 
-## Objective and scope
+## Goal
 
-Meet the 4Geeks Company Monorepo Containerization assignment with the smallest
-maintainable change to TrackFlow. Preserve existing website content and design,
-legacy backoffice behavior, and existing application data.
+Meet the [4Geeks containerization assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-container-project/README.md)
+with a simple, reproducible TrackFlow development stack and a separately authorized
+production deployment to the existing VPS.
 
-Source: https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-container-project/README.md
+Required: one Node Alpine UI container for Next website3000/backoffice3001;
+one Python/FastAPI container using uv, requirements.txt and Uvicorn reload;
+root Compose, hot-reloading source mounts, environment configuration, named
+network/service DNS, ignored secrets, and local/VPS delivery evidence.
 
-The assignment requires one Node Alpine UI container running website and
-backoffice with Next.js on ports 3000/3001, one Python/FastAPI container using
-uv and requirements.txt, root Docker Compose, source bind mounts and hot reload,
-explicit network, environment-based configuration, and deployment to the existing
-VPS. Delivery needs local and VPS evidence and a PR to main.
+## Authority and constraints
 
-## Authorization and boundaries
-
-- User approved proceeding with minimal website adaptation to Next.js.
-- Keep this bootcamp project simple; use only the assignment technologies.
-- Run focused checks during implementation; broader checks only at final
-  integration when justified. Ask before unresolved product decisions.
-- Do not change talent-pipeline-tracker, historical milestone context, root
-  milestone applications, infrastructure, data, or unrelated dependencies.
-- User explicitly authorized creating uis/website/package.json,
-  uis/website/package-lock.json, services/Dockerfile and services/.dockerignore.
-  Do not change existing dependency manifests/locks or backend business logic
-  under this approval.
-- User explicitly authorized the T1 local commit and continuation to Docker.
-  Do not access or mutate the VPS, publish, open a PR, or merge in this unit.
-  Further delivery follows live session authority and repository policy.
-- Never expose secrets; do not overwrite the existing ignored root .env.
-
-## Repository baseline
-
-- Feature branch: feat/monorepo-containerization, starting at f327ed0.
-- Previous branch: fix/backend-seed-quantities.
-- Existing unrelated untracked files: odd/tasks/auth-frontend.md and
-  odd/tasks/centralized-incident-manager.md. Preserve both.
-- Website is static; backoffice combines Next.js with a legacy server currently
-  on loopback port 3001. That internal port conflicts with the required new
-  backoffice Next port and must be addressed in its own task.
-- Browser-facing API calls cannot resolve Docker-only service DNS. Plan the
-  server/browser boundary explicitly; same-container loopback remains valid.
-- Root .env already exists; its values have not been read or printed.
+- User approved implementation, minimal public Next adaptation, new website
+  manifest/lock, services/Dockerfile and services/.dockerignore, and website
+  .gitignore. Existing dependencies/backend business logic remain unchanged.
+- Keep scope small; focused checks during implementation, broader integration
+  only at closure when needed. No unrelated applications or frameworks.
+- Current branch: feat/monorepo-containerization, based on f327ed0.
+  Original branch: fix/backend-seed-quantities.
+- Preserve unrelated untracked odd/tasks/auth-frontend.md and
+  odd/tasks/centralized-incident-manager.md; never stage them.
+- Do not edit protected milestone contexts/root applications, tracker, infra,
+  existing dependencies or real data. No VPS, publication or remote data actions
+  have been performed. Delivery follows current session/repository authority.
+- Root .env existed before Compose. Do not overwrite or inspect its contents.
+  User explicitly approved synthetic-only verification, not real credentials,
+  PostgreSQL/Supabase access, mail/reset operations or dotenv/template reads.
+- .env.example access was blocked. Leave that generated file physically untouched
+  and ignored, outside delivery; no alternate read/copy/hash/staging. Configuration
+  documentation is independently authored in README from public variable contracts.
 
 ## Tasks
 
-- [x] T1 — Adapt the public website minimally to Next.js. **Done.**
-  Implementation, focused HTTP/browser checks and native review passed.
+- [x] T1 — Adapt public website minimally to Next.js. **Done.**
+  Preserve content/design, static files and /uis/website URL.
   Commit: 4545d9e94060c029bf607fc7ad4bfbe38dc08cb6
-  (feat(ui): add Next.js public website host). No publication or deployment.
-- [ ] T2 — Package both UIs in one Node Alpine container. **In progress.**
-  Add UI Dockerfile, start.sh and .dockerignore; install each app separately;
-  run website/backoffice on 3000/3001. Use a Node built-in allowlisted legacy
-  server on loopback3002 inside the container; configurable rewrite port keeps
-  local default3001 unchanged. Cover requests, rejection and process lifecycle.
-- [ ] T3 — Package FastAPI and compose the development stack. **Pending.**
-  Add Python Dockerfile, requirements and .dockerignore; use uv pip install
-  and Uvicorn --reload. Add root Compose, named network, bind mounts, ports,
-  environment configuration and internal service-name communication.
+  (feat(ui): add Next.js public website host).
+- [x] T2 — Package both UIs in one Node Alpine container. **Done.**
+  Independent installs, dual Next dev, private allowlisted Node legacy server,
+  process lifecycle handling and Docker ignore rules.
+  Commit: 8397d13416bc2ae89bbefce1e5bab7ace561ccd3
+  (feat(docker): package website and backoffice in one UI image).
+- [ ] T3 — Package FastAPI and compose development services. **In progress.**
+  Implementation, scoped runtime checks and native review passed; commit pending.
+  Use existing API requirements, Python3.11/uv, additional shared-module contexts,
+  two services, explicit environment allowlists and isolated data/dependency volumes.
+- [ ] T3b — Connect browser requests through the Next API proxy. **Pending.**
+  Same-origin browser paths, internal service-name URL, opt-in configuration;
+  preserve static/local apiPort behavior and shared login/session/inventory identity.
 - [ ] T4 — Verify local integration and document reproducible setup. **Pending.**
-  Prove root compose startup, both UI routes, backend communication, hot reload,
-  ignores and no committed secrets. Keep evidence bounded and disclose gaps.
-- [ ] T5 — Deploy to the existing VPS and prepare delivery evidence. **Pending authorization.**
-  Confirm SSH target, existing services, ports and production configuration;
-  deploy only after approval. Collect local/VPS evidence; request approval for
-  publication/PR/merge rather than treating review as delivery permission.
+  Prove browser/API integration and bind-edit hot reload without image rebuilding;
+  check setup, ignored secrets and remaining assignment criteria. Real PostgreSQL
+  and live data are separate authorization boundaries, never implied by HTTP503.
+- [ ] T5 — Deploy to existing VPS and prepare evidence. **Pending authorization.**
+  Confirm SSH target, ports/services, production config and side effects first.
+  Collect local/VPS evidence; publishing/PR/merge are separate delivery decisions.
 
-## Acceptance and checks
+## Implementation decisions
 
-Use test-first for meaningful deterministic behavior. For packaging and passive
-docs without a meaningful RED, record the reason and use targeted structural
-and runtime checks. Do not run unrelated UI or full repository suites mid-task.
-No applicable failed or unavailable check may be reported as passing.
+- Website uses plain JSX App Router, existing CSS and pinned Next/React versions.
+- UI image context is ./uis, copying only website/backoffice/launcher. Container
+  Next ports3000/3001; private legacy upstream127.0.0.1:3002. Validated
+  BACKOFFICE_LEGACY_PORT retains local default3001 outside containers.
+- UI source mounts are exactly website, backoffice and read-only start.sh, not
+  all uis or tracker. Four named volumes isolate per-app node_modules/.next.
+- API image context is ./services, with Compose additional_contexts for shared/
+  and packages/shared/. Copy only required Python modules, no scripts or data.
+  Existing requirements unchanged; virtualenv remains outside source mounts.
+- API source/module mounts plus separate /app/data named volume; tmpfs masks
+  pre-existing source-mounted services/api/data. No migration of existing users
+  or suppliers; test startup's supplier bootstrap affects only new isolated storage.
+- Compose requires BuildKit/Compose2.17+. Explicit environment allowlists keep
+  backend secrets out of UI. Empty DATABASE_URL deliberately yields inventory503.
+- Browser API proxy is separate T3b: Docker DNS is not browser DNS. Config script
+  must be harmless under static/local hosting, not introduce missing-script404s.
 
-Native review follows the user-owned review switch and candidate consent. It
-never substitutes for functional verification or authorizes commits/deployment.
-T1's local work-unit commit is explicitly authorized; other delivery decisions
-follow the live session's authority and repository policy.
+## Verification evidence
 
-## Evidence and next step
+### T1
 
-- Full assignment README read; read-only repository exploration completed.
-- Baseline git status: only the two unrelated untracked task documents above.
-- Feature branch created successfully before source implementation.
-- T1 mapping completed: use a small App Router page, retain CSS and legacy
-  static files, preserve /uis/website URL and content. Prefer plain JSX to
-  avoid adding TypeScript tooling just for the public site.
-- Explicit protected-file approval received for website manifest/lockfile and
-  services Dockerfile/.dockerignore. Existing dependencies remain untouched.
-- Backend packaging must account for root shared/ and packages/ imports;
-  the existing services/api/requirements.txt is a compatibility mirror.
-- T1 implementation returned with interaction_required: new isolated Next
-  website, unchanged legacy static files, scoped README and progress evidence.
-- Writer observed RED on missing website package.json; then GREEN 2/2 tests
-  without skips against its owned Next dev server on 127.0.0.1:3310. Anchor
-  targets, CSS HTTP 200 and unknown-route 404 also passed. Owned server stopped.
-- npm website install passed (22 packages). Parent git diff --check passed.
-  Approximately 279 authored added lines, 5 removed, plus 1,012 lockfile lines.
-- User-selected option 2 applied: uis/website/.gitignore contains .next/.
-  Writer and parent git check-ignore matched that local rule; git status no
-  longer lists the cache and git diff --check passed. Cache retained, no
-  deletion or behavior changes. Generated-output blocker resolved.
-- Native inspect accepted the explicit intended-untracked file list, excluding
-  the two unrelated task notes. Native review review-ee589c538e3d4f4d approved
-  the website candidate; exact acknowledgement returned authority burned for
-  target sha256:46bb321bcaac2bebf1bdadf99b69ce3c6d3e83d84b2e6dc6ef199781f2cb12f5.
-  Review closure is not commit or publication authorization.
-  Native assess still returns unassessable on undeclared untracked files even
-  after inspect; no further assess retries. Its independent-verifier fallback
-  was fulfilled: website smoke repeated with 2/2 passing, zero skips.
-- Independent browser acceptance passed with existing Playwright Core/Chromium,
-  no installs: 375px/1280px layouts, content, responsive cards, anchor/home/contact
-  navigation, keyboard focus/skip link, zero overflow/console/page/resource errors.
-  Cached wrapper import failed; direct cached core import recovered tooling.
-- Verification observed zero source changes and closed its browser/server;
-  port3310 was free afterward. Screenshots: /tmp/website-verify-375.png and
-  /tmp/website-verify-1280.png (temporary local evidence, not delivery assets).
-- Production build and full integration intentionally deferred. No Docker or
-  VPS execution yet. T1 functional checks and review passed. Only passive status
-  documentation changed after acknowledgement; implementation stayed unchanged.
-- T1 committed successfully as 4545d9e94060c029bf607fc7ad4bfbe38dc08cb6.
-  Post-commit status contained only the two unrelated task documents.
-- T2 mapping complete: root http-server is outside the ./uis build context.
-  A small Node built-in legacy server avoids installing any new dependency or
-  exposing the repository. Preserve legacy assets, package manifests and locks.
-- T2 edit surface: uis/Dockerfile, start.sh, .dockerignore, backoffice
-  legacy-server.mjs, next.config.ts, tests/next-host.test.mjs,
-  tests/legacy-server.test.mjs, uis/tests/start.test.mjs, uis/README.md,
-  backoffice/README.md, memory-bank/techContext.md and progress.md.
-- T2 checks: test-first focused Node rewrite/server/lifecycle checks and shell
-  syntax; then one isolated UI image build/run as applicable. No full Next
-  production build, API/data operations, whole-repository suite or VPS access.
-- Local Docker CLI29.9.0/Compose5.6.0 uses rootless local Unix socket; no remote
-  override observed. Daemon reachability and image execution remain unverified.
-- T2 writer completed 12 scoped files (333 additions/4 deletions): Dockerfile,
-  startup supervision, allowlisted loopback server, configurable validated
-  rewrite port, ignores, tests and docs. No dependencies or legacy assets changed.
-- T2 observed RED: Node command 2 passed/4 failed (missing implementations and
-  configurable rewrite). GREEN 6/6, then expanded lifecycle coverage 8/8 without
-  skips. sh -n, node --check and git diff --check passed. Non-failing Node
-  module-type warning remains; no Docker runtime proof from writer tests.
-- Native assess returned unassessable on untracked inventory; required independent
-  verification passed: repeated8/8 Node checks, Docker build and real UI runtime.
-  Retained image trackflow-ui:t2-verify-4545d9e (169d1d1b728a), local rootless only.
-- Both Next hosts listened on0.0.0.0:3000/3001; legacy remained127.0.0.1:3002.
-  Website container smoke2/2, backoffice login/assets and inventory validation
-  shell200, private/config paths404. Image had no app-root .env/host .next before
-  startup. This is not API/authenticated/Compose acceptance.
-- Normal container stop exited0; terminating website CLI caused fail-fast exit1.
-  Both owned containers removed, no running processes, host3310/3311 free.
-  Source unchanged; diff checks passed. Node module-type, telemetry and deprecated
-  Docker --time warnings did not block. Bind-mount hot reload remains T4.
-- Native T2 review review-e00d2b1f129846a1 approved all four lenses; exact
-  acknowledgement returned authority burned for target
-  sha256:2ce1545436d280eff2e839f414273e4da21406537a9b1159fb79148c62535dea.
-  Informational non-blocking R3-shutdown-escalation at uis/tests/start.test.mjs:29
-  is a later follow-up, not a correction or reason to reopen review.
-- Next: local T2 work-unit commit, then T3 backend and Compose mapping.
-  Only passive status documentation changed after review; T2 remains in
-  progress until the work-unit commit succeeds.
-- Commits: T1 4545d9e; no push, PR, merge or VPS actions.
+- Writer RED: missing manifest; GREEN2/2 HTTP/config tests, zero skips.
+- Independent browser375px/1280px: content, cards, anchors, focus/skip link passed;
+  no horizontal overflow, console/page errors or failed resources. Legacy static
+  files unchanged; owned browser/server stopped, port3310 released.
+- Review review-ee589c538e3d4f4d approved and exactly acknowledged (authority burned).
+  Passive status documentation followed; source unchanged.
+
+### T2
+
+- Writer RED2passed/4failed, GREEN6/6, expanded8/8 lifecycle/rewrite/server tests;
+  independent8/8 plus shell/Node syntax and whitespace checks passed.
+- Real Docker build/start: website3000, backoffice3001, private legacy3002.
+  Website smoke2/2; login/assets/inventory validation shell200, private paths404.
+  Normal stop exit0; website CLI termination produced fail-fast exit1.
+- Owned containers removed, ports3310/3311 released. Retained image
+  trackflow-ui:t2-verify-4545d9e (169d1d1b728a).
+- Review review-e00d2b1f129846a1 approved four lenses and exactly acknowledged.
+  Non-blocking informational R3-shutdown-escalation at uis/tests/start.test.mjs:29
+  is later follow-up, not a correction or reason to reopen review.
+
+### T3
+
+- Config contract RED0/4, GREEN4/4 then5/5. Restricting broad UI mount observed
+  RED4/5 then GREEN5/5. Tests use literal synthetic settings, sanitized env and
+  COMPOSE_DISABLE_ENV_FILE=1; they do not read .env.example.
+- Independent5/5 config tests; both images built. API standalone imports passed
+  without source mounts/network, including shared and packages.shared modules.
+- Synthetic project trackflow-t3-verify-cf2fa4d621: API openapi/website/login200,
+  Uvicorn0.0.0.0:8000 with reloader, correct exact source/storage/tmpfs mounts.
+  UI-container fetch http://api:8000/openapi.json200 proves service-name DNS.
+- Isolated POST/users201, form POST/auth/login200, authenticated inventory503
+  with empty DATABASE_URL. No real credentials or external database used.
+- Two containers/five volumes/network/temp config removed. Initial plain port
+  rebindEADDRINUSE was followed by connection-refusal/reusable-bind checks proving
+  no listeners on3320/3321/8320. Images retained: project-api:latest c38700e711d6,
+  project-ui:latest f092edb99e1f (project prefix above).
+- Known generated mutation: Next changed two tracked next-env.d.ts imports to
+  .next/dev/types. Parent restored ONLY those two lines; file diff is empty.
+  No other scoped source mutation observed; final git diff --check passed.
+- Earlier verification stops: parent template-path typo, protected-template read
+  denial, overly broad UI mount including tracker filenames, and expected Next
+  generated output. All were handled without accessing protected dotenv contents.
+  No secret-integrity hash claim is made. Build/runtime checks were not repeated
+  unnecessarily after passive documentation normalization.
+
+## Current boundary and next step
+
+- T3 setup docs now use an independently authored README settings table. Both
+  .env and .env.example remain ignored; .gitignore matches its original state.
+- Native ASSESS cannot assess untracked candidates in this runtime; its conservative
+  independent-verifier requirement has been fulfilled for T1, T2 and T3.
+- T3 review review-9f4d67b3294f8d18 approved and exact acknowledgement burned
+  authority for target sha256:1c1b1b9a5279acd158953435c23b2291d43162d05108fa1453b0d6f44b70b009.
+  Only passive status docs changed after review; source stayed unchanged.
+- Next: local T3 work-unit commit, then bounded T3b browser/API mapping.
+  Never include ignored template or unrelated task notes.
+- Next.js production builds, browser proxy, bind-edit hot reload, configured
+  PostgreSQL and VPS acceptance are not established by the current packaging tests.
+- Commits: T1 4545d9e; T2 8397d13. No push, PR, merge or VPS actions.

@@ -1,5 +1,13 @@
 # Project Progress
 
+## Monorepo Containerization — T3 review closure
+
+- Packaging/runtime verification passed under synthetic-only inputs; see T3
+  evidence below. Native review `review-9f4d67b3294f8d18` approved and its exact
+  acknowledgement completed. Only passive status docs changed afterward.
+- Local work-unit commit is next. Browser proxy, hot reload, configured PostgreSQL
+  and VPS remain pending; no complete platform or production claim.
+
 ## Monorepo Containerization — T1 website adaptation
 
 - Added a minimal plain-JSX Next App Router website at `/uis/website/`, with
@@ -73,6 +81,64 @@
   `R3-shutdown-escalation` at `uis/tests/start.test.mjs:29` remains informational
   follow-up, not a correction. Only passive status docs changed afterward;
   local work-unit commit is next.
+
+## Monorepo Containerization — T3 packaging writer
+
+- Added Python3.11-slim/uv API image, unchanged requirements in `/opt/venv`,
+  exact shared Python module copies via additional contexts, single Uvicorn reload.
+  Ignores exclude caches, env, tests, logs and local JSON/database artifacts.
+- Root Compose defines only ui/api, project-scoped network/five named volumes,
+  source binds, isolated UI dependencies/caches and TinyDB `/app/data`. A tmpfs
+  masks host legacy source data. API environment is allowlisted; UI gets only
+  private legacy port. Existing root `.env` was neither read nor changed.
+- Initially authored a template and narrow ignore exception. After access
+  restriction, the exception was removed: the template remains untouched, ignored
+  and outside delivery. Current setup uses independently documented README settings.
+  Missing JWT fails interpolation; blank DATABASE_URL leaves inventory unavailable.
+  Existing API startup may create inventory schema if an operator configures SQL.
+- `node --test tests/container-config.test.mjs`: observed RED0/4 (missing Compose
+  and Dockerfile), initial GREEN4/4, expanded GREEN5/5 without skips. Real Compose
+  JSON checks topology/mounts/env, host-port overrides and missing-secret failure;
+  Dockerfile/ignore directives use structural checks, not image-runtime claims.
+  Run-owned synthetic temp fixtures were cleaned in finally; no daemon used.
+- Writer ran no image build/start, backend suites, installs, real DB operations,
+  browser checks or Git delivery. Parent owns isolated runtime verification.
+  T3b browser proxy and T4 full-stack/hot-reload acceptance remain pending.
+  Parent task-doc edits and both unrelated untracked notes remain untouched.
+
+### T3 bounded UI mount correction
+
+- Replaced the whole `./uis` bind with only website/backoffice directories and
+  read-only start.sh at matching `/app/uis/` paths. Tracker stays outside the
+  runtime mount set; four nested dependency/cache volumes and API topology unchanged.
+- Synthetic Compose tests now set `COMPOSE_DISABLE_ENV_FILE=1` and assert the
+  exact UI bind allowlist, including launcher read-only access.
+- `node --test tests/container-config.test.mjs`: RED4/5 (broad bind differs from
+  narrow allowlist); GREEN5/5, zero skips. Temporary synthetic fixtures cleaned.
+  No repository dotenv/template/tracker access or runtime creation in this correction.
+  Image/runtime verification remains pending parent continuation.
+
+### T3 independent runtime acceptance and documentation normalization
+
+- Independent verifier reported PASS: both images built with named contexts;
+  standalone API/shared imports passed without source mounts and with network none.
+  API openapi/website/login200, Uvicorn0.0.0.0:8000 plus reloader, exact three UI
+  binds/four nested volumes and API storage/tmpfs passed. UI Node fetch to
+  `http://api:8000/openapi.json` returned200. Synthetic registration201/form login200
+  and authenticated inventory503 passed with empty DATABASE_URL.
+- No remote DB or repository dotenv reads/hashes. Retained images:
+  `trackflow-t3-verify-cf2fa4d621-api:latest` (`c38700e711d6`) and
+  `trackflow-t3-verify-cf2fa4d621-ui:latest` (`f092edb99e1f`). Owned two containers,
+  five volumes, network and temporary config removed. Ports3320/3321/8320 had no
+  listeners; initial plain-bind EADDRINUSE was transient, followed by refused
+  connections and successful reusable binds.
+- Next dev regenerated two tracked next-env.d.ts imports. Parent restored only
+  those two lines and confirmed empty file diff; no behavior correction needed.
+- Final passive normalization removed only the template ignore exception and
+  documented public settings independently in README. No protected file access,
+  runtime creation or test rerun; prior config5/5 evidence remains valid.
+  Native T3 review/commit, browser proxy T3b, hot reload T4, configured PG and VPS
+  remain pending. Parent task document and unrelated notes preserved.
 
 ## Current State
 

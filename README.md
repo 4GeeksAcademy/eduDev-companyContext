@@ -121,6 +121,71 @@ Then open:
 - Supplier directory: `http://localhost:3000/uis/backoffice/suppliers.html`
 - Centralized Incident Manager: `http://localhost:3000/uis/backoffice/incidents.html` — [delivery guide, setup and evidence](docs/centralized-incident-manager.md).
 
+### Development Compose stack (T3 packaging)
+
+Requires Docker with BuildKit and Docker Compose 2.17+ supporting
+`build.additional_contexts`. From the repository root:
+
+1. For a new setup, create an ignored root `.env` with the settings below. If it
+   already exists, merge only missing keys privately; **never overwrite existing
+   values**. A human must configure real credentials privately before starting.
+2. Keep all three database paths under `/app/data`; review host ports and bind
+   address. These are suggested local values, not proof your `.env` is complete.
+3. After configuration, run `docker compose up --build`; stop with
+   `docker compose down` (no `-v`).
+
+| Setting | Local value / requirement |
+| --- | --- |
+| `COMPOSE_PROJECT_NAME` | `trackflow` |
+| `TRACKFLOW_BIND_ADDRESS` | `127.0.0.1` (loopback only) |
+| `WEBSITE_HOST_PORT` / `BACKOFFICE_HOST_PORT` / `API_HOST_PORT` | `3000` / `3001` / `8000` |
+| `BACKOFFICE_LEGACY_PORT` | `3002` (private upstream) |
+| `JWT_SECRET_KEY` | Blank initially; supply a private random key before starting, no fallback |
+| `DATABASE_URL` | Blank; inventory503 unless existing PostgreSQL is configured |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` / `PASSWORD_RESET_EXPIRE_MINUTES` | `30` / `30` |
+| `RESEND_API_KEY` / `RESEND_FROM_EMAIL` / `FRONTEND_PUBLIC_URL` | Blank; configure mail separately |
+| `TRACKFLOW_CORS_ORIGINS` | `http://localhost:3000,http://localhost:3001` |
+| `TRACKFLOW_USERS_DB_PATH` | `/app/data/users.json` |
+| `TRACKFLOW_SUPPLIERS_DB_PATH` | `/app/data/suppliers.json` |
+| `TRACKFLOW_INCIDENTS_DB_PATH` | `/app/data/incidents.json` |
+
+Default URLs: website `http://localhost:3000/uis/website/`, backoffice
+`http://localhost:3001/uis/backoffice/login.html`, API `http://localhost:8000/docs`.
+Compose automatically reads root `.env` for interpolation but passes only explicit
+API settings; UI receives no backend secrets. Shell environment overrides `.env`.
+
+The two images share a project-named network. UI source binds include only
+`./uis/website`, `./uis/backoffice` and read-only `./uis/start.sh` at their matching
+`/app/uis/` paths; the tracker and whole repository are not mounted. Source binds
+support development reload; four named UI volumes isolate dependencies/Next caches. API dependencies
+live outside source binds. A separate named volume stores users, suppliers and
+incidents; legacy host TinyDB data is masked, not migrated. Startup populates the
+existing supplier demo only in that isolated store. Preserve volumes to retain data.
+
+Inventory needs an approved PostgreSQL/Supabase `DATABASE_URL` and the existing
+[schema/RLS prerequisites](services/api/README.md#inventory-api-t1). Blank URL
+returns inventory503; there is no fallback. Configured API startup may create
+inventory tables through existing application behavior. Do not point this stack at
+a real database without approval; these setup instructions run no schema or seed commands.
+Optional mail settings remain blank until separately configured; the Tracker recovery
+frontend is not included in this two-service stack.
+
+Independent synthetic T3 verification passed image builds, standalone shared-module
+imports, API/website/login HTTP200, UI-to-API service DNS, registration/login and
+expected inventory503 with blank SQL configuration. Next dev may regenerate the
+two imports in `uis/backoffice/next-env.d.ts`; review generated changes separately.
+
+**Boundary:** T3 packaging/runtime checks passed. Browser API routing is still T3b;
+Docker service DNS is not browser DNS. Full-stack browser/hot-reload acceptance is
+T4, not complete platform readiness. Production/VPS configuration is separate.
+
+Focused configuration checks use temporary synthetic environment fixtures, no daemon,
+real credentials or root `.env`:
+
+```bash
+node --test tests/container-config.test.mjs
+```
+
 ### Incident Analyzer
 
 Create the isolated Python environment and install only the API dependencies:
