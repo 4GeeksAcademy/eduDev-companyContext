@@ -23,11 +23,21 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
 - Preserve unrelated untracked odd/tasks/auth-frontend.md and
   odd/tasks/centralized-incident-manager.md; never stage them.
 - Do not edit protected milestone contexts/root applications, tracker, infra,
-  existing dependencies or real data. No VPS, publication or remote data actions
-  have been performed. Delivery follows current session/repository authority.
+  existing application dependencies or real data. Read-only VPS SSH diagnostics
+  completed; no application deployment, publication or remote data changes.
+- User authorized checking and installing missing Docker Engine/Compose on the
+  selected VPS, without modifying or restarting existing services. Stop before
+  package removals/upgrades, configuration conflicts or unclear side effects.
+  Starting new Docker-owned services is part of installation, not app deployment.
+- User separately authorized a dedicated SSH key: generate it outside Git without
+  overwriting an existing identity; the human adds only its public key through
+  the VPS console, preserving existing authorized keys. No SSH daemon restart,
+  dotenv consumption, private-key disclosure or relaxed host checking.
 - Root .env existed before Compose. Do not overwrite or inspect its contents.
-  User explicitly approved synthetic-only verification, not real credentials,
-  PostgreSQL/Supabase access, mail/reset operations or dotenv/template reads.
+  User authorized canonical runtime loading of VPS_IP/VPS_USER/VPS_PASSWORD
+  (optional VPS_PORT) solely for SSH authentication, with strict host validation
+  and no secret output. Synthetic-only application checks remain the boundary:
+  no real application credentials, PostgreSQL/Supabase or mail/reset operations.
 - .env.example access was blocked. Leave that generated file physically untouched
   and ignored, outside delivery; no alternate read/copy/hash/staging. Configuration
   documentation is independently authored in README from public variable contracts.
@@ -54,15 +64,33 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   Strict console assertion failed on cosmetic favicon404; warning retained below.
   Commit: d4404a0d3a9923e632031e64f9765878342ee80c
   (feat(ui): proxy backoffice API requests through Next).
-- [ ] T4 — Verify local integration and document reproducible setup. **Checks complete; commit pending.**
+- [x] T4 — Verify local integration and document reproducible setup. **Done for synthetic local scope.**
+  Commit: fc344a77e414820cc52837f86a163df49bb7646f
+  (docs(docker): record scoped local reload verification).
   Prove browser/API integration and bind-edit hot reload without image rebuilding;
   check setup, ignored secrets and remaining assignment criteria. Real PostgreSQL
   and live data are separate authorization boundaries, never implied by HTTP503.
-- [ ] T5 — Deploy to existing VPS and prepare evidence. **Pending authorization.**
-  User selected the 4Geeks VPS previously used by eduDev-openclaw; Engram16421
-  records connection variables in that project's ignored .env.local (unread).
-  Historical1CPU/~1GiBRAM+2GiBswap is not current capacity proof. Confirm SSH
-  target, existing OpenClaw workload, ports/config and side effects first.
+- [ ] T5a — Prepare Docker Engine/Compose on the selected VPS. **Verified; documentation work-unit commit pending.**
+  Read-only diagnostics confirmed missing packages/binaries/services/sockets,
+  Ubuntu22.04/amd64 and root privileges. Use the official Docker APT repository;
+  simulate package changes, preserve existing services and verify the new daemon
+  and Compose. No application deployment or existing runtime replacement.
+  The initial writer attempt stopped before SSH because its higher-priority
+  policy prohibits consuming .env. That blocked attempt installed nothing.
+  Dedicated key authentication is authorized. ssh-keygen completed successfully:
+  /home/lab/.ssh/trackflow_4geeks_ed25519, outside Git, with no overwrite or private
+  key output. The read tool also blocked the public .pub file; do not retrieve it
+  through another tool. Human reported ssh-copy-id completion and supplied the
+  nonsecret target. One strict key-only SSH check on port22 succeeded with UID0;
+  no password fallback, dotenv consumption or protected-file contents retrieved.
+  Installation subsequently succeeded through standard key-only SSH; sanitized
+  evidence is recorded below. Independent runtime and isolated hello-world
+  verification passed; close T5a with the documentation work-unit commit.
+- [ ] T5 — Deploy to existing VPS and prepare evidence. **Pending separate deployment authorization.**
+  Current capacity:1CPU,957MiBRAM/391MiBavailable,2GiBswap,9.6GiBdiskfree.
+  Preserve listeners22/53/18789/43947 and the existing workload; lack of an
+  OpenClaw process-name match does not prove absence. Prefer local image builds;
+  production runtime/configuration and memory feasibility still need verification.
   Collect local/VPS evidence; publishing/PR/merge are separate delivery decisions.
 
 ## Implementation decisions
@@ -189,6 +217,87 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   refs. No dotenv contents read. Actual user configuration/live PostgreSQL not
   verified. Documentation-only closure uses readback/diff checks, not new suites.
 
+### T5a preflight
+
+- Two authorized read-only SSH connections completed with existing-host-key
+  verification. Credential values, dotenv contents and SSH configuration were
+  never displayed; temporary secret-free ASKPASS helpers were removed.
+- Docker/dockerd/containerd/docker-compose command lookups exited1; twelve
+  requested runtime package queries exited1. Common binaries, local sockets,
+  Docker APT/key/config paths were absent; Docker/containerd units were not-found.
+  No conflicting package was found in the checked set; nonstandard installations
+  and arbitrarily named repository files were not exhaustively excluded.
+- Current official instructions support Ubuntu22.04/amd64:
+  https://docs.docker.com/engine/install/ubuntu/ . No convenience script,
+  package removals, system upgrade, user-group changes or app port publication.
+- Infrastructure installation has no meaningful application RED/GREEN cycle;
+  use observed preflight, package-plan checks, daemon/Compose functional checks
+  and preservation checks. Do not repeat completed application test suites.
+
+### T5a installation self-checks
+
+- Strict key-only OpenSSH completed two useful sessions with exit0 and no stderr:
+  immediate read-only preservation/network checks, then a serialized installation
+  transaction with its own fresh baseline. No dotenv, password or ASKPASS helper
+  was used; no key/config/known-hosts contents were retrieved.
+- Remaining docker-doc/docker-buildx conflicts were absent. New Docker key/source
+  and daemon configuration paths were absent. Native nftables had zero tables/rules;
+  iptables/ip6tables had no rules or restrictive policies. Only standard route
+  tables were present, with no route overlapping Docker's default172.17.0.0/16.
+  Initial IPv4/IPv6 forwarding was0. These are bounded compatibility checks, not
+  exhaustive proof against every nonstandard installation or future network effect.
+- Created only new official repository files /etc/apt/keyrings/docker.asc (0644)
+  and /etc/apt/sources.list.d/docker.sources (Jammy/stable/amd64, Signed-By).
+  HTTPS key retrieval passed with TLS verification; signed APT index update exit0,
+  no APT warning/error prefixes. Existing curl/ca-certificates were reused.
+- APT simulation exit0: exactly5 new packages,0 upgrades,0 removals, no additional
+  dependencies. Installed the inspected explicit versions with no recommends,
+  no remove/no upgrade, process-only DEBIAN_FRONTEND=noninteractive and
+  NEEDRESTART_MODE=l. Installation exit0; installed-new count5, and every
+  previously installed package retained its version.
+  - docker-ce / docker-ce-cli: 5:29.9.2-1~ubuntu.22.04~jammy
+  - containerd.io: 2.4.2-3~ubuntu.22.04~jammy
+  - docker-buildx-plugin: 0.38.1-1~ubuntu.22.04~jammy
+  - docker-compose-plugin: 5.6.1-1~ubuntu.22.04~jammy
+- New docker.service, docker.socket and containerd.service were active. Local
+  Unix-socket /_ping returned OK; Compose5.6.1 meets >=2.17; Buildx v0.38.1
+  was available. No dockerd/containerd TCP listener and zero containers.
+- All20 previously running services retained MainPID and monotonic main-process
+  start timestamps. All7 pre-existing TCP/UDP listener records, including owner
+  metadata, were preserved; zero new listener records. Ports22/53/18789/43947
+  remained represented. No existing package upgrade/removal, service restart,
+  manual firewall operation, public-port exposure or application operation was run.
+- New package-managed runtime/services/socket/bridge and Docker-owned network effects
+  are installation state retained on the VPS, not rolled back. No helper files
+  were created. Optional hello-world pull/run was skipped; no application suites
+  or builds were repeated. Infrastructure checks replace an inapplicable app
+  RED/GREEN cycle. APP NOT DEPLOYED; production/configuration/live DB unverified.
+- At writer handoff, independent verification and the documentation commit were
+  pending; the subsequent verifier evidence follows. T5 deployment stays separate.
+
+### T5a independent verification
+
+- Separate verifier completed one strict key-only SSH session, exit0/no stderr.
+  Five package status/version queries passed. Unix-socket /_ping returned OK;
+  Docker29.9.2, Compose5.6.1 and Buildx0.38.1 were independently observed, with
+  Docker service/socket and containerd active. Explicit local Unix host and an
+  empty config-directory override avoided ambient contexts/registry credentials.
+- One public hello-world container ran with --rm, --network none,32MiB memory and
+  16PID limit: exit0 and expected greeting. No binds, published ports or secrets.
+  Owned container absent afterward; zero containers remain. Retained public image:
+  hello-world@sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef.
+- TCP ports22/53/18789/43947 were unchanged before/after smoke; no Docker TCP API
+  listener. Historical preservation of20service identities,7TCP/UDP owners and
+  previous package versions remains writer-recorded; no baseline artifact was
+  available for independent reconstruction. Do not overstate this evidence.
+- Native ASSESS was unassessable because unrelated untracked task notes require
+  declaration. Its conservative separate-verifier requirement was fulfilled;
+  unrelated files were neither selected nor changed. This passive documentation
+  closure uses structural/diff checks, not a new native source-review transaction.
+- Scoped diff/readback and git diff --check passed; no credentials, endpoint or
+  key bytes in the diff. Prior T1–T4 evidence/favicon404 warning is retained.
+  No application build/test/deployment or live database check was performed.
+
 ## Current boundary and next step
 
 - T3 setup docs now use an independently authored README settings table. Both
@@ -199,12 +308,18 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   authority for target sha256:1c1b1b9a5279acd158953435c23b2291d43162d05108fa1453b0d6f44b70b009.
   Only passive status docs changed after review; source stayed unchanged.
 - T3 committed successfully as 5a52c85; only unrelated task notes remained.
-  T3b committed as d4404a0. Next: commit T4's passive verification evidence,
-  then request safe read-only VPS access/preflight. Do not restart completed
-  local tests, access protected dotenv files or deploy before authorization.
+  T3b committed as d4404a0; T4 evidence committed as fc344a7. T5a independent
+  runtime verification passed; record the documentation work-unit commit next.
+  Do not restart completed local tests, inspect protected dotenv files or deploy
+  the application without separate authorization. SSH credential consumption
+  is not permission to copy application secrets or access real data.
   Never include ignored template or unrelated task notes.
 - Local synthetic packaging, proxy/auth and bind-edit reload are verified with
   disclosed warnings. Actual user environment, production builds/configuration,
   live PostgreSQL and VPS acceptance remain pending. No clean-console claim.
-- Commits: T1 4545d9e; T2 8397d13; T3 5a52c85; T3b d4404a0.
-  No push, PR, merge or VPS actions.
+- Commits: T1 4545d9e; T2 8397d13; T3 5a52c85; T3b d4404a0; T4 fc344a7.
+  No push, PR, merge or application deployment. VPS diagnostics and Docker
+  installation self-checks completed. The initially blocked attempt made no remote
+  changes; the subsequent key-only transaction installed exactly5 new packages.
+  Independent runtime/smoke verification passed; documentation commit is next.
+  APP NOT DEPLOYED.

@@ -1,5 +1,61 @@
 # Project Progress
 
+## Monorepo Containerization — T5a installation independently verified
+
+- Two authorized read-only SSH checks confirmed Ubuntu22.04/amd64,1CPU,
+  957MiBRAM/391MiBavailable,2GiBswap and9.6GiBdiskfree. Docker/Compose were
+  absent across the inspected package/binary/service/socket locations; UID0.
+  Existing TCP listeners22/53/18789/43947 must be preserved.
+- User authorized installing missing Docker/Compose without changing or restarting
+  existing services. The initial installer attempt stopped before SSH/APT because
+  its policy prohibits consuming .env, making no remote changes. Key-only SSH
+  resolved that transport blocker; the later successful installation is below.
+- No credential contents were displayed or copied. Earlier read-only checks used
+  canonical runtime credential loading with strict existing-host verification;
+  this does not override the separate writer policy. Do not route around it.
+- User separately authorized a dedicated SSH identity. Local ssh-keygen succeeded
+  at /home/lab/.ssh/trackflow_4geeks_ed25519 without overwriting existing files;
+  no private key output. Public .pub read was also blocked by tool policy.
+  Human reported ssh-copy-id completion and supplied the nonsecret target.
+  One strict key-only SSH check on port22 succeeded with UID0 and exit0, without
+  password fallback, dotenv loading or protected-file content retrieval.
+- Subsequent strict key-only installation succeeded (SSH exit0, no stderr).
+  New official Docker key0644/deb822 source were created; verified HTTPS key
+  retrieval and signed APT update passed (exit0). Fresh bounded checks found no
+  remaining package conflicts, native nft rules, restrictive iptables policies,
+  custom route tables or default Docker bridge-subnet overlap.
+- APT simulation/install each exited0: exactly5 new packages,0 upgrades/removals,
+  no additional dependencies. Existing package versions remained unchanged.
+  Engine/CLI:5:29.9.2-1~ubuntu.22.04~jammy;
+  containerd.io:2.4.2-3~ubuntu.22.04~jammy;
+  Buildx plugin:0.38.1-1~ubuntu.22.04~jammy;
+  Compose plugin:5.6.1-1~ubuntu.22.04~jammy.
+  Install used inspected explicit versions, no recommends/remove/upgrade and
+  process-only noninteractive/list-only needrestart settings.
+- New Docker service/socket and containerd service active; Unix API ping OK,
+  Compose5.6.1 (>=2.17), Buildx v0.38.1 available. All20 existing running services
+  retained PID/start timestamps; all7 listener records/owners preserved, zero new
+  listeners. No Docker TCP API listener and zero containers. No hello-world pull,
+  application tests/builds or manual firewall changes. New repository files and
+  package-managed runtime/services/socket/bridge/network effects remain installed.
+  No auth helper was needed or created; no dotenv/key contents were accessed.
+- Independent verification subsequently passed in one key-only SSH session:
+  five installed package versions, local daemon ping/version, Compose/Buildx and
+  active new services. One hello-world smoke exited0 with no network, binds or
+  published ports,32MiB memory and16PID limit. Its container was removed; zero
+  containers remain. Public hello-world image retained at digest
+  sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef.
+  TCP ports22/53/18789/43947 stayed unchanged; no Docker TCP API listener.
+- Historical20servicePID/starttime,7TCP/UDP-owner and package-version preservation
+  is writer-recorded, not independently reconstructed without baseline artifacts.
+  Native ASSESS was unassessable due unrelated untracked notes; its conservative
+  separate-verifier requirement was satisfied. Scoped diff/readback and whitespace
+  checks passed. No application tests/builds were repeated for this passive record.
+- Runtime preparation is verified. APP NOT DEPLOYED.
+  T5 requires separate deployment authorization. Production runtime, actual app
+  configuration and live PostgreSQL remain unverified and outside installation
+  scope. No push, PR or merge.
+
 ## Monorepo Containerization — T4 local verification closure
 
 - Disposable committed-source copies proved website marker/restoration through
@@ -12,7 +68,9 @@
   contents were not read. Actual environment completeness/live PostgreSQL unverified.
 - Functional local checks are complete with disclosed warnings. This closure is
   documentation-only: structural readback and diff checks, no repeated suites or
-  native source review. VPS4Geeks/OpenClaw access/preflight and deployment remain.
+  native source review. VPS installation self-checks subsequently passed as
+  recorded above; independent runtime verification also passed. Application
+  deployment remains pending.
 
 ## Monorepo Containerization — T3b scoped browser evidence
 
