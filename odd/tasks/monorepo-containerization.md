@@ -88,7 +88,9 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   Installation subsequently succeeded through standard key-only SSH; sanitized
   evidence is recorded below. Independent runtime and isolated hello-world
   verification passed; the documentation work-unit commit is recorded above.
-- [ ] T5b — Prepare and verify minimal production packaging locally. **Build/runtime passed; native review and commit pending.**
+- [x] T5b — Prepare and verify minimal production packaging locally. **Done, with disclosed limits.**
+  Commit: b57dfb08d2e982a524d6da051548aecc5893d8d8
+  (feat(docker): add verified production container mode).
   Preserve default development Dockerfiles/Compose and reload behavior. Add opt-in
   production UI builds/startup and a separate two-service production Compose with
   no source binds, private API/Docker DNS and a dedicated new API data volume.
@@ -99,7 +101,16 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   Production PostgreSQL configuration remains unavailable; blank DATABASE_URL
   implies inventory503, not full business acceptance. Do not inspect/copy blocked
   dotenv files or invent external credentials. Record a source work-unit commit.
-- [ ] T5 — Deploy to existing VPS and prepare evidence. **Pending T5b; deployment authorized.**
+- [ ] T5 — Deploy to existing VPS and prepare evidence. **Limited initial runtime running; in progress.**
+  Initial runtime and sanitized evidence are independently verified. Private
+  SQL/operator setup remains pending; delivery must disclose that limitation.
+  Transfer the already verified images without rebuilding, use a new isolated
+  deployment directory/project/data volume, and preserve existing workloads.
+  Generate a fresh durable JWT privately on the server; do not reuse/inspect
+  blocked credential files. With no approved SQL configuration available, blank
+  DATABASE_URL is only an explicitly limited initial runtime, not inventory or
+  full-business acceptance. Publish course UI ports only; keep API internal.
+  Check fresh VPS resources and owned stack behavior before declaring rollout.
   User authorized end-to-end assignment deployment, local image builds and routine
   necessary steps without repeated approval prompts. Preserve OpenClaw, existing
   data and unrelated services; safety/credential-access controls still apply.
@@ -364,8 +375,62 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   Parent spot-checked browser.json. Owned containers/network/volume/helpers removed;
   ports3340/3341 released, images/evidence retained. Optional docker top -eo args
   failed; ordinary docker top succeeded. No SSH, real DB/mail or dependency changes.
-- Native review/commit remain pending. Responsive audit, sustained load, real
-  PostgreSQL/schema/RLS acceptance and deployment were not performed by this check.
+- Native review review-f69c096725adf830 approved all four lenses and exact
+  acknowledgement burned authority; staged tree matched the reviewed tree before
+  commit b57dfb0. Informational R3-args-readiness at uis/tests/start.test.mjs:52
+  is later follow-up, not a correction or reason to reopen this review.
+  Responsive audit, sustained load, real PostgreSQL/schema/RLS acceptance and
+  deployment were not performed by this local check.
+
+## T5 limited initial rollout — current evidence
+
+- Exact retained UI/API images imported through streamed save/gzip/SSH/load; all
+  pipeline statuses0, remote IDs match full approved IDs in the
+  [evidence guide](../../docs/evidence/containerization/README.md). No rebuild/push.
+  Committed production Compose hash matches remote bytes; source b57dfb0.
+- Created only new /opt/trackflow-containerization/ with docker-compose.production.yml,
+  resources.override.yml, deployment-marker.json, empty docker-config/ and private
+  deployment.env. Private config exclusive-created root:root0600 using new server
+  CSPRNG JWT, never read back/hashed/copied. SQL/mail blank; public UI CORS set.
+- Native config --quiet and up -d --no-build --pull never passed. Exactly UI/API
+  running in project trackflow-production; network trackflow-production_network;
+  retained volume trackflow-production_production_api_data mounted only by API.
+  API internal8000/private legacy3002 unpublished, no source mounts. Verified caps
+  UI512MiB/.75CPU and API256MiB/.25CPU; restart0/OOMfalse.
+- Immediate pre-write available RAM350MiB/free swap1816MiB/disk9838739456bytes;
+  warmed available249MiB/free swap1770MiB/disk8031633408bytes. Docker memory
+  UI158.9MiB/API78.98MiB. All22 fresh baseline service PID/start identities and
+  seven listener records preserved; only planned UI3000/3001 listeners added.
+- Early10-second API connection/proxy500 was startup-not-ready; bounded follow-up
+  returned internal OpenAPI200 and same-origin anonymous auth/me401. Website,
+  login, auth.js, styles.css/config200 both VPS and external HTTP. Config only /api.
+  No real credentials/public authenticated traffic, users/admin JWTs, SQL or mail.
+- Evidence preserves local synthetic Compose text/browser PNG; no new terminal
+  screenshot tooling. HTTP/noTLS, first-admin unconfigured, historical favicon404,
+  blank-SQL expected inventory503 and short-smoke limits explicit. No full business
+  acceptance. Parent independent live check, approved private SQL and delivery
+  closure remain; T5 unchecked. Owned configuration/images/data retained.
+- This current rollout supersedes historical APP NOT DEPLOYED/production-pending
+  statements in the chronological record below. No commit/push/PR/new native review.
+
+### T5 independent live verification and delivery evidence
+
+- One independent strict SSH check confirmed exact deployed image IDs, two running
+  containers, zero OOM/restarts, enforced caps/mounts and unpublished API. Internal
+  api:8000/openapi.json200; parent external website/login200 and proxy401 passed.
+- Current containers146.1/72.38MiB; host available282MiB, free swap1754MiB and disk
+  8031506432bytes. Existing22/53/18789/43947 listeners remain with planned3000/3001;
+  no public8000/3002. Historical service-identity preservation remains writer-recorded.
+- Independent passive diff/sanitization, original-artifact cmp and whitespace
+  checks passed. Added local-containers.png as a visibly labelled faithful render
+  of authentic recorded local Compose output, not a new terminal/live-state capture.
+  No new tooling, application reruns or private data were used for that image.
+- Publication target is existing project4GeeksAcademy/eduDev-companyContext, main,
+  with native GH WRITE permission confirmed. Keep one assignment PR with a clear
+  work-unit review map and disclose the aggregate size (mostly docs/tests/lockfile);
+  do not invent project-specific approved-issue/type/size-label gates or auto-merge.
+- Private SQL/admin configuration and full business acceptance remain pending;
+  HTTP/noTLS, favicon404 and no sustained-load claim stay explicit in delivery.
 
 ## Current boundary and next step
 
@@ -378,21 +443,20 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   Only passive status docs changed after review; source stayed unchanged.
 - T3 committed successfully as 5a52c85; only unrelated task notes remained.
   T3b committed as d4404a0; T4 evidence committed as fc344a7. T5a independent
-  runtime verification passed and evidence was committed as0552b97. Next: finish
-  T5b local production packaging, then T5 authorized rollout and private runtime
-  configuration. Do not request repeated approval for routine steps.
+  runtime verification passed and evidence was committed as0552b97. T5b source
+  is committed asb57dfb0; initial VPS rollout and independent live checks passed.
+  Next: publish sanitized assignment evidence/PR and obtain private SQL/operator
+  configuration without exposing credentials. Do not repeat routine approvals.
   Do not repeat completed local tests or inspect protected dotenv files.
   Application deployment is now authorized; SSH credential consumption
   is not permission to copy application secrets or access real data.
   Never include ignored template or unrelated task notes.
 - Local synthetic packaging, proxy/auth and bind-edit reload are verified with
   disclosed warnings. Production images and isolated runtime/browser behavior are
-  now verified. Actual private configuration, live PostgreSQL and VPS application
-  acceptance remain pending. No clean-console claim.
+  now verified, including anonymous live VPS readiness. Private SQL/operator admin
+  setup and full business acceptance remain pending. No clean-console claim.
 - Commits: T1 4545d9e; T2 8397d13; T3 5a52c85; T3b d4404a0; T4 fc344a7;
-  T5a 0552b97.
-  No push, PR, merge or application deployment. VPS diagnostics and Docker
-  installation self-checks completed. The initially blocked attempt made no remote
-  changes; the subsequent key-only transaction installed exactly5 new packages.
-  Independent runtime/smoke verification passed; T5a evidence is committed.
-  APP NOT DEPLOYED.
+  T5a 0552b97; T5b b57dfb0.
+  The application containers are deployed in a limited initial configuration;
+  independent live infrastructure checks passed. SQL/admin and HTTP/TLS limits
+  remain explicit. Evidence publication is next; no push, PR or merge yet.

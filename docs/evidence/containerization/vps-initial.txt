@@ -1,0 +1,48 @@
+Sanitized initial rollout observations; not raw logs or full runtime inspection.
+Capture started VPS UTC 2026-10-29T18:37:50Z; follow-ups within approximately one minute.
+
+Current Compose ps follow-up:
+NAME                         IMAGE                                              SERVICE STATUS        PORTS
+trackflow-production-api-1   trackflow-t5b-verify-0552b97-0622-api:production   api     Up 55 seconds 8000/tcp (unpublished)
+trackflow-production-ui-1    trackflow-t5b-verify-0552b97-0622-ui:production    ui      Up 54 seconds 0.0.0.0:3000-3001->3000-3001/tcp
+Above is a selected-field transcription of observed Compose output, not a terminal screenshot.
+
+Immediate pre-write: RAM957MiB total/350MiB available; swap2047MiB total/1816MiB free.
+Disk9838739456 bytes available. Ports3000/3001 free; owned directory absent.
+Earlier same-session baseline:22 running services;7 TCP/UDP listener records.
+No existing containers/volumes; only bridge/host/none networks.
+
+Image transfer: local save/gzip/SSH statuses0/0/0; remote gzip/load statuses0/0.
+Both loaded image IDs matched approved local IDs (see README).
+Native Compose config --quiet and up -d --no-build --pull never succeeded.
+Private configuration exclusive-created uid0 gid0 mode0600; contents not inspected.
+
+First readiness at about10seconds: UI website/login/auth.js/styles.css/config200;
+internal API connection refused; proxy auth/me500. Startup was not yet ready.
+Bounded readiness follow-up: internal UI fetch api:8000/openapi.json200;
+unauthenticated same-origin /api/auth/me401. No container restart needed.
+Public config exactly: window.TRACKFLOW_API_BASE_URL='/api';
+VPS loopback and local external HTTP: website/login/auth.js/styles.css/config200,
+unauthenticated /api/auth/me401. External requests bypassed local proxies.
+No credentials, tokens or response user data were sent or captured.
+
+UI running restart0 OOMfalse memory cap536870912 nanoCPU750000000; no mounts.
+API running restart0 OOMfalse memory cap268435456 nanoCPU250000000;
+8000/tcp binding null; only named volume at /app/data.
+Volume label project=trackflow-production; only API mounts it.
+Docker warmed memory: UI158.9MiB, API78.98MiB (237.88MiB combined).
+Host follow-up: RAM957MiB total/545used/249available; swap2047total/277used/1770free.
+Disk8031633408 bytes available (approximately1.807GB additional use).
+No sustained-load, peak-RAM or long-term swap-growth claim.
+
+Preservation comparison: all22 baseline service MainPIDs and monotonic start values
+unchanged; all7 baseline listener records/owners retained. Only added listeners:
+0.0.0.0:3000 and0.0.0.0:3001 Docker proxies. Existing22/53/18789/43947 retained;
+no public8000/3002. No stopping/restarting existing services or manual firewall edits.
+Historical T5a baseline claims are separate from this fresh comparison.
+
+Warnings: Docker --config /dev/null initial read-only preflight emitted directory
+warnings; subsequent commands used newly owned empty docker-config directory.
+Inventory503 expected with blank SQL, not authenticated acceptance tested here.
+HTTP/noTLS; first admin not configured; historical favicon404; short smoke only.
+Containers/network/config/images/new data volume retained; T5 still in progress.

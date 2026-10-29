@@ -200,7 +200,12 @@ real credentials or root `.env`:
 node --test tests/container-config.test.mjs
 ```
 
-### Production images (T5b — local verification pending)
+### Production images (T5b verified; limited T5 VPS runtime)
+
+The verified images now run in a limited initial VPS deployment:
+[public URLs, sanitized evidence and boundaries](docs/evidence/containerization/README.md).
+SQL is blank (inventory unavailable), first admin is unconfigured, and public UI
+access is HTTP only: do not send real credentials/tokens. T5 remains in progress.
 
 Development remains the default. Build production images **locally**, then transfer
 these tags to the target Docker host using your approved image transport. No VPS
@@ -244,9 +249,11 @@ Only UI ports are published. API is internal service DNS `api:8000`, single-work
 Uvicorn without reload (TinyDB). A new project-scoped `production_api_data` volume
 stores all three JSON stores at fixed `/app/data` paths; no host records are imported.
 Supplier startup bootstrap remains unchanged. Both services restart unless stopped
-and rotate JSON logs at5MiB x3. Memory/CPU budgets remain provisional until measured
-on the1CPU/~1GiB target alongside existing services; no fit claim or hard cap yet.
-No new TLS/domain/firewall platform is included.
+and rotate JSON logs at5MiB x3. The base file has no resource caps; sustained
+capacity on the1CPU/~1GiB target remains unproven.
+No new TLS/domain/firewall platform is included. The initial VPS rollout uses a
+remote-owned override enforcing UI512MiB/.75CPU and API256MiB/.25CPU; short observed
+coexistence and remaining limitations are recorded in the evidence linked above.
 
 For a disposable **synthetic-only** local check, use a unique owned project name
 and free loopback ports; this bypasses root dotenv and inherited application secrets:
@@ -265,9 +272,9 @@ and explicit env-file for subsequent `ps`, `logs`, `stats` and `down`; remove on
 that owned synthetic volume after checking ownership, never unknown project data.
 No real DB/mail/provider calls are needed. Blank SQL configuration means inventory503,
 not full business acceptance. API startup `create_all` is **not** a production
-migration strategy. Favicon404 remains known; production build/runtime/memory,
-independent checks, review and commit are pending. VPS rollout is already authorized
-but not performed by this packaging unit; no100% assignment-completion claim.
+migration strategy. Favicon404 remains known. T5b production build/runtime/memory, independent checks,
+review and commit passed. Limited initial VPS runtime and independent live checks
+also passed; private SQL/operator admin setup remains pending. No100% completion claim.
 
 ### Incident Analyzer
 

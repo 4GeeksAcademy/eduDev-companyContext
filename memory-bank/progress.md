@@ -1,5 +1,40 @@
 # Project Progress
 
+## Monorepo Containerization — T5 limited initial VPS runtime
+
+- Reused exact retained T5b images, no rebuild or publication; streamed save/gzip/
+  SSH/load stages all exited0. Local/remote IDs matched720b393714f3 and af504a8e775c.
+  Source packaging commit b57dfb08d2e982a524d6da051548aecc5893d8d8; T5b is complete.
+- New owned `/opt/trackflow-containerization/` contains exact committed production
+  Compose, resources.override.yml, deployment-marker.json, empty docker-config/
+  and exclusive-created root:root0600 deployment.env. Fresh server-CSPRNG JWT
+  stayed private; no readback/hash/copy. SQL/mail blank, public UI CORS configured.
+- Project trackflow-production: exactly running UI/API, network
+  trackflow-production_network, retained trackflow-production_production_api_data
+  volume mounted only by API. No source binds/API publishing. Caps verified:
+  UI512MiB/.75CPU, API256MiB/.25CPU. Native config --quiet/up --no-build --pull never.
+- Fresh resources350MiB available RAM/1816MiB free swap/9838739456bytes disk before;
+  warmed249MiB available/1770MiB free swap/8031633408bytes disk after. Docker UI/API
+  memory158.9/78.98MiB; restart0/OOMfalse. All22 baseline service PID/start pairs and
+  seven listeners preserved; only planned3000/3001 listeners added.
+- Early API readiness failed connection/proxy500; bounded follow-up passed internal
+  OpenAPI200/proxy401 without restart. VPS and external website/login/assets/config
+  returned200, anonymous auth/me401; config exposes only /api. No public auth traffic.
+- [Evidence and public URLs](../docs/evidence/containerization/README.md) include
+  sanitized current VPS observations and reused synthetic local text/browser PNG.
+  A labelled faithful rendering of captured local Compose output is now included
+  as local-containers.png; it is not a fresh terminal or live-state capture.
+- Independent live verification passed: exact images/two services, zero OOM or
+  restarts, correct caps/mounts/API isolation and internal API200. Parent external
+  website/login200 and proxy401 also passed. Current available RAM282MiB, free
+  swap1754MiB, free disk8031506432bytes; containers146.1/72.38MiB. Historical
+  service-identity preservation is writer-recorded, not independently reconstructed.
+- T5 IN PROGRESS: private SQL/operator admin setup remains pending. Blank SQL implies inventory503, not current authenticated acceptance.
+  HTTP/noTLS, historical favicon404 and short-smoke/no sustained-load limits retained.
+  No migrations/mail/accounts or pre-existing workload changes. Evidence delivery
+  is separate from private configuration and full business acceptance.
+  Later rollout evidence supersedes historical APP NOT DEPLOYED statements below.
+
 ## Monorepo Containerization — T5b production verification passed
 
 - Added explicit production mode to the existing UI recipe/launcher: cached separate
