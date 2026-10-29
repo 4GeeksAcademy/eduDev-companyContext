@@ -26,7 +26,7 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - [x] T2 (done): Add a minimal Next.js backoffice host with same-origin access to existing static login/pages and safe return paths; preserve existing authentication. Commit: `6dc75f6467b71052c91613717da22d213fcd85f4`.
 - [x] T3 (done): Implement the four inventory routes and centralized API client with focused behavior checks and domain-specific forms. Commit: `ea2a091ddc2b4ec775a96612b2e95e5976672b79`.
 - [x] T4a (done): Diagnose and fix the observed 390px inventory overflow, with a focused browser regression check. Commit: `9ce703a0a9c2987d395b9b3bb209550959fdb409`.
-- [ ] T4 (in_progress): Local API/UI integration complete; configured Supabase passed read-only auth/TLS/SELECT1. User authorized minimal development schema/demo initialization and a bounded real integration check.
+- [x] T4 (done): Local and live Supabase/API/browser acceptance complete, development demo initialized, final setup/evidence documented and independently verified. Commit: `21d0bf882b604fb65741a14f1efac664b9622428`.
 
 ## Acceptance and focused checks
 ### T1
@@ -149,5 +149,7 @@ Deliver the four authenticated inventory views required by the 4Geeks assignment
 - Documentation writer updated only `services/api/README.md` and `uis/backoffice/README.md`: completed live evidence, retained isolated-test distinctions/explicit unexercised cases, manual three-table RLS before seed and TLS requirement. No automatic-RLS or production-migration claim.
 - Writer structural readback/link check and `git diff --check` passed; no runtime checks repeated for passive documentation. Parent reviewed the complete two-file diff and whitespace; no credential/target identifiers included.
 
+- Final T4 documentation committed as `21d0bf882b604fb65741a14f1efac664b9622428` (`docs(inventory): record verified Supabase integration and setup`). Independent structural verifier `mvsvqcmg-q-d90q` returned PASS, confirmed only four intended documentation files, no secrets/target identifiers, accurate manual RLS/TLS and live/isolated boundaries. Committed-range whitespace check passed; no runtime checks repeated.
+
 ## Next step
-Commit final T4 evidence/setup docs locally, record commit identity and close tasks. No functional blocker remains in current scope. Publishing remains a separate user decision.
+Implementation and scoped verification are complete. All feature tasks are done; no unresolved functional blocker. Optional manual use and user-authorized publication/submission remain. No push/PR performed; no further automatic code, database or test work.
