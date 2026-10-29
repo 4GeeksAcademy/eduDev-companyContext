@@ -4,7 +4,9 @@
 
 | Area | Technology |
 | --- | --- |
-| Root/public website and legacy Hito 4 backoffice | Preserved static HTML, CSS, and browser JavaScript |
+| Root milestone and legacy Hito 4 assets | Preserved static HTML, CSS, and browser JavaScript |
+| Public website host | Next.js App Router with plain JSX; preserved static website remains independently usable |
+| UI development image | Node24 Alpine; independent npm ci installs, two Next dev hosts and private builtin legacy server |
 | Backoffice inventory | Next.js 16.4.3 App Router, React 19.2.8, TypeScript; separate host in `uis/backoffice/` |
 | Inventory API/storage | FastAPI, SQLModel and PostgreSQL/Supabase; existing TinyDB authentication |
 | Hito 2 utilities | TypeScript compiled with `tsc`; `tsx` for the console demo |
@@ -18,9 +20,10 @@
 ## Architecture Decisions
 
 - Keep each UI isolated under `uis/<name>/` with its own entry point, styles, scripts, and README.
-- The Next inventory host serves the four `/backoffice/inventory/` routes and proxies only allowlisted legacy assets/login on the same browser origin to loopback `127.0.0.1:3001`. Root static serving remains independent; it cannot render App Router routes.
+- The Next inventory host serves the four `/backoffice/inventory/` routes and proxies only allowlisted legacy assets/login on the same browser origin to loopback `127.0.0.1:3001` locally (validated `BACKOFFICE_LEGACY_PORT` override). The shared UI image sets3002 for its private allowlisted Node legacy server, leaving Next on3001 and the website on3000. Root static serving remains independent; it cannot render App Router routes.
 - Keep the public website and internal backoffice layouts separate.
-- Use native Web Components for small reusable public-site elements; no framework is needed.
+- Preserve static public-site Web Components and CSS; the minimal Next website reuses styles and reproduces content without changing the independent static host.
+- Build the UI image with context `./uis`, not the repository root. Only website/backoffice and the launcher are copied. Future source mounts require separate per-app node_modules and .next volumes; Compose/API integration remains T3. See [UI container startup](../uis/README.md#ui-development-container). Isolated UI Docker build, startup, routing and shutdown passed; full-stack Compose verification remains pending.
 - Keep the Hito 4 operations overview on static sample data; the separate incident page calls the incident API directly.
 - Reuse `shared/incident_analysis.py` from both CLI and API for aggregation/export. Legacy CSV validation now lives in standard-library `packages/shared/incident_validation.py`, with compatible analyzer reexports. Manager rules in `packages/shared/incidents.py` feed Pydantic schemas in `services/api/incident_models.py`; keep legacy and manager enums distinct.
 - Keep uploaded incident source files transient and retain only the last successful aggregate summary in process memory.

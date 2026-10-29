@@ -34,6 +34,46 @@
   documentation changed afterward. User authorized the local website commit
   and continuation to Docker; no push, PR, merge or deployment in this unit.
 
+## Monorepo Containerization — T2 writer evidence
+
+- Added one Node24 Alpine UI Dockerfile with `./uis` context, separate `npm ci`
+  installs and explicit website/backoffice copies. Docker ignores exclude direct/
+  nested dependencies, Next caches, environment files and logs; tracker is excluded.
+- POSIX launcher runs both Next dev leaf commands on0.0.0.0:3000/3001 and a
+  private allowlisted builtin Node asset server on127.0.0.1:3002. Unexpected exits
+  fail visibly, terminate siblings and reap owned PIDs. Local root http-server is
+  unchanged; validated rewrite configuration retains default3001 outside container.
+- `node --test uis/backoffice/tests/next-host.test.mjs uis/backoffice/tests/legacy-server.test.mjs uis/tests/start.test.mjs`:
+  RED2 passed/4 failed (configured-port assertion, missing server and launcher);
+  initial GREEN6/6; expanded final8/8, zero skips. Existing Node module-type warning
+  remains non-failing. Tests cover every allowlisted asset200/MIME, HEAD, unsupported
+  methods, config/unknown/traversal denial and exact rewrite/server allowlist parity.
+- Launcher tests copy only the launcher into owned temporary fixture trees and use
+  fake Node leaves: TERM cleanup and each of three unexpected child exits pass,
+  including a clean child exit. All recorded PIDs are absent after launcher exit;
+  fixture trees are cleaned. HTTP test uses OS-allocated loopback port and confirms
+  rebind after close. No real apps, API, data or existing processes were touched.
+- `sh -n uis/start.sh` and `node --check uis/backoffice/legacy-server.mjs` passed.
+  Packaging/docs have no meaningful behavioral RED; source inspection supplements
+  focused tests. The writer ran no Docker, installs, broad suites or Git delivery.
+- Independent verification repeated8/8 tests and built the image on the local
+  rootless daemon: `docker --context rootless build -f uis/Dockerfile -t
+  trackflow-ui:t2-verify-4545d9e uis` passed. Image169d1d1b728a was retained.
+  Default-command containers exposed Next3000/3001; legacy3002 bound loopback only.
+  No app-root .env or host .next was present before startup.
+- Container website smoke passed2/2; backoffice login/auth.js/CSS and inventory
+  validation shell returned200, private/config paths404. Normal stop exited0;
+  terminating website CLI triggered fail-fast exit1 with no running container
+  processes. Both owned containers removed and host3310/3311 released.
+  Source status unchanged, diff check passed. Node module-type/telemetry notices
+  and deprecated docker --time spelling were non-blocking.
+- Bind-mount hot reload, API/authenticated/full-stack integration, production
+  serving and VPS remain deferred. Native review `review-e00d2b1f129846a1`
+  approved all four lenses; exact acknowledgement completed. Non-blocking
+  `R3-shutdown-escalation` at `uis/tests/start.test.mjs:29` remains informational
+  follow-up, not a correction. Only passive status docs changed afterward;
+  local work-unit commit is next.
+
 ## Current State
 
 - Hito 1: root corporate website and B2B form completed.

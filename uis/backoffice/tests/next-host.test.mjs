@@ -2,6 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import config from '../next.config.ts';
 
+test('legacy port is configurable and rejects invalid values', async () => {
+  const previous = process.env.BACKOFFICE_LEGACY_PORT;
+  try {
+    process.env.BACKOFFICE_LEGACY_PORT = '3002';
+    assert.ok((await config.rewrites()).every(rule => new URL(rule.destination).port === '3002'));
+    for (const port of ['', '0', '65536', '3002/path', 'http://example.com', '3.2']) {
+      process.env.BACKOFFICE_LEGACY_PORT = port;
+      await assert.rejects(() => config.rewrites(), /BACKOFFICE_LEGACY_PORT/);
+    }
+  } finally {
+    if (previous === undefined) delete process.env.BACKOFFICE_LEGACY_PORT;
+    else process.env.BACKOFFICE_LEGACY_PORT = previous;
+  }
+});
+
 test('dev host preserves project-owned agent instructions', () => {
   assert.equal(config.agentRules, false);
 });

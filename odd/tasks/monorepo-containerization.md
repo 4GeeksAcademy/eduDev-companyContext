@@ -46,13 +46,15 @@ VPS. Delivery needs local and VPS evidence and a PR to main.
 
 ## Tasks
 
-- [ ] T1 — Adapt the public website minimally to Next.js. **Commit authorized; in progress.**
-  Implementation, focused HTTP/browser checks and native review are complete.
-  Preserve the checked source candidate; close after the authorized work-unit
-  commit. No push, PR, merge or deployment is implied.
-- [ ] T2 — Package both UIs in one Node Alpine container. **Pending.**
+- [x] T1 — Adapt the public website minimally to Next.js. **Done.**
+  Implementation, focused HTTP/browser checks and native review passed.
+  Commit: 4545d9e94060c029bf607fc7ad4bfbe38dc08cb6
+  (feat(ui): add Next.js public website host). No publication or deployment.
+- [ ] T2 — Package both UIs in one Node Alpine container. **In progress.**
   Add UI Dockerfile, start.sh and .dockerignore; install each app separately;
-  run website/backoffice on 3000/3001 and preserve private legacy serving.
+  run website/backoffice on 3000/3001. Use a Node built-in allowlisted legacy
+  server on loopback3002 inside the container; configurable rewrite port keeps
+  local default3001 unchanged. Cover requests, rejection and process lifecycle.
 - [ ] T3 — Package FastAPI and compose the development stack. **Pending.**
   Add Python Dockerfile, requirements and .dockerignore; use uv pip install
   and Uvicorn --reload. Add root Compose, named network, bind mounts, ports,
@@ -118,7 +120,44 @@ follow the live session's authority and repository policy.
 - Production build and full integration intentionally deferred. No Docker or
   VPS execution yet. T1 functional checks and review passed. Only passive status
   documentation changed after acknowledgement; implementation stayed unchanged.
-- Next: create the authorized local commit
-  feat(ui): add Next.js public website host; then proceed to the dual-UI container.
-  T1 remains open until that commit succeeds.
-- Commits: T1 authorized; no commit created yet.
+- T1 committed successfully as 4545d9e94060c029bf607fc7ad4bfbe38dc08cb6.
+  Post-commit status contained only the two unrelated task documents.
+- T2 mapping complete: root http-server is outside the ./uis build context.
+  A small Node built-in legacy server avoids installing any new dependency or
+  exposing the repository. Preserve legacy assets, package manifests and locks.
+- T2 edit surface: uis/Dockerfile, start.sh, .dockerignore, backoffice
+  legacy-server.mjs, next.config.ts, tests/next-host.test.mjs,
+  tests/legacy-server.test.mjs, uis/tests/start.test.mjs, uis/README.md,
+  backoffice/README.md, memory-bank/techContext.md and progress.md.
+- T2 checks: test-first focused Node rewrite/server/lifecycle checks and shell
+  syntax; then one isolated UI image build/run as applicable. No full Next
+  production build, API/data operations, whole-repository suite or VPS access.
+- Local Docker CLI29.9.0/Compose5.6.0 uses rootless local Unix socket; no remote
+  override observed. Daemon reachability and image execution remain unverified.
+- T2 writer completed 12 scoped files (333 additions/4 deletions): Dockerfile,
+  startup supervision, allowlisted loopback server, configurable validated
+  rewrite port, ignores, tests and docs. No dependencies or legacy assets changed.
+- T2 observed RED: Node command 2 passed/4 failed (missing implementations and
+  configurable rewrite). GREEN 6/6, then expanded lifecycle coverage 8/8 without
+  skips. sh -n, node --check and git diff --check passed. Non-failing Node
+  module-type warning remains; no Docker runtime proof from writer tests.
+- Native assess returned unassessable on untracked inventory; required independent
+  verification passed: repeated8/8 Node checks, Docker build and real UI runtime.
+  Retained image trackflow-ui:t2-verify-4545d9e (169d1d1b728a), local rootless only.
+- Both Next hosts listened on0.0.0.0:3000/3001; legacy remained127.0.0.1:3002.
+  Website container smoke2/2, backoffice login/assets and inventory validation
+  shell200, private/config paths404. Image had no app-root .env/host .next before
+  startup. This is not API/authenticated/Compose acceptance.
+- Normal container stop exited0; terminating website CLI caused fail-fast exit1.
+  Both owned containers removed, no running processes, host3310/3311 free.
+  Source unchanged; diff checks passed. Node module-type, telemetry and deprecated
+  Docker --time warnings did not block. Bind-mount hot reload remains T4.
+- Native T2 review review-e00d2b1f129846a1 approved all four lenses; exact
+  acknowledgement returned authority burned for target
+  sha256:2ce1545436d280eff2e839f414273e4da21406537a9b1159fb79148c62535dea.
+  Informational non-blocking R3-shutdown-escalation at uis/tests/start.test.mjs:29
+  is a later follow-up, not a correction or reason to reopen review.
+- Next: local T2 work-unit commit, then T3 backend and Compose mapping.
+  Only passive status documentation changed after review; T2 remains in
+  progress until the work-unit commit succeeds.
+- Commits: T1 4545d9e; no push, PR, merge or VPS actions.

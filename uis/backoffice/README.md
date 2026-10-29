@@ -8,6 +8,22 @@ local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
 
+## Container versus local hosting
+
+The [shared UI image](../README.md#ui-development-container) runs the website on
+3000 and this Next dev host on3001. Its builtin Node legacy asset server binds
+only `127.0.0.1:3002`; `BACKOFFICE_LEGACY_PORT=3002` also selects that rewrite
+upstream. Only fixed HTML/JS/CSS assets are served, never repository/config files.
+The launcher stops siblings on an unexpected exit and reaps owned children.
+Isolated Docker startup, asset routing and shutdown passed; authenticated API
+acceptance and Compose integration remain separate pending checks.
+
+The independent local commands below remain unchanged: the root http-server
+upstream uses3001 and Next uses another port. Without an environment override,
+Next rewrites still default to3001. `BACKOFFICE_LEGACY_PORT` accepts only integer
+ports1–65535; it must differ from the browser-facing Next port. Changing the
+rewrite environment does not reconfigure the existing local `npm run legacy`.
+
 ## Inventory host
 
 From the repository root, install the isolated host dependencies:

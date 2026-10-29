@@ -11,9 +11,13 @@ export default {
     return [{ source: '/uis/backoffice', destination: '/uis/backoffice/index.html', permanent: false }];
   },
   async rewrites() {
+    const port = process.env.BACKOFFICE_LEGACY_PORT ?? '3001';
+    if (!/^[0-9]+$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
+      throw new Error('BACKOFFICE_LEGACY_PORT must be an integer from 1 to 65535');
+    }
     return files.map(file => ({
       source: `/uis/backoffice/${file}`,
-      destination: `http://127.0.0.1:3001/uis/backoffice/${file}`,
+      destination: `http://127.0.0.1:${Number(port)}/uis/backoffice/${file}`,
     }));
   },
 };
