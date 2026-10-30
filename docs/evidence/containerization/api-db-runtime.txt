@@ -1,0 +1,134 @@
+API database runtime application — APPLIED; independent postcheck PASS
+
+Current outcome (2026-10-30; parent-supplied observations)
+Preflight mvuaj21b-c-odk3 passed native Compose config quiet/approved image
+resolution, old=saved JWT private challenge, zero missing canonical supplier
+names, fixed store baselines and saved TLS/read-only SELECT1/three-table existence.
+Earlier full schema types/constraints/indexes/RLS/grants passed; not repeated in
+full at postcheck. Operator confirmed the target project and supplied the official
+IPv4 Session pooler privately. Provider-project identity is not independently
+proven. Earlier direct IPv6 preauthentication failure and bad URL option were
+resolved before apply; saved sslmode=require passed without probe override.
+
+Parent performed ONE strict SSH invocation: production Compose with explicit
+--env-file deployment.env, production/resource files, -p trackflow-production,
+and up -d --force-recreate --no-build --pull never --no-deps api.
+Start: 2026-10-30T01:30:29.672258+00:00
+End:   2026-10-30T01:30:35.060075+00:00
+Exit: 0; elapsed 5.388s, NOT measured downtime.
+No configuration-file writes, builds, pulls, down or broad restart.
+
+Independent postchecker mvuaqyyh-d-48wm: PASS
+- New API: 561dab00b43e7793f53a29013bede70793cb2ed12931c9a0484d708e50aa71e3
+  Start: 2026-10-30T01:30:34.772078285Z
+  Same image: sha256:af504a8e775ccbab96ae8533b4aaecfe12f8fb0f485a1201027196fce644183e
+  Only existing volume trackflow-production_production_api_data RW /app/data;
+  same network and caps256MiB/.25CPU; restart0/OOMfalse, no published ports.
+- UI ID/start/image/caps512MiB/.75CPU/mount state exactly unchanged from the
+  historical identity below; restart0/OOMfalse. Exactly two project containers;
+  owned probes removed.
+- Actual NEW API native environment consumed by stdlib/psycopg2-only check:
+  Session pooler, saved sslmode=require without override, negotiated TLS,
+  read-only transaction, SELECT1 and configured-dbname match PASS; rollback/close.
+  Strong evidence live configuration applied, NOT authenticated inventory flow.
+  require encrypts; it does not establish hostname/certificate verification.
+- Anonymous GETs INSIDE UI container: api:8000/openapi.json200,
+  backoffice /api/auth/me401, website /uis/website/200 and
+  login /uis/backoffice/login.html200, all FIRST attempt. No new external browser.
+- suppliers.json5132bytes, unchanged SHA256:
+  44ca9ad3a782a9ddd26f17e3107dcc0e21fb81b0964b654e21e5fac59ed5958f
+  users.json/incidents.json absent before/after; startup supplier no-op observed.
+  No credential-bearing store fingerprinted or business records disclosed.
+- New=saved JWT challenge PASS; old=saved preflight PASS. Continuity assumes no
+  concurrent operator secret edit; parent made no file edits. No key/MAC/token
+  disclosed. All22 systemd PID/start pairs and11TCP/UDP listener canonical digest
+  baselines exactly unchanged.
+- Available RAM255283200bytes; swap1130119168bytes. API/UI sampled81.65/53.02MiB:
+  snapshots, not load or peak evidence.
+
+Limits
+Probes performed no business-row reads, writes or DDL. Existing application
+startup create_all remains; preflight found the expected schema complete, not
+proof that startup has no possible DDL behavior. No migration/explicit seed,
+account creation, email or public-HTTP credentials. First admin absent; no
+authenticated inventory/business acceptance. Incident aggregate is process-local;
+volatile-state preservation is not claimed. Website HTTP/noHTTPS, historical
+favicon404 and no clean-console/sustained-load claim remain. DB TLS is separate.
+PR27 MERGED confirmed2026-10-29T19:41:27Z; rollout evidence commit aadb00e.
+Formal own-fork and literal-screenshot caveats are in README.md beside this file.
+
+HISTORICAL R1 worker attempt — stopped before mutation
+The following original attempt is retained unchanged as history. Its blocked
+outcome and not-established checks do NOT describe the successful later apply.
+
+Observation timestamp (remote UTC): 2026-10-30T00:15:07.573722+00:00
+Outcome: BLOCKED by worker policy; saved database configuration NOT applied.
+No recreation, disposable probe, database connection, seed, migration, build,
+pull, secret read, remote file write, or cleanup operation was performed.
+
+Authority and limitation
+The operator authorized API-only recreation with brief interruption. This worker's
+higher-priority instructions restrict writes to this evidence path and prohibit
+deletion operations. Those constraints conflict with runtime recreation and the
+required disposable-probe cleanup. Continue only in an execution context whose
+policy permits the already-authorized runtime transaction. No additional operator
+approval of the intended API-only operation is implied to be missing.
+
+Observed read-only preflight
+- Remote production Compose and resources override were read; their displayed
+  content matches the expected image-only UI/API topology, API data volume,
+  explicit environment interpolation, single Uvicorn worker, and resource caps.
+  No deployment.env or SSH file contents were opened, copied, or hashed.
+- API ID: 4aa6da23836cced0586c5e43aea7c25216fe3b9271111be1bb2fe0b15b17e52f
+  Image: sha256:af504a8e775ccbab96ae8533b4aaecfe12f8fb0f485a1201027196fce644183e
+  Started: 2026-10-29T18:37:40.073263025Z
+  RestartCount: 0; OOMKilled: false
+  Memory: 268435456 bytes; NanoCpus: 250000000; PidsLimit: null
+- UI ID: 5f466b9b3caced361eeac3135f73fa5adf0b93099ef3ba2c949589968a75e47d
+  Image: sha256:720b393714f3ca2ebf56c8ba7a3e04b5f00ca0a84a5ddfdcef39be87c8a12b21
+  Started: 2026-10-29T18:37:40.596368011Z
+  RestartCount: 0; OOMKilled: false
+  Memory: 536870912 bytes; NanoCpus: 750000000; PidsLimit: null
+- MemAvailable: 272260 KiB. This snapshot alone is not a resource-fit guarantee.
+- Approved running-image equality: true for API and UI.
+
+Commands executed
+Local: git status --short (exit 0).
+Remote transport (exit 0):
+ssh -F /dev/null -i /home/lab/.ssh/trackflow_4geeks_ed25519 -p 22 -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UpdateHostKeys=no -o ConnectTimeout=10 root@162.243.69.7 'python3 -'
+Python input read only these nonsecret deployment files:
+/opt/trackflow-containerization/docker-compose.production.yml
+/opt/trackflow-containerization/resources.override.yml
+It read /proc/meminfo for MemAvailable and executed:
+docker --host unix:///var/run/docker.sock --config /opt/trackflow-containerization/docker-config ps -aq --filter label=com.docker.compose.project=trackflow-production
+For each returned container ID, it executed:
+docker --host unix:///var/run/docker.sock --config /opt/trackflow-containerization/docker-config inspect --format '{{json .Id}} {{json .Image}} {{json .State.StartedAt}} {{json .RestartCount}} {{json .State.OOMKilled}} {{json .HostConfig.Memory}} {{json .HostConfig.NanoCpus}} {{json .HostConfig.PidsLimit}}' <container-ID>
+Both selected-field inspect commands exited 0. No environment/configuration dump
+or container log output was requested.
+
+Not executed / not established
+- Fresh service PID/start and listener baselines; actual network/mount validation.
+- Native Compose config --quiet and configured-image resolution.
+- Supplier no-insert precondition and persistence HMAC proof.
+- JWT continuity challenge; prospective read-only database/schema probe.
+- The authorized API-only Compose up command (zero attempts).
+- Post-apply readiness, preservation checks, actual-runtime DB TLS/SELECT 1.
+No invariant above is inferred from prior evidence or anonymous HTTP behavior.
+No probe was created, so no owned probe requires cleanup. No interruption was
+initiated; downtime and a successful application end timestamp are unavailable.
+
+Prior evidence and remaining acceptance
+Prior builds, suites, schema checks and reviews are parent-provided context, not
+rerun here. Runtime configuration and passive documentation have no meaningful
+application RED/GREEN cycle. Startup supplier seeding and swallowed SQL create_all
+failures require explicit preflight; HTTP readiness cannot prove DB functionality.
+Incident-analysis aggregate is process-local and would reset on recreation;
+volatile-state preservation is not claimed. Authenticated business acceptance,
+first administrator provisioning and HTTPS remain outstanding. Never transmit
+real credentials or bearer tokens through the public HTTP UI.
+
+Repository preservation
+Pre-existing modified odd/tasks/monorepo-containerization.md and untracked
+odd/tasks/auth-frontend.md and odd/tasks/centralized-incident-manager.md were left
+untouched. This worker writes only this evidence file; parent owns task/progress
+transitions. No source edits, staging, commit, publication, or review lifecycle.

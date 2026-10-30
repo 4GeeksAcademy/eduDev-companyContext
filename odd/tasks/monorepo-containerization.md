@@ -1,5 +1,171 @@
 # Monorepo containerization
 
+## Current follow-up: verified database configuration application
+
+This section supersedes earlier current-state wording below; older evidence is retained
+as a chronological record. PR #27 was independently confirmed MERGED at
+2026-10-29T19:41:27Z (merge commit 8e73fc6456a9634aa7e9f7c33d534109bd838eed).
+Original feature HEAD was aadb00ed2d567575ff5b1dd3b1ef29f7cb92adbe.
+Delivery branch docs/containerization-runtime-evidence now starts from the merged
+main commit 8e73fc6456a9634aa7e9f7c33d534109bd838eed (identical source tree).
+Existing task metadata and unrelated task notes are preserved. The operator
+explicitly authorized Playwright checks, commit, non-force push and a new PR;
+merge and extra product/runtime scope are not authorized.
+
+### Goal, authority and scope
+
+Close the database-connectivity gap in the existing assignment deployment.
+The operator selected assignment closure before optional production improvements,
+confirmed the intended TrackFlow Supabase project, privately configured its
+Session pooler and explicit sslmode=require, then explicitly authorized API-only
+recreation and bounded verification with brief downtime ("avanza").
+
+Only the existing API runtime may be recreated. Preserve its exact verified
+image, durable JWT, named data volume, UI, OpenClaw and unrelated services.
+No rebuild/pull, secret rotation, dotenv/SSH file inspection or alternate access,
+migration, explicit seed, email, user creation, public-HTTP credentials or
+protected application/dependency changes. Native opaque configuration consumption
+and redacted results remain mandatory. No persistent deployment-file edits.
+Startup can bootstrap suppliers and call create_all: check that existing
+supplier/schema state makes those actions no-ops before recreation; stop on drift.
+The in-memory incident-analysis aggregate is transient across API recreation.
+Authenticated business acceptance remains separate from anonymous readiness.
+
+### Verified prerequisites
+
+- Host has no global IPv6 address or main-table default route; project network is
+  IPv4-only. Changing the Docker flag alone would not solve the connection.
+- The corrected saved URL is accepted by libpq and uses the official Session
+  pooler with IPv4 DNS. Authentication, SELECT 1 and read-only transaction passed.
+- All three expected inventory tables match columns/types/nullability,
+  primary/foreign keys, uniqueness and indexes. RLS is enabled without policies;
+  the connected backend role is not restricted by it. Effective privileges were
+  checked through metadata, without writes or business-row reads.
+- The latest focused check verified saved sslmode=require, negotiated TLS without
+  probe override, SELECT 1 and read-only mode. A matching database name does not
+  independently establish provider-project identity; that selection is confirmed
+  by the operator. require encrypts but is not hostname/certificate verification.
+- All prerequisite probes were removed without changing live containers. The later
+  authorized API-only recreation and independent postcheck are recorded below.
+- Prior builds, suites and approved native reviews remain valid and are not rerun.
+  Runtime/configuration work has no meaningful application RED/GREEN cycle:
+  use bounded preflight, apply and functional/preservation checks instead.
+
+### Follow-up tasks and acceptance
+
+- [x] R1 — Apply saved configuration to the existing API only. **Applied and verified.**
+  Observe fresh ownership/image/volume/UI/service baselines and no-op startup
+  prerequisites; verify JWT continuity through safe opaque runtime use if
+  available, otherwise stop rather than claim an unproven invariant. Native
+  Compose must use the explicit production files/project/env-file with
+  --no-deps --no-build --pull never and api only. No down or broad restart.
+  Stop on unexpected state; preserve data/images/config for diagnosis.
+  Work-unit evidence commit: authorized, recorded with D2 below.
+- [x] R2 — Independently verify the resulting API runtime. **Passed for bounded runtime scope.**
+  Confirm unchanged approved image/volume/JWT, unchanged UI/unrelated services,
+  API readiness and same-origin anonymous behavior. Verify actual API-process
+  database settings with bounded read-only TLS/SELECT 1, not a stale saved-file
+  probe. Never infer authenticated inventory acceptance from OpenAPI200/auth401.
+  Record every failed/skipped check and startup-side-effect limitation.
+  Work-unit evidence commit: authorized, recorded with D2 below.
+- [x] R3 — Reconcile assignment evidence and progress documentation. **Verified; included in D2 delivery.**
+  Update only containerization-related documentation with observed results and
+  remaining boundaries. Keep HTTPS/admin/mail/recovery outside this chosen
+  implementation scope; retain formal fork/screenshot acceptance caveats and
+  do not claim full business acceptance. Structural readback and whitespace/diff
+  checks replace application suites for passive documentation.
+  Work-unit evidence commit: authorized, recorded with D2 below.
+
+### Browser verification and delivery follow-up
+
+- [x] D1 — Run separate live Playwright checks for website and backoffice.
+  **Done for anonymous scope; authenticated acceptance pending.** Reuse deployed processes/images and installed tooling, no
+  rebuilds/installers. Cover anonymous pages, four protected-route redirects,
+  keyboard/mobile/desktop behavior and console/resource results. Never fabricate
+  auth, create identities or write inventory. First-admin absence and public HTTP
+  prevent real-credential acceptance; record the safe manual prerequisites.
+- [ ] D2 — Record browser evidence and commit the scoped delivery slice.
+  **In progress.** Update only containerization docs/evidence; preserve unrelated notes.
+  Check sanitization, links, final diff and whitespace; passive docs need no new
+  source review or repeated application suites. Include observed blocked/skipped
+  checks and functional scope rather than claiming full business acceptance.
+- [ ] D3 — Push and open the follow-up PR to main. **Pending.**
+  Destination: 4GeeksAcademy/eduDev-companyContext. Ordinary non-force push and
+  native opaque GitHub credentials only; no config changes/secret output. Use
+  repository policy, not unrelated Gentle-owned issue/type-label requirements.
+  Link PR27 and the original assignment; never infer CI passed or auto-merge.
+
+### Browser results
+
+Verifier mvubg2cd-g-to2n exercised separate website/backoffice runs with cached
+Playwright Core 1.62.1 and Chromium 151.0.7922.34 at 390x900 and 1440x900.
+Website/logins returned200 with expected content, labels, 3px keyboard focus,
+working anchors and no horizontal overflow. All four inventory routes redirected
+to same-origin login with exact safe next values; bounded DOM samples found no
+private inventory content. Actual browser traffic stayed on each UI origin.
+Anonymous auth401 was expected; no unexpected page errors/500s/failed requests.
+Website skip-link hash worked; focus transfer into main was not established.
+The initial script exited1 due to confusing browser Fetch response.status with
+Playwright response.status(); follow-up mvublyvu-h-qcad corrected only that harness
+check and exited0 with login200/auth401, zero page errors and zero blocked requests.
+No source fix or repeated broad checks. Browser resources closed; no files,
+accounts, credentials, email, inventory writes, rebuild or service changes.
+Full authenticated Next acceptance remains pending a legitimate active account
+and HTTPS or separately authorized encrypted access. User requested instructions
+for that limitation; D2 records safe read-only manual steps with the evidence.
+
+### Next step
+
+Fresh verifier mvuaj21b-c-odk3 passed all scoped preservation/startup gates:
+JWT continuity, unchanged storage, zero missing supplier names, existing inventory
+tables, saved TLS/read-only connection, approved image resolution and production
+Compose validation. The primary session then executed exactly one API-only
+Compose up with --force-recreate --no-build --pull never --no-deps api over strict
+SSH at 2026-10-30T01:30:29.672258+00:00; it returned exit0 at
+01:30:35.060075+00:00 (5.388 seconds, not a measured downtime). No configuration
+file edits, builds, pulls or broad restarts. R2 verifier mvuaqyyh-d-48wm subsequently
+passed: new API 561dab00b43e7793f53a29013bede70793cb2ed12931c9a0484d708e50aa71e3
+started at 01:30:34.772078285Z; same approved image, volume, network and resource
+caps, zero restarts/OOM and no published API port. Actual API-runtime Session
+pooler/sslmode=require/TLS/read-only SELECT 1 passed. UI-origin anonymous requests
+returned OpenAPI200, auth401 and website/login200 on first attempt. Supplier bytes
+were unchanged; user/incident stores remain absent. UI identity/start/image and
+22 systemd services/11 listener baselines were unchanged. New JWT matched saved
+JWT via opaque challenge; preflight proved old JWT matched saved JWT, assuming
+no concurrent operator secret edit. Probe removed; exactly two project containers.
+That runtime postcheck did not establish fresh public-browser, authenticated
+inventory, first-admin or sustained-load acceptance; later anonymous Playwright
+coverage is recorded separately above. R3 updated the root/evidence READMEs, progress and runtime
+evidence. Independent structural verifier mvub2iky-f-9swm passed scoped diff,
+full untracked-evidence readback, local links and whitespace checks. Its minor
+wording note was corrected to 'supplier startup no-op observed'; this does not
+claim all startup DDL behavior is absent. Parent readback/whitespace passed.
+No more runtime actions are pending in this unit. The operator subsequently authorized commit/push/PR; D2/D3 track that delivery.
+
+The initial R1 writer stopped before recreation under its evidence-only policy.
+This was not an SSH/Docker rejection. Memories 24708/24712 confirm the earlier
+SSH deployment and a prior remote-scope clarification. The operator authorized
+continuing with the existing SSH route. Keep the restricted writer out of runtime
+mutation: a read-only verifier owns the substantial fresh preflight, the primary
+session owns only the single explicitly authorized API-only Compose invocation,
+and an independent verifier owns the post-application checks. No new agent profile
+or broader VPS permission is required. Stop on any actual tool denial or failed
+preservation gate; never bypass credential controls or claim an unexecuted apply.
+
+The writer recorded selected image/cap/restart observations in
+[api-db-runtime.txt](../../docs/evidence/containerization/api-db-runtime.txt).
+That historical blocked attempt matched both images/original containers but did
+not establish JWT continuity, supplier no-op or application success. The later
+fresh preflight, parent apply and independent postcheck above supersede its
+incomplete current-state conclusions without erasing the earlier stop.
+Native ASSESS was unassessable because untracked files lack explicit declaration.
+Independent documentation-only verifier mvu84eb6-b-pn7e passed structural readback,
+scope/sanitization checks and git diff --check; Git status was unchanged before
+and after. The untracked evidence file received complete readback, not coverage
+from git diff --check. That check predates the successful runtime application;
+R3's later final structural check is recorded above. No new source
+review or rerun of approved builds/suites is warranted for this passive record.
+
 ## Goal
 
 Meet the [4Geeks containerization assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-container-project/README.md)
@@ -102,8 +268,10 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   implies inventory503, not full business acceptance. Do not inspect/copy blocked
   dotenv files or invent external credentials. Record a source work-unit commit.
 - [ ] T5 — Deploy to existing VPS and prepare evidence. **Limited initial runtime running; in progress.**
-  Initial runtime and sanitized evidence are independently verified. Private
-  SQL/operator setup remains pending; delivery must disclose that limitation.
+  Initial runtime and sanitized evidence are independently verified. Evidence
+  commit: aadb00ed2d567575ff5b1dd3b1ef29f7cb92adbe.
+  Published PR: https://github.com/4GeeksAcademy/eduDev-companyContext/pull/27
+  (open against main; no merge). Private SQL/operator setup remains pending.
   Transfer the already verified images without rebuilding, use a new isolated
   deployment directory/project/data volume, and preserve existing workloads.
   Generate a fresh durable JWT privately on the server; do not reuse/inspect
@@ -445,8 +613,9 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   T3b committed as d4404a0; T4 evidence committed as fc344a7. T5a independent
   runtime verification passed and evidence was committed as0552b97. T5b source
   is committed asb57dfb0; initial VPS rollout and independent live checks passed.
-  Next: publish sanitized assignment evidence/PR and obtain private SQL/operator
-  configuration without exposing credentials. Do not repeat routine approvals.
+  Evidence commit aadb00e was pushed and PR27 opened against main. Next: obtain
+  private SQL/operator configuration without exposing credentials, then complete
+  business acceptance. Do not repeat routine approvals.
   Do not repeat completed local tests or inspect protected dotenv files.
   Application deployment is now authorized; SSH credential consumption
   is not permission to copy application secrets or access real data.
@@ -459,4 +628,5 @@ network/service DNS, ignored secrets, and local/VPS delivery evidence.
   T5a 0552b97; T5b b57dfb0.
   The application containers are deployed in a limited initial configuration;
   independent live infrastructure checks passed. SQL/admin and HTTP/TLS limits
-  remain explicit. Evidence publication is next; no push, PR or merge yet.
+  remain explicit. Evidence is published in PR27; no merge. GitHub reported
+  MERGEABLE/CLEAN with no check runs at the query time, not CI/human approval.

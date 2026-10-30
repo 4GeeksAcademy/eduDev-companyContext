@@ -1,6 +1,46 @@
 # Project Progress
 
-## Monorepo Containerization — T5 limited initial VPS runtime
+## Monorepo Containerization — API database configuration applied and verified
+
+- On 2026-10-30, parent API-only recreation exited0 in5.388s (not measured
+  downtime). Independent postcheck mvuaqyyh-d-48wm passed actual new API-runtime
+  Session pooler, saved sslmode=require, TLS and read-only SELECT1; no override.
+  Operator confirmed project identity; provider identity was not independently proven.
+- Approved API image, volume/network/caps and JWT continuity passed; UI identity/
+  start/image/mounts,22service PID/start pairs and11listener baselines unchanged.
+  Supplier bytes unchanged, supplier startup no-op observed; users/incidents stores absent.
+  Exactly two project containers, zero restarts/OOM; owned probes removed.
+- UI-container anonymous OpenAPI200, auth401 and website/login200 passed first try.
+  That API postcheck was UI-internal, not external-browser acceptance. Later
+  external public-IP Playwright website/login checks passed at390/1440, plus all
+  four anonymous inventory redirects at desktop width; bounded DOM samples showed
+  no private content. Expected auth401 was the sole backoffice console error;
+  website console was clean. Harness status-property follow-up exited0.
+  See [browser evidence and pending secure manual checks](../docs/evidence/containerization/browser-readonly.md).
+  Full Next skill/authenticated inventory acceptance remains pending legitimate
+  active-account, authorized-view and secure-access prerequisites.
+  Earlier full schema/RLS/grants checks were not repeated at postcheck; probes
+  performed no DDL or business-row operations. Existing startup create_all remains.
+- PR #27 MERGED confirmed2026-10-29T19:41:27Z; original rollout evidence commit: aadb00e.
+  Formal own-fork and literal-screenshot acceptance caveats remain. A follow-up
+  evidence PR is authorized; no new fork is proposed.
+- See [runtime outcome and historical attempt](../docs/evidence/containerization/api-db-runtime.txt),
+  [evidence guide](../docs/evidence/containerization/README.md) and
+  [parent-owned follow-up](../odd/tasks/monorepo-containerization.md).
+  First admin is absent; HTTP/noHTTPS and no sustained-load claim remain.
+  Historical favicon404 was not observed in the later external browser run.
+  Admin/HTTPS/mail/recovery are separate operational follow-ups, not added assignment
+  requirements. No public credentials, accounts, mail, migration or explicit seed.
+
+### HISTORICAL containerization record
+
+The initial blank-SQL rollout and earlier pending statements below are retained
+as stage-specific history, superseded by the verified current result above.
+The first evidence-only worker stopped under its policy; it did not prevent the
+later authorized parent application. No builds/suites/reviews were repeated for
+this passive documentation update.
+
+## Monorepo Containerization — HISTORICAL T5 limited initial VPS runtime
 
 - Reused exact retained T5b images, no rebuild or publication; streamed save/gzip/
   SSH/load stages all exited0. Local/remote IDs matched720b393714f3 and af504a8e775c.

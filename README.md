@@ -191,7 +191,8 @@ images or recreating containers: website changes/restoration triggered automatic
 Next document reload; backoffice updated in place; Uvicorn reloaded API changes.
 Original source remained unchanged. Root `.env` is ignored/untracked and absent
 from the available local Git history. Real `.env` completeness, configured
-PostgreSQL and production/VPS acceptance remain separate and unverified.
+PostgreSQL and production/VPS acceptance are separate from these synthetic checks;
+see the verified production follow-up below.
 
 Focused configuration checks use temporary synthetic environment fixtures, no daemon,
 real credentials or root `.env`:
@@ -200,12 +201,20 @@ real credentials or root `.env`:
 node --test tests/container-config.test.mjs
 ```
 
-### Production images (T5b verified; limited T5 VPS runtime)
+### Production images (API database configuration applied and verified)
 
-The verified images now run in a limited initial VPS deployment:
-[public URLs, sanitized evidence and boundaries](docs/evidence/containerization/README.md).
-SQL is blank (inventory unavailable), first admin is unconfigured, and public UI
-access is HTTP only: do not send real credentials/tokens. T5 remains in progress.
+On 2026-10-30, API-only recreation applied the saved Session pooler configuration;
+independent checks passed actual API-runtime DB TLS/read-only SELECT 1, anonymous
+readiness and preservation of UI, storage, images and unrelated services.
+See [runtime outcome](docs/evidence/containerization/api-db-runtime.txt) and
+[public URLs, evidence and limits](docs/evidence/containerization/README.md).
+Later external public-IP Playwright checks passed bounded anonymous website/login
+and private-route redirect coverage; see [browser evidence and safe read-only manual
+checks](docs/evidence/containerization/browser-readonly.md).
+This is not authenticated inventory/business acceptance. First admin is absent;
+public UI remains HTTP without HTTPS: do not send real credentials or tokens.
+PR #27 is merged; formal instructor acceptance is not claimed (own-fork wording
+and the labelled recorded-output image remain evidence caveats).
 
 Development remains the default. Build production images **locally**, then transfer
 these tags to the target Docker host using your approved image transport. No VPS
@@ -239,7 +248,7 @@ docker compose -f docker-compose.production.yml down  # retain persistent data
 | `TRACKFLOW_UI_IMAGE` / `TRACKFLOW_API_IMAGE` | Required transferred image tags, e.g. `trackflow-ui:production` / `trackflow-api:production` |
 | `COMPOSE_PROJECT_NAME` | Set a dedicated name, e.g. `trackflow-production`; keep it stable for persistence |
 | `JWT_SECRET_KEY` | Required private durable random secret, API only; no fallback |
-| `DATABASE_URL` | Optional blank for isolated checks; real PostgreSQL/schema/RLS readiness still missing |
+| `DATABASE_URL` | Optional blank for isolated checks; deployed Session pooler/TLS verified, expected schema/RLS checked before application |
 | `TRACKFLOW_BIND_ADDRESS` | Defaults to `127.0.0.1`; choose exposure deliberately for the target host |
 | `WEBSITE_HOST_PORT` / `BACKOFFICE_HOST_PORT` | Defaults `3000` / `3001` |
 | Public proxy / legacy settings | Fixed `1`, `http://api:8000`, private port `3002` at runtime; same values baked into UI |
@@ -274,7 +283,9 @@ No real DB/mail/provider calls are needed. Blank SQL configuration means invento
 not full business acceptance. API startup `create_all` is **not** a production
 migration strategy. Favicon404 remains known. T5b production build/runtime/memory, independent checks,
 review and commit passed. Limited initial VPS runtime and independent live checks
-also passed; private SQL/operator admin setup remains pending. No100% completion claim.
+also passed; saved SQL is now applied and independently verified as linked above.
+First-admin, authenticated business and sustained-load acceptance remain separate.
+No100% completion claim.
 
 ### Incident Analyzer
 
