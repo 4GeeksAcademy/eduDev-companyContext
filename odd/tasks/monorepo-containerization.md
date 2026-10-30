@@ -84,12 +84,17 @@ Authenticated business acceptance remains separate from anonymous readiness.
   keyboard/mobile/desktop behavior and console/resource results. Never fabricate
   auth, create identities or write inventory. First-admin absence and public HTTP
   prevent real-credential acceptance; record the safe manual prerequisites.
-- [ ] D2 — Record browser evidence and commit the scoped delivery slice.
-  **In progress.** Update only containerization docs/evidence; preserve unrelated notes.
+- [x] D2 — Record browser evidence and commit the scoped delivery slice.
+  **Done.** Commit: 28f0c5bde32491589c3666bdaf0da2775764eac7
+  (docs(docker): record verified API rollout and browser checks).
+  Independent staged structural check and final whitespace checks passed. Update only containerization docs/evidence; preserve unrelated notes.
   Check sanitization, links, final diff and whitespace; passive docs need no new
   source review or repeated application suites. Include observed blocked/skipped
   checks and functional scope rather than claiming full business acceptance.
-- [ ] D3 — Push and open the follow-up PR to main. **Pending.**
+- [x] D3 — Push and open the follow-up PR to main. **Done.**
+  Non-force push succeeded. PR: https://github.com/4GeeksAcademy/eduDev-companyContext/pull/28
+  Base: main; head: docs/containerization-runtime-evidence. No merge.
+  Primary evidence commit: 28f0c5bde32491589c3666bdaf0da2775764eac7.
   Destination: 4GeeksAcademy/eduDev-companyContext. Ordinary non-force push and
   native opaque GitHub credentials only; no config changes/secret output. Use
   repository policy, not unrelated Gentle-owned issue/type-label requirements.

@@ -28,7 +28,8 @@ Authenticated inventory/business acceptance remains pending.
 - PR #27 MERGED confirmed2026-10-29T19:41:27Z; original rollout evidence commit: aadb00e.
   Repository isFork=false versus assignment own-fork wording, and the labelled
   render below is not a literal terminal screenshot: instructor acceptance remains
-  a formal caveat, not claimed completion. The authorized follow-up PR records
+  a formal caveat, not claimed completion. Follow-up
+  [PR #28](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/28) records
   runtime/browser evidence; no new fork is proposed.
 - The assignment does not explicitly require .env.example, HTTPS, admin, Resend
   or sustained load. Optional operational follow-ups include first-admin/secure

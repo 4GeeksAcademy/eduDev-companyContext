@@ -23,7 +23,8 @@
   performed no DDL or business-row operations. Existing startup create_all remains.
 - PR #27 MERGED confirmed2026-10-29T19:41:27Z; original rollout evidence commit: aadb00e.
   Formal own-fork and literal-screenshot acceptance caveats remain. A follow-up
-  evidence PR is authorized; no new fork is proposed.
+  evidence [PR #28](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/28)
+  is open from `docs/containerization-runtime-evidence`; no new fork or merge.
 - See [runtime outcome and historical attempt](../docs/evidence/containerization/api-db-runtime.txt),
   [evidence guide](../docs/evidence/containerization/README.md) and
   [parent-owned follow-up](../odd/tasks/monorepo-containerization.md).
