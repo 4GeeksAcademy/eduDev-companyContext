@@ -1,6 +1,6 @@
 # Frontend performance audit — baseline
 
-**PA-01: baseline recorded; no application fixes or after gains yet.** Both
+**PA-01: baseline recorded. PA-02: local contrast fix tested; after gains unproven.** Both
 production frontends have healthy navigation performance. The selected next
 changes target corporate contrast and inventory navigation target sizing, followed
 by one small reusable loading abstraction. Final `REPORT.md` is pending.
@@ -95,8 +95,15 @@ Evidence: desktop and mobile JSON above, `color-contrast`.
 Eyebrow text measures **3.75:1 / 4.12:1** and white CTA text **3.02:1**, below
 **4.5:1** for these text sizes. Shared color tokens and eyebrow/button rules in
 [styles.css](uis/website/styles.css#L7) (lines 7, 62, 76, 126) cause the failures.
-PA-02 will adjust the minimal foreground/background combinations, preserving
-hover/focus behavior and checking both static and Next hosts using that stylesheet.
+PA-02 locally darkens `--orange-dark` from `#d84d1d` to `#b83d15` and the
+primary button background from `var(--orange)` (`#f26b3a`) to `#c4471b`.
+Decorative orange, focus outlines and interaction geometry remain unchanged.
+Source-derived checks now measure 5.048:1 on paper/header, 5.555:1 on warm-white,
+and white CTA text at 4.925:1 default / 5.651:1 hover and focus. Shared-token
+service-number/link usages and the unchanged light eyebrow override are covered.
+The focused runner observed 11 ratio failures before CSS changes, then 13 passes.
+These are local CSS calculations only; static/Next browser verification and
+comparable production desktop/mobile Lighthouse measurements remain pending.
 
 ### Inventory: selected navigation target correction
 

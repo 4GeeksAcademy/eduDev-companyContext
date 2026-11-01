@@ -1,5 +1,18 @@
 # Project Progress
 
+## Frontend Performance Audit — PA-02 local contrast correction
+
+- Changed only the corporate shared dark-orange token and primary CTA background;
+  decorative orange and focus outlines remain intact for static and Next hosts.
+- Focused contrast runner observed RED: 11 ratio failures, 2 passes before CSS;
+  GREEN: 13/13. Source ratios now meet 4.5:1: paper/header 5.048, warm-white
+  5.555, white CTA default 4.925 and hover/focus 5.651. Shared-token usages and
+  the unchanged footprint eyebrow override are covered. Two initial test-helper
+  mistakes (grouped-rule lookup and nested CTA cases) were corrected before CSS.
+- Local source math is not browser-computed style or Lighthouse evidence.
+  Runtime comparison, production measurements and parent review remain pending;
+  baseline scores and PA-01 history below are unchanged. No score gain claimed.
+
 ## Frontend Performance Audit — PA-01 baseline
 
 - Recorded three production Lighthouse baselines in [AUDIT.md](../AUDIT.md) and

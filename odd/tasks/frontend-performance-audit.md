@@ -21,15 +21,15 @@ Branch: `feat/frontend-performance-audit` (created from `c382dfa0eba3c4c342897f4
 
 ## Task checklist
 
-- [ ] **PA-01 — Preserve and explain the initial baseline** (in progress).
+- [x] **PA-01 — Preserve and explain the initial baseline** (done).
   - Copy privacy-checked original screenshots and JSON reports into `audit/before/`; retain original temporary HTML reports until final delivery.
   - Write `AUDIT.md` with measurement conditions, scores, root causes, at least two duplication candidates, planned corrections and deferred limitations.
   - Update project progress; verify artifacts/links, JSON scores, PNG structure and `git diff --check`.
   - Resolve relevant deployed/local source correspondence before code edits.
-  - Commit evidence: pending.
-- [ ] **PA-02 — Improve corporate contrast** (pending).
+  - Commit evidence: `5e149c4c5b1233940cb63ae761cf138a6f0e0135` — `docs(audit): record production frontend baselines`.
+- [ ] **PA-02 — Improve corporate contrast** (in progress).
   - Correct the failing eyebrow/CTA foreground-background combinations in `uis/website/styles.css`, preserving visual hierarchy and focus/hover behavior.
-  - Add focused deterministic contrast regression coverage before the fix when supported by the existing runner; observe RED/GREEN. Check both shared-host contexts.
+  - Add focused deterministic contrast regression coverage to the existing `uis/website/tests/site-smoke.test.mjs` runner before the fix; observe RED/GREEN with `node --test --test-name-pattern=contrast uis/website/tests/site-smoke.test.mjs`. Keep package/dependency files unchanged. Check both shared-host contexts.
   - Measure the same corporate production URL in desktop and mobile with the original Lighthouse version/settings; record the actual deltas.
   - Commit evidence: pending.
 - [ ] **PA-03 — Improve backoffice navigation target sizing** (pending).
@@ -74,4 +74,6 @@ Documented follow-ups unless evidence requires reprioritization: corporate inval
 
 Both initial audits and bounded source analysis are complete. No application corrections have been written. The account-access prerequisite is verified; no recovery UI or extra infrastructure was added.
 
-PA-01: three original Lighthouse JSON reports and three PNGs were copied into `audit/before/` after private-value/token scans, JSON score assertions and PNG signature checks; all six destination files matched their sources byte-for-byte. The documentation worker completed `AUDIT.md`, `audit/before/README.md` and the project progress entry. Writer checks passed: `git diff --check`, three JSON score sets, three PNG dimensions/signatures, local audit-document links and scoped Git status. Parent readback and a repeated `git diff --check` passed; one wording correction distinguishes the user-agreed TLS exclusion from assignment requirements. Native ASSESS was unassessable because of undeclared unrelated untracked notes, so a separate scoped structural verifier is running. Its results and the work-unit commit remain pending. Original HTML/metadata remain in the documented temporary directories. Exact review outcomes and commit identities will be added as observed.
+PA-01: three original Lighthouse JSON reports and three PNGs were copied into `audit/before/` after private-value/token scans, JSON score assertions and PNG signature checks; all six destination files matched their sources byte-for-byte. The documentation worker completed `AUDIT.md`, `audit/before/README.md` and the project progress entry. Writer checks passed: `git diff --check`, three JSON score sets, three PNG dimensions/signatures, local audit-document links and scoped Git status. Parent readback/diff checks passed. Native ASSESS was unassessable because of undeclared unrelated untracked notes; independent structural verification passed all artifact hashes, scores/settings, links and progress-history checks. A parent task-log edit during verification was reconciled with a stable two-hash readback (no audit rerun). PA-01 was committed as `5e149c4` after the exact staged paths and whitespace were checked. Original HTML/metadata remain in the documented temporary directories.
+
+PA-02 is now in progress: bounded writer owns website contrast CSS, focused tests and directly related documentation only. No measured improvement is claimed until the matching production comparison runs. Task transitions are updated only when no verifier is reading this document.
