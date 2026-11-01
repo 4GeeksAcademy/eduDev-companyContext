@@ -185,8 +185,10 @@ horizontal interaction was not tested. Evidence is retained at
 Browser closed, owned server received SIGTERM and port3300 was released. Git
 short-status equality and diff-check passed, not a byte comparison. These results
 are reused without reruns. PA-03 native review was approved and acknowledged;
-local commit `d1bfb26` is complete. Deployment and comparable authenticated
-production measurement remain required in PA-05 after PA-04; no score gain is claimed.
+commit `d1bfb26` is complete. PA-05 deployment and comparable authenticated
+production measurement are complete: accessibility95 → 100, target-size0 → 1.
+Performance97 → 96 is single-run variation, not proven regression causality.
+See [final report](../../REPORT.md) and [after evidence](../../audit/after/README.md).
 
 ## PA-04 shared inventory load status
 
@@ -220,8 +222,21 @@ screenshots each (not a visual audit). Runner: `/tmp/trackflow-pa04-check.mjs`.
 Two initial baseline harness failures (wrong `sku` query expectation and storage
 setup on `about:blank`) were corrected before app edits. Final runs exited 0;
 browsers closed, owned servers received SIGTERM and port3300 release passed.
-`git diff --check` passed. PA-04 native review/commit remain parent-owned;
-PA-05 deployment/authenticated comparison and final report remain pending.
+`git diff --check` passed. Subsequent independent verification passed17/17 tests,
+8/8 browser groups and exact effect/table equality; its populated products/history
+PNGs were visually inspected. Departure to about:blank is a full-document departure,
+not SPA-unmount or server-cancellation proof. PA-04 native review was approved and
+acknowledged; commit `947062f` is complete.
+
+PA-05 deployed `trackflow-ui:pa05-947062f`; preflight14/14 and independent
+readiness18/18 passed with API/configuration/container boundaries preserved (not
+DB-byte proof). The real normal-account products audit over SSH loopback retained
+baseline settings/cache/privacy conditions, with six rows, fresh auth/me/products200
+and no warnings. Scores97/95/100/90 → 96/100/100/90. No business writes or mocks.
+[REPORT.md](../../REPORT.md) records methods, limitations and all screenshot/JSON
+links. Source review, commits, deployment and production measurement are complete;
+final documentation verification/evidence commit remain parent-owned. Older stage
+records elsewhere in this README are historical, not current PA-05 blockers.
 
 ## Inventory source verification and T4 acceptance
 

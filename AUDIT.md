@@ -1,21 +1,20 @@
-# Frontend performance audit — baseline and corporate after evidence
+# Frontend performance audit — findings and measured results
 
-**PA-02: corporate contrast deployed and measured; accessibility 91 → 96 on both
-profiles.** PA-01 baselines remain below. Inventory navigation target sizing is
-applied and verified locally, with production measurement pending. One reusable
-status-markup component is extracted and locally verified; the overall assignment and
-final `REPORT.md` are not complete.
+**Both production frontends gained 5 accessibility points:** corporate91 → 96
+(desktop/mobile), inventory95 → 100 (desktop). Corrections and shared status markup
+are reviewed, committed and deployed. Technical evidence is complete; parent owns
+final documentation verification and evidence commit. See [REPORT.md](REPORT.md).
 
 - [4Geeks assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-web-vitals/README.md)
 - [Task and staged plan](odd/tasks/frontend-performance-audit.md)
 - [Before evidence index](audit/before/README.md)
-- [Corporate after evidence index](audit/after/README.md)
+- [After evidence index](audit/after/README.md)
 
 ## Scope and measurement method
 
 These are single Lighthouse navigation runs, not field Core Web Vitals, sustained
 load tests or complete accessibility/security acceptance. TBT does not establish
-INP; no INP result is claimed. All three baseline and both corporate after runs had no run warnings.
+INP; no INP result is claimed. All three baseline and all three after runs had no run warnings.
 
 | Case | Production target and capture time (UTC) | Access |
 | --- | --- | --- |
@@ -56,8 +55,8 @@ Common timing: FCP wait 30000 ms, load wait 45000 ms, post-FCP/post-load pauses
 - Corporate: CLI channel, `disableStorageReset=false`, normal screenshot audits.
 - Inventory: Node channel, `disableStorageReset=true` to preserve authentication
   storage; browser cache explicitly cleared. The same-origin read-only request
-  guard allowed one login POST; routing also disables HTTP cache. Repeat this
-  exact authentication, cache and transport arrangement for the after run.
+  guard allowed one login POST; routing also disables HTTP cache. This exact
+  authentication, cache and transport arrangement was preserved in the after run.
 - Inventory showed six real product rows; session/products responses were HTTP
   200 during preflight and audit. No inventory writes, mocks or seeding occurred.
 - Inventory application-image capture was disabled (`disableFullPageScreenshot`,
@@ -110,7 +109,19 @@ Accessibility improved **5 points** in each profile; 96 is not complete accessib
 LCP varied by about +44 ms desktop / +37 ms mobile and mobile TBT by −30 ms.
 Single before/after runs do not establish causal performance improvement or INP.
 Invalid definition lists, visible-label/name mismatches, eight HTTP requests,
-no HTTPS redirect and favicon404 remain unresolved. No inventory after run exists.
+no HTTPS redirect and favicon404 remain unresolved.
+
+## PA-05 observed inventory comparison
+
+The [after JSON](audit/after/backoffice-desktop.report.json) records97/95/100/90 →
+**96/100/100/90**: accessibility+5, target-size0 → 1, no warnings. Full settings
+and versions match baseline. Real account, preserved storage/cleared cache and SSH
+transport were retained; the distinct measured page had six nonempty rows, zero
+alerts and fresh auth/me/products200. No business writes or mocks occurred.
+After FCP639.512ms, LCP1259.268ms, Speed Index1071.973ms, TBT0, CLS0.01930 and
+response186ms (timings rounded to three decimals). Performance−1 is single-run
+variation, not a proven code-caused regression or performance optimization.
+[REPORT.md](REPORT.md) and the after index record privacy, deployment and readiness.
 
 ## Findings and root causes
 
@@ -142,7 +153,7 @@ Baseline adjacent skip and operations links were only **19 px high**. They are r
 [the session gate](uis/backoffice/components/inventory-session-gate.tsx#L54)
 (lines 54–56), outside `.inventory`; the scoped rules at
 [inventory stylesheet](uis/backoffice/app/backoffice/inventory/inventory.css)
-previously did not style them. PA-03 now applies a dedicated link class locally:
+previously did not style them. PA-03 applies a dedicated link class:
 inline-flex, border-box, 44px minimum height, 24px minimum width, padding,
 maximum width/wrapping and a visible focus outline. No global anchor rule,
 authentication change or framework-announcer suppression was introduced; hrefs,
@@ -169,9 +180,8 @@ horizontal interaction was not tested. Evidence and inspected PNGs are at
 `/tmp/trackflow-pa03-browser-58YJxV/`; see the [local check details](uis/backoffice/README.md#pa-03-local-navigation-target-correction).
 Browser/server cleanup and port3300 release passed; Git short-status equality and
 diff-check passed, not byte equivalence. PA-03 native review was approved and
-acknowledged; local commit `d1bfb26` is complete. Deployment and comparable
-authenticated production measurement remain required in PA-05 after PA-04.
-No inventory score gain is claimed.
+acknowledged; commit `d1bfb26` is complete. PA-05 deployed it with PA-04 and
+measured the authenticated production accessibility gain above.
 
 ### Follow-ups, not fixes already applied
 
@@ -184,19 +194,20 @@ No inventory score gain is claimed.
 | Inventory `meta-description` | [Root layout:4](uis/backoffice/app/layout.tsx#L4) supplies title only. A description is a follow-up; do not remove private indexing safeguards for a score. |
 | Both: `unused-javascript`, `legacy-javascript-insight`, `render-blocking-insight`, `network-dependency-tree-insight` | Diagnostic estimates, not proven exact code fixes. Corporate unused/legacy estimates are 55/14 KiB; inventory 26/14 KiB. Render-blocking estimates are 60 ms desktop, 140 ms mobile and 240 ms inventory. Savings overlap and are not guaranteed or additive. |
 
-## Duplication analysis and planned extraction
+## Duplication analysis and extraction
 
 | Concrete case | Why it matters | Smallest useful option / decision |
 | --- | --- | --- |
-| [Products:11–19](uis/backoffice/components/inventory-products.tsx#L11) and [history:7–15](uis/backoffice/components/inventory-history.tsx#L7) | Repeated abortable load, stale-result guard, error handling, reset and retry lifecycle can drift when maintained separately. | **PA-04 implemented locally:** shared `InventoryLoadStatus` error/loading/Retry markup only. Keep async lifecycle local and unchanged; no loader hook or new dependency. |
+| [Products:11–19](uis/backoffice/components/inventory-products.tsx#L11) and [history:7–15](uis/backoffice/components/inventory-history.tsx#L7) | Repeated abortable load, stale-result guard, error handling, reset and retry lifecycle can drift when maintained separately. | **PA-04 implemented and deployed:** shared `InventoryLoadStatus` error/loading/Retry markup only. Keep async lifecycle local and unchanged; no loader hook or new dependency. |
 | [Static Web Components](uis/website/components.js) and [Next page](uis/website/app/page.jsx) (brand/services), plus [static metrics](uis/website/index.html#L96) and Next metrics | Brand, service content and metrics markup duplicate across independent hosts; fixes can diverge, as the semantic/name issues illustrate. | Shared content definitions could reduce drift, but cross-host unification would complicate independently usable static and Next entry points. Prefer paired small corrections; no architecture rewrite or extraction selected here. |
 
-PA-01 introduced no application corrections. PA-02 contrast is now applied and
-measured; PA-03 target sizing is verified locally but production measurement
-remains pending, and PA-04 status markup is extracted locally. Performance is
-already strong; observed accessibility causes justify bounded changes rather than
-speculative bundle optimization. The category gain is proven for corporate only,
-not yet for inventory.
+PA-01 preserved the baseline. PA-02 contrast and PA-03 target sizing are applied
+and measured; PA-04 status markup is extracted and deployed. Both frontends show
+an actual category gain. Strong baseline performance and specific accessibility
+causes justified bounded changes rather than speculative bundle optimization.
+The estimates above are baseline findings; inventory after still reports ~27KiB
+unused JS, ~14KiB legacy JS and ~260ms render blocking plus network-tree and
+meta-description findings, all deferred.
 
 ## PA-04 local reuse verification
 
@@ -221,17 +232,19 @@ Evidence: `/tmp/trackflow-pa04-baseline-OuOswR/` and
 `/tmp/trackflow-pa04-after-MWplBP/` (JSON, logs, six fixture screenshots each).
 Two initial baseline harness mistakes were corrected before source changes;
 final baseline/after commands exited 0. New tests are structural, not rendering
-coverage; screenshots were captured, not visually audited. PA-04 native review
-and commit remain pending; PA-05 production evidence is required, not waived.
+coverage; writer screenshots were captured, not visually audited. Subsequent
+independent verification passed17/17 tests,8/8 browser groups and exact effect/table
+equality; its populated products/history PNGs were visually inspected. Full-document
+about:blank departure is not SPA-unmount or server-cancellation proof. PA-04 review
+was approved and acknowledged; commit `947062f` is deployed and PA-05 measured.
 
-## Next steps and limits
+## Completion and limits
 
-1. PA-02 evidence is complete in `3cf1e89` (source `5fca72e`); PA-03 local review,
-   acknowledgement and commit `d1bfb26` are complete.
-2. Complete parent-owned PA-04 review and separate work-unit commit. Deploy once
-   in PA-05 and obtain the required matching authenticated inventory measurement.
-3. Add inventory after JSON/report PNGs and final `REPORT.md` in PA-05; corporate
-   artifacts are already preserved. No future score or delivery is promised here.
+PA-02 evidence is committed in `3cf1e89` (source `5fca72e`); PA-03 `d1bfb26` and
+PA-04 `947062f` have approved, acknowledged reviews. Final UI rollout and all three
+after profiles are complete. [REPORT.md](REPORT.md) links all JSON/report PNGs.
+Parent owns final structural verification and evidence commit; no final commit,
+push or PR is claimed.
 
 The earlier PA-02 evidence update used passive structural checks of scores, JSON,
 PNGs and local links without repeating browser execution. The PA-03 wording corrections

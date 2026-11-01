@@ -1,5 +1,41 @@
 # Project Progress
 
+## Frontend Performance Audit — PA-05 measured results
+
+- Both frontends show accessibility+5: corporate desktop/mobile100/91/74/100 →
+  100/96/74/100; authenticated inventory97/95/100/90 → 96/100/100/90.
+  Contrast and target-size audits pass0 → 1. Inventory Performance−1 is single-run
+  variation, not proven regression causality or a performance optimization.
+- Source commits `5fca72e`, `d1bfb26`, `947062f` are reviewed/acknowledged and
+  deployed. Shared `InventoryLoadStatus` keeps effects/stale guards/tables local
+  and unchanged. Independent17/17 tests,8/8 simulated groups and production build
+  passed; existing module-type/workspace-root warnings remain. Full-document
+  departure is not SPA-unmount/server-cancellation proof.
+- Final tag `trackflow-ui:pa05-947062f`, image
+  `sha256:dc0479d18da7d3d133ccd94b7f669a9d2204dc5ac6b70bfcd2f736695582d263`:
+  preflight14/14, build/transfer/apply and readiness18/18 passed. API/configuration/
+  resources/data-volume/network and other-container boundaries preserved, not
+  DB-byte proof. Apply5.199s is not outage. PA02 rollback retained; future UI
+  recreation requires explicit new-tag selection, deployment config unchanged.
+- Accepted real-account audit preserved baseline SSH/cache/storage/settings and
+  privacy conditions; actual measured page six rows/zero alerts, auth/me/products200.
+  One accepted login/one Lighthouse; earlier attempt stopped after login200 before
+  auth validation/Lighthouse. Total two deliberate logins/one Lighthouse. Owned
+  browsers/launchers/SSH cleaned,3311 released; no business writes or mocks.
+- [REPORT.md](../REPORT.md), [AUDIT.md](../AUDIT.md) and the
+  [three-profile after index](../audit/after/README.md) link preserved JSON/report
+  PNG evidence. Parent verified privacy, copy hashes and legible1440×1100 reports.
+  Corporate source hashes unchanged in final rollout; no remeasurement needed.
+- Technical assignment evidence is complete. This documentation-only update runs
+  passive structural checks, no functional reruns. Parent owns final verification,
+  task tracking and evidence commit; no final commit/push/PR claimed. HTTP, semantic/
+  name/favicon and JS/metadata findings remain deferred; no full a11y/INP claim.
+
+### Historical audit stages
+
+The stage records below are preserved unchanged; their pending statements are
+superseded by PA-05 above.
+
 ## Frontend Performance Audit — PA-04 local status reuse
 
 - Extracted `InventoryLoadStatus` error/Retry/loading markup for products/history;
