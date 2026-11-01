@@ -1,6 +1,31 @@
 # Project Progress
 
-## Frontend Performance Audit — PA-02 local contrast correction
+## Frontend Performance Audit — PA-02 deployed corporate evidence
+
+- Corporate correction `5fca72e` is deployed and measured: desktop/mobile each
+  100/96/74/100, accessibility +5 points and contrast score 0 → 1; no run warnings.
+  [AUDIT.md](../AUDIT.md) records before/after deltas and applied/deferred findings;
+  [after evidence](../audit/after/README.md) indexes two original JSON/report-PNG
+  pairs copied byte-for-byte after parent privacy/hash checks and visual inspection.
+  Full settings and Lighthouse versions match the respective baselines.
+- Reused production build, HTTP smoke15/15 and static/Next browser checks at
+  390/1440 passed. Static favicon404 and an unattributed Next console error remain
+  qualified; no clean-console claim. Source review was approved and acknowledged.
+- Independent rollout readiness15/15 confirms new UI image and preserved inspected
+  API identity/configuration/resources/network/mounts, not database byte equivalence.
+  Tag `trackflow-ui:pa02-5fca72e` is deployed; old image retained for rollback.
+  Deployment configuration is unchanged; future UI recreation needs explicit tag
+  selection. See after guide for exact image and original evidence locations.
+- This passive documentation reuses accepted runtime evidence without reruns.
+  Single-run timings do not prove causal performance improvement or INP; semantic,
+  name, HTTP and favicon findings remain. PA-02 evidence commit is parent-owned;
+  PA-03, backoffice after measurement, PA-04 extraction and final `REPORT.md` remain
+  pending. No overall assignment completion claimed.
+
+### Historical PA-02 local contrast correction
+
+The local-only status below is retained as stage-specific history, superseded by
+the deployed measurement above.
 
 - Changed only the corporate shared dark-orange token and primary CTA background;
   decorative orange and focus outlines remain intact for static and Next hosts.

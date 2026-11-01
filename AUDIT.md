@@ -1,19 +1,20 @@
-# Frontend performance audit — baseline
+# Frontend performance audit — baseline and corporate after evidence
 
-**PA-01: baseline recorded. PA-02: local contrast fix tested; after gains unproven.** Both
-production frontends have healthy navigation performance. The selected next
-changes target corporate contrast and inventory navigation target sizing, followed
-by one small reusable loading abstraction. Final `REPORT.md` is pending.
+**PA-02: corporate contrast deployed and measured; accessibility 91 → 96 on both
+profiles.** PA-01 baselines remain below. Inventory navigation target sizing and
+one reusable loading abstraction are still pending; the overall assignment and
+final `REPORT.md` are not complete.
 
 - [4Geeks assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-web-vitals/README.md)
 - [Task and staged plan](odd/tasks/frontend-performance-audit.md)
 - [Before evidence index](audit/before/README.md)
+- [Corporate after evidence index](audit/after/README.md)
 
 ## Scope and measurement method
 
 These are single Lighthouse navigation runs, not field Core Web Vitals, sustained
 load tests or complete accessibility/security acceptance. TBT does not establish
-INP; no INP result is claimed. All three accepted runs had no run warnings.
+INP; no INP result is claimed. All three baseline and both corporate after runs had no run warnings.
 
 | Case | Production target and capture time (UTC) | Access |
 | --- | --- | --- |
@@ -85,6 +86,31 @@ CLS is unitless. Display strings round more aggressively (mobile TBT shows 80 ms
 | Corporate mobile | 779.1970000000001 | 779.1970000000001 | 1078.2809440434457 | 81 | 0 | 168 |
 | Inventory desktop | 595.4760000000001 | 1193.2140000000002 | 1021.5443907536685 | 0 | 0.018795496096104126 | 171 |
 
+## PA-02 observed corporate comparison
+
+The deployed correction is commit `5fca72e`. One desktop and one mobile after run
+used the same public URL, Lighthouse version and deeply equal full `configSettings`
+as their respective baselines. See the [after guide](audit/after/README.md) for
+provenance, rollout identity, privacy checks and report captures.
+
+| Profile / after JSON | Performance before → after | Accessibility before → after | Best practices before → after | SEO before → after | Contrast score before → after |
+| --- | --- | --- | --- | --- | --- |
+| [Desktop](audit/after/website-desktop.report.json) | 100 → 100 | 91 → 96 | 74 → 74 | 100 → 100 | 0 → 1 |
+| [Mobile](audit/after/website-mobile.report.json) | 100 → 100 | 91 → 96 | 74 → 74 | 100 → 100 | 0 → 1 |
+
+After timings below are milliseconds, rounded to three decimals; CLS is unitless.
+
+| Profile | FCP | LCP | Speed Index | TBT | CLS | Root response |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Desktop | 318.764 | 318.764 | 479.482 | 0 | 0 | 187 |
+| Mobile | 816.070 | 816.070 | 1100.144 | 51 | 0 | 186 |
+
+Accessibility improved **5 points** in each profile; 96 is not complete accessibility.
+LCP varied by about +44 ms desktop / +37 ms mobile and mobile TBT by −30 ms.
+Single before/after runs do not establish causal performance improvement or INP.
+Invalid definition lists, visible-label/name mismatches, eight HTTP requests,
+no HTTPS redirect and favicon404 remain unresolved. No inventory after run exists.
+
 ## Findings and root causes
 
 Audit IDs below identify entries in the linked JSON, not predicted gains.
@@ -95,15 +121,18 @@ Evidence: desktop and mobile JSON above, `color-contrast`.
 Eyebrow text measures **3.75:1 / 4.12:1** and white CTA text **3.02:1**, below
 **4.5:1** for these text sizes. Shared color tokens and eyebrow/button rules in
 [styles.css](uis/website/styles.css#L7) (lines 7, 62, 76, 126) cause the failures.
-PA-02 locally darkens `--orange-dark` from `#d84d1d` to `#b83d15` and the
+PA-02 darkens `--orange-dark` from `#d84d1d` to `#b83d15` and the
 primary button background from `var(--orange)` (`#f26b3a`) to `#c4471b`.
 Decorative orange, focus outlines and interaction geometry remain unchanged.
 Source-derived checks now measure 5.048:1 on paper/header, 5.555:1 on warm-white,
 and white CTA text at 4.925:1 default / 5.651:1 hover and focus. Shared-token
 service-number/link usages and the unchanged light eyebrow override are covered.
 The focused runner observed 11 ratio failures before CSS changes, then 13 passes.
-These are local CSS calculations only; static/Next browser verification and
-comparable production desktop/mobile Lighthouse measurements remain pending.
+The production build and HTTP-enabled smoke passed (15/15); static/Next computed
+colors, hover, keyboard focus and overflow checks passed at 390/1440 widths.
+Those local checks are reused, not rerun for this documentation. Static favicon404
+and an unattributed narrow-view Next console error prevent a clean-console claim.
+The deployed desktop/mobile Lighthouse contrast audit now passes as recorded above.
 
 ### Inventory: selected navigation target correction
 
@@ -134,20 +163,21 @@ or framework-announcer suppression is needed.
 | [Products:11–19](uis/backoffice/components/inventory-products.tsx#L11) and [history:7–15](uis/backoffice/components/inventory-history.tsx#L7) | Repeated abortable load, stale-result guard, error handling, reset and retry lifecycle can drift when maintained separately. | **PA-04 planned:** one small stable loader hook or shared loading-state component, selected after checking dependencies. Preserve cancellation, stale guards and loading/error/empty/success behavior; no new dependency. |
 | [Static Web Components](uis/website/components.js) and [Next page](uis/website/app/page.jsx) (brand/services), plus [static metrics](uis/website/index.html#L96) and Next metrics | Brand, service content and metrics markup duplicate across independent hosts; fixes can diverge, as the semantic/name issues illustrate. | Shared content definitions could reduce drift, but cross-host unification would complicate independently usable static and Next entry points. Prefer paired small corrections; no architecture rewrite or extraction selected here. |
 
-Neither extraction nor application correction has been implemented in PA-01.
-Performance is already strong; the two accessibility changes have direct observed
-causes and smaller risk than speculative bundle optimization. The assignment's
-category-gain requirement remains unproven until comparable after measurements.
+PA-01 introduced no application corrections. PA-02 contrast is now applied and
+measured; PA-03 target sizing and PA-04 extraction remain deferred. Performance is
+already strong; observed accessibility causes justify bounded changes rather than
+speculative bundle optimization. The category gain is proven for corporate only,
+not yet for inventory.
 
 ## Next steps and limits
 
-1. Apply PA-02 and PA-03 separately with focused regression coverage and actual
-   matching-profile after measurements; retain unresolved findings.
+1. Finish the parent-owned PA-02 evidence commit, then apply PA-03 with focused
+   regression coverage and a matching authenticated after measurement.
 2. Extract the bounded PA-04 reusable unit with behavior-preserving checks.
-3. Preserve after JSON/report PNGs, document observed deltas and variability, and
-   write final `REPORT.md` in PA-05. No future score or delivery is promised here.
+3. Add inventory after JSON/report PNGs and final `REPORT.md` in PA-05; corporate
+   artifacts are already preserved. No future score or delivery is promised here.
 
-This PA-01 update is passive documentation: no meaningful RED/GREEN applies.
+This evidence update is passive documentation: no meaningful RED/GREEN applies.
 Structural checks cover score sets, JSON runtime errors, PNG signatures/dimensions,
 local document links and whitespace; they do not repeat browser execution or
 establish full application acceptance. Existing deployment/authentication history
