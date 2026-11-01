@@ -1507,3 +1507,20 @@ PY
   SKU/warehouse group with distinct positive receipt quantities; totals remained
   6 SKUs, 8 entries and 4 exits. Read-only mode, SSL, rollback and close were confirmed.
   No remote data changes were needed. Prior broader live evidence above is historical.
+
+## Frontend Performance Audit — PA-06 local documentation cleanup
+
+- Simplified audit review docs and marked only six Lighthouse JSON reports generated
+  for GitHub presentation; all twelve JSON/PNG artifacts match HEAD byte-for-byte.
+  Original audit PR #29 is merged; deployment claims refer to the PA-05 snapshot.
+- Independent structural verification passed: twelve artifact hashes, three
+  score/settings pairs, generated attributes/negative controls, 100 outgoing local
+  links, retained headings and whitespace. Five core docs are 11% smaller in bytes.
+- The incoming `#run-locally` link in `docs/centralized-incident-manager.md` is broken
+  in HEAD too; unchanged caller/heading make it a separate pre-existing follow-up.
+  Peer-confirmed updates to its HTTPS task explain a known concurrent change;
+  missing original per-file hashes limit broader unrelated-file preservation proof.
+- No new runtime checks, functional edits or deployment. The separate IP-01 work
+  is excluded from cleanup delivery. User authorized commit, push and a follow-up
+  PR; delivery evidence is recorded in the audit task. GitHub rendering remains
+  distinct from the locally verified Git attributes.

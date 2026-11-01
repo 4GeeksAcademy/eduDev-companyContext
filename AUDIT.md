@@ -2,8 +2,9 @@
 
 **Both production frontends gained 5 accessibility points:** corporate91 → 96
 (desktop/mobile), inventory95 → 100 (desktop). Corrections and shared status markup
-are reviewed, committed and deployed. Technical evidence is complete; parent owns
-final documentation verification and evidence commit. See [REPORT.md](REPORT.md).
+were reviewed, committed and deployed in the accepted PA-05 snapshot. Final evidence
+and structural verification are complete. See [REPORT.md](REPORT.md) and
+[PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29).
 
 - [4Geeks assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-web-vitals/README.md)
 - [Task and staged plan](odd/tasks/frontend-performance-audit.md)
@@ -159,29 +160,10 @@ maximum width/wrapping and a visible focus outline. No global anchor rule,
 authentication change or framework-announcer suppression was introduced; hrefs,
 query preservation, main destination and keyboard order remain unchanged.
 
-Focused source regression observed RED (1 pass / 3 intended failures for missing
-class, sizing and focus), then GREEN 4/4; combined with local host tests, 8/8 passed
-without skips. These are declaration/JSX assertions, not computed size or browser
-focus evidence. Independent source8/8 and Next16.4.3 production compilation,
-TypeScript and all four route prerenders passed; Git status was unchanged.
-Existing Node module-type and Next multiple-lockfile/workspace-root warnings remain.
-
-Actual local browser checks at 390×900 and 1440×900 passed: skip160.40625×44px,
-operations189.578125×44px in both profiles, viewport containment, no overlap with
-each other/logout/main, no page horizontal overflow, 3px solid visible focus
-on Skip/Operations only (Sign out: 1px auto), Tab skip → operations → Sign out, Enter to `#main-content` then Tab inside main,
-and preserved `?apiPort=8001`. HTTP200 and one intercepted GET each to
-`/api/auth/me` and `/api/inventory/products` per view passed; no unexpected,
-blocked or failed requests, page exceptions or console errors (no favicon404).
-
-This is simulated localStorage authentication with synthetic fixtures, not real
-authenticated acceptance; no backend, credentials or business writes. Narrow-table
-horizontal interaction was not tested. Evidence and inspected PNGs are at
-`/tmp/trackflow-pa03-browser-58YJxV/`; see the [local check details](uis/backoffice/README.md#pa-03-local-navigation-target-correction).
-Browser/server cleanup and port3300 release passed; Git short-status equality and
-diff-check passed, not byte equivalence. PA-03 native review was approved and
-acknowledged; commit `d1bfb26` is complete. PA-05 deployed it with PA-04 and
-measured the authenticated production accessibility gain above.
+Source RED/GREEN, production build and simulated local browser checks passed;
+see [commands and evidence boundaries](uis/backoffice/README.md#pa-03-local-navigation-target-correction).
+The local checks do not establish real authentication or narrow-table interaction.
+PA-05 deployed `d1bfb26` with PA-04 and measured the production gain above.
 
 ### Follow-ups, not fixes already applied
 
@@ -217,38 +199,21 @@ and history keep their exact abortable effects, signal guards, `[attempt]`,
 requests, empty messages, tables and links. Corporate cross-host duplication
 remains deliberately separate.
 
-Pure refactor exception: no manufactured RED. Client/form tests passed 7/7 both
-before and after; new structural status/consumer checks passed 2/2, navigation/
-host regressions 8/8, production build including TypeScript passed. Simulated
-local browser checks passed eight groups before and after at 1440×900: both pages'
-loading, 503/error + Retry → success, empty, populated and delayed-response departure.
-Only intentional 503 console messages occurred; no page exceptions or unexpected
-requests. No actual authentication or cancellation proof is claimed. Owned browser/
-server cleanup and port3300 release passed. Existing Node module-type and Next
-workspace-root warnings remain; no production measurement was repeated.
-
-Exact commands and scope: [backoffice verification](uis/backoffice/README.md#pa-04-shared-inventory-load-status).
-Evidence: `/tmp/trackflow-pa04-baseline-OuOswR/` and
-`/tmp/trackflow-pa04-after-MWplBP/` (JSON, logs, six fixture screenshots each).
-Two initial baseline harness mistakes were corrected before source changes;
-final baseline/after commands exited 0. New tests are structural, not rendering
-coverage; writer screenshots were captured, not visually audited. Subsequent
-independent verification passed17/17 tests,8/8 browser groups and exact effect/table
-equality; its populated products/history PNGs were visually inspected. Full-document
-about:blank departure is not SPA-unmount or server-cancellation proof. PA-04 review
-was approved and acknowledged; commit `947062f` is deployed and PA-05 measured.
+Pure refactor: no manufactured RED. Independent verification passed 17/17 tests,
+8/8 simulated browser groups and exact effect/table equality; populated screenshots
+were visually inspected. Full-document departure is not SPA-unmount or server-
+cancellation proof. [Backoffice verification](uis/backoffice/README.md#pa-04-shared-inventory-load-status)
+retains commands and limitations; the [task history](odd/tasks/frontend-performance-audit.md)
+retains original evidence locations and harness corrections. Commit `947062f` was
+reviewed, acknowledged and deployed in PA-05.
 
 ## Completion and limits
 
 PA-02 evidence is committed in `3cf1e89` (source `5fca72e`); PA-03 `d1bfb26` and
 PA-04 `947062f` have approved, acknowledged reviews. Final UI rollout and all three
 after profiles are complete. [REPORT.md](REPORT.md) links all JSON/report PNGs.
-Parent owns final structural verification and evidence commit; no final commit,
-push or PR is claimed.
-
-The earlier PA-02 evidence update used passive structural checks of scores, JSON,
-PNGs and local links without repeating browser execution. The PA-03 wording corrections
-reuse its prior source RED/GREEN, build and browser evidence without reruns;
-PA-04 fresh verification is separately recorded above. Whitespace and bounded readback
-checks do not establish real authentication or full application acceptance. Existing deployment/authentication history
-is retained in [project progress](memory-bank/progress.md).
+Final structural verification passed; evidence commit is `0136526`, tracking closure
+`4ca733a`, published in PR #29. This documentation-only cleanup adds no runtime checks,
+commit or push. [Deployment provenance](audit/after/README.md#deployment-provenance)
+is historical PA-05 evidence, not a current live-runtime claim. Full accessibility,
+security, field performance and INP acceptance remain outside these measurements.

@@ -1,1 +1,5 @@
 scripts/incidents-trackflow.csv binary
+
+# Retain exact Lighthouse evidence; collapse generated JSON in GitHub review.
+audit/before/*.report.json linguist-generated=true
+audit/after/*.report.json linguist-generated=true

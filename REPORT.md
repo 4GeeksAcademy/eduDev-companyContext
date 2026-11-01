@@ -45,23 +45,33 @@ All PNGs are genuine rendered Lighthouse reports, not application screenshots; t
 | Corporate mobile | [JSON](audit/before/website-mobile.report.json) / [PNG](audit/before/website-mobile.png) | [JSON](audit/after/website-mobile.report.json) / [PNG](audit/after/website-mobile.png) |
 | Inventory desktop | [JSON](audit/before/backoffice-desktop.report.json) / [PNG](audit/before/backoffice-desktop.png) | [JSON](audit/after/backoffice-desktop.report.json) / [PNG](audit/after/backoffice-desktop.png) |
 
+JSON is retained for exact audit values and settings even though the course requires
+Markdown and screenshots. Its generated-file classification only simplifies GitHub
+review presentation; no evidence is removed or changed.
+
 ## Method, privacy and deployment
 
-- Lighthouse 13.6.0, Playwright 1.62.1 and Chrome 151.0.7922.34; exact baseline/after settings equality, simulated throttling and no run warnings. [AUDIT settings](AUDIT.md#repeatable-comparison-settings) preserve viewport, cache and throttling details.
-- Corporate used the same public HTTP URL. Its source stylesheet/page hashes remained unchanged in the final rollout, so its accepted desktop/mobile after measurements were reused.
-- Inventory used `http://127.0.0.1:3311/backoffice/inventory/products` through an owned encrypted SSH forward to existing production port3001. Real normal-account authentication, preserved storage, explicitly cleared cache and routing-disabled HTTP cache; no business writes or mocks. Fresh auth/me and products returned200 in preflight and audit; the distinct measured page showed six nonempty rows and zero alerts while alive.
-- Application-image audits were disabled for privacy. Private values were redacted before JSON/HTML delivery; only report PNGs were captured. Parent privacy checks and byte-for-byte copy hashes passed. Accepted run: one login POST, one Lighthouse, zero blocked requests/failure codes. Across two deliberate attempts: two logins, one Lighthouse; the earlier attempt stopped after login200 before authentication validation or Lighthouse. Both attempts cleaned owned browsers/launchers/SSH and released3311. Git-status equality is not byte-equivalence proof.
-- Final UI source `947062f` is deployed as `trackflow-ui:pa05-947062f`, image `sha256:dc0479d18da7d3d133ccd94b7f669a9d2204dc5ac6b70bfcd2f736695582d263`. Preflight14/14, build/transfer/apply and independent readiness18/18 passed. The 5.199s apply duration is not measured outage. API identity/configuration/resources/data-volume/network, other containers and UI boundaries were preserved; Compose/private configuration fingerprints were unchanged and seven source hashes matched. This is not database-byte proof. PA02 rollback image remains retained; future recreation must explicitly select the new tag because deployment configuration was not edited. [Evidence provenance](audit/after/README.md) records original locations.
+[Canonical settings](AUDIT.md#repeatable-comparison-settings) define the matching
+profiles, toolchain, transport and cache conditions. Only authenticated inventory
+application-image audits were disabled for privacy; corporate JSON includes public
+screenshots. The [after index](audit/after/README.md) records authenticated-page
+validation, sanitization, copy hashes, original locations and rollout/rollback
+identity. Deployment statements describe the accepted PA-05 snapshot, not current
+runtime during the separate HTTPS work.
 
 ## Checks and limits
 
-Accepted source reviews were approved and acknowledged. Corporate contrast RED/GREEN ended13/13, HTTP smoke15/15 and production build passed; static/Next browser checks covered390/1440. Inventory navigation RED/GREEN ended4/4, combined host8/8; local browser checks confirmed44px targets, Tab/skip behavior and3px link focus (Sign out1px auto).
-
-For the behavior-preserving extraction, client/form7/7 passed before/after, new structural checks2/2, independent tests17/17 and simulated browser groups8/8 passed, with exact effects/tables unchanged and production build passing. Full-document departure to about:blank does not prove SPA unmount or server cancellation. Existing Node module-type/Next workspace-root warnings and two intentional fixture503 messages remain disclosed, not production failures. Broad suites and all-four-route business writes were not repeated by design. This documentation slice performs only passive structural verification; no functional reruns.
+Accepted source reviews, focused regressions, production builds and bounded browser
+checks passed. See [navigation checks](uis/backoffice/README.md#pa-03-local-navigation-target-correction)
+and [status reuse checks](uis/backoffice/README.md#pa-04-shared-inventory-load-status)
+for exact commands and limitations; [task history](odd/tasks/frontend-performance-audit.md)
+retains the chronology. Full-document departure does not prove SPA unmount or server
+cancellation. Broad suites and all-four-route business writes were not repeated.
+This cleanup uses structural checks only, with no new runtime acceptance.
 
 Deferred: corporate definition-list semantics, visible-label/name mismatch, favicon404, public HTTP/no HTTPS redirect (96 is not full accessibility); inventory meta description, unused JavaScript (~27KiB), legacy JavaScript (~14KiB), network dependency tree and render blocking (~260ms). Estimated savings overlap and are not proven gains. Loopback best-practices100 is not public HTTPS proof. No infrastructure/domain/TLS/dependency/API changes were added.
 
-Technical assignment evidence is complete. Verification and commit evidence are tracked in the [task](odd/tasks/frontend-performance-audit.md). No push or PR has been performed.
+Technical assignment evidence is complete. Verification and commit evidence are tracked in the [task](odd/tasks/frontend-performance-audit.md). The original audit was merged in [PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29). This documentation-only follow-up preserves its measurements and makes no new runtime acceptance claim.
 
 ## Key Learnings
 
