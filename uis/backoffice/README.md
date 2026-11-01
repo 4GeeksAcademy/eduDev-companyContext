@@ -145,6 +145,48 @@ and CLAUDE.md absent before/during/after startup, then stopped. Legacy rewrite s
 above is earlier evidence, not rerun by the correction; neither check proves browser
 authentication or complete T2 acceptance.
 
+## PA-03 local navigation target correction
+
+The session gate's skip and Operations overview links sit outside `.inventory`.
+Their dedicated class now declares padded inline-flex targets with a 44px minimum
+height, 24px minimum width, wrapping and a visible keyboard-focus outline. Hrefs,
+link order, main destination, session/logout logic and Next announcer are unchanged.
+
+Focused source-only regression (repository root; no server or API required):
+
+```bash
+node --test uis/backoffice/tests/inventory-navigation-sizing.test.mjs
+node --test uis/backoffice/tests/inventory-navigation-sizing.test.mjs uis/backoffice/tests/next-host.test.mjs
+```
+
+Observed RED: 1 pass / 3 failures (missing class, sizing and focus rules); GREEN:
+4/4, then combined 8/8 with no skips. Existing Node module-type warning remains.
+These assertions inspect JSX and scoped CSS declarations, not computed geometry.
+Independent source checks passed 8/8 without skips; Next16.4.3 production
+compilation, TypeScript and all four route prerenders passed with unchanged Git
+status. Existing multiple-lockfile/workspace-root warnings remain alongside Node's
+module-type warning.
+
+Local Next browser checks passed at 390×900 and 1440×900: skip160.40625×44px and
+operations189.578125×44px in both profiles, inside the viewport without overlap
+with each other, logout or main, and no page horizontal overflow. Tab order was
+skip → operations → Sign out with 3px solid visible focus; Enter reached
+`#main-content`, then Tab entered main. Operations retained `?apiPort=8001`.
+HTTP200; each view intercepted GET `/api/auth/me` and `/api/inventory/products`
+once. No unexpected/blocked/failed requests, page exceptions or console errors;
+no favicon404 observed in this run.
+
+This used a simulated **localStorage** token and synthetic fixtures, not real
+authenticated acceptance: no backend, credentials or business writes. Narrow-table
+horizontal interaction was not tested. Evidence is retained at
+`/tmp/trackflow-pa03-browser-58YJxV/` (`results.json`, `server.log`,
+`navigation-390.png`, `navigation-1440.png`); the verifier opened both PNGs.
+Browser closed, owned server received SIGTERM and port3300 was released. Git
+short-status equality and diff-check passed, not a byte comparison. These results
+are reused without reruns. Native review, commit, deployment and comparable
+authenticated production measurement remain pending; no score gain or PA-03
+completion is claimed.
+
 ## Inventory source verification and T4 acceptance
 
 Run from the repository root:

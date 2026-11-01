@@ -51,7 +51,7 @@ export default function InventorySessionGate({ children }: { children: ReactNode
       <button onClick={logout}>Sign out</button>
     </> : <p role="status">Validating your session…</p>}</main>;
   }
-  return <><a href="#main-content">Skip to inventory</a>
-    <nav aria-label="Backoffice"><a href={`/uis/backoffice/index.html${search ? `?${search}` : ''}`}>Operations overview</a>{' '}
+  return <><a className="inventory-session-link" href="#main-content">Skip to inventory</a>
+    <nav aria-label="Backoffice"><a className="inventory-session-link" href={`/uis/backoffice/index.html${search ? `?${search}` : ''}`}>Operations overview</a>{' '}
       <button onClick={logout}>Sign out</button></nav>{children}</>;
 }

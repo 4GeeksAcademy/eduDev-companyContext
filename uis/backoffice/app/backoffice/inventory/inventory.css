@@ -1,3 +1,5 @@
+.inventory-session-link { display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; min-width: 24px; max-width: 100%; padding: .5rem .75rem; overflow-wrap: anywhere; color: #154e85; text-underline-offset: .2em; }
+.inventory-session-link:focus-visible { outline: 3px solid #215bbb; outline-offset: 3px; }
 .inventory { font: 1rem/1.5 system-ui, sans-serif; color: #172b40; background: #f4f7fa; padding: clamp(1rem, 3vw, 2.5rem); }
 .inventory *, .inventory *::before, .inventory *::after { box-sizing: border-box; }
 .inventory header, .inventory main, .inventory footer { max-width: 90rem; margin: 0 auto 1.5rem; }

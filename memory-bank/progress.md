@@ -1,5 +1,33 @@
 # Project Progress
 
+## Frontend Performance Audit — PA-03 local navigation targets
+
+- Added a dedicated class to the two session-gate links outside `.inventory`,
+  declaring padded 44px-minimum-height targets, wrapping and visible focus.
+  Hrefs/query preservation, main destination, order and session/logout are unchanged;
+  no Next announcer suppression or global anchor styling was added.
+- Source-only Node RED: 1 pass / 3 intended failures; GREEN: 4/4, combined with
+  local host regressions 8/8, no skips. Existing module-type warning remains.
+  Source declarations do not prove rendered geometry, focus or Lighthouse gains.
+- Subsequent independent source8/8 and Next16.4.3 production compilation,
+  TypeScript/all four route prerenders passed with unchanged Git status. Existing
+  Node module-type and Next multiple-lockfile/workspace-root warnings remain.
+- Local browser390×900/1440×900 passed: skip160.40625×44px and operations189.578125×44px
+  in both profiles, viewport containment/no overlap with each other/logout/main,
+  no page horizontal overflow, Tab skip → operations → Sign out with 3px solid
+  visible focus, Enter to main then Tab inside main, and preserved apiPort8001.
+  HTTP200, one intercepted auth/me and products GET per view, zero unexpected/
+  blocked/failed requests, page exceptions or console errors; no favicon404.
+- Simulated localStorage token/synthetic fixtures only: no backend, credentials or
+  business writes, not real authenticated acceptance. Narrow-table horizontal
+  interaction was not tested. Evidence `/tmp/trackflow-pa03-browser-58YJxV/` includes
+  results/log and two verifier-inspected PNGs. Browser closed, owned server SIGTERM,
+  port3300 released; Git short-status equality/diff-check passed, not byte comparison.
+- This passive normalization reuses accepted results without reruns. Native review,
+  commit, deployment and authenticated production measurement remain pending;
+  PA-03 is not complete and score gain is unknown. PA-02 source `5fca72e` and
+  evidence `3cf1e89` are complete; history below retained.
+
 ## Frontend Performance Audit — PA-02 deployed corporate evidence
 
 - Corporate correction `5fca72e` is deployed and measured: desktop/mobile each
