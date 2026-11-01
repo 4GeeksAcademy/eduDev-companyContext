@@ -1,5 +1,22 @@
 # Project Progress
 
+## Corporate favicon — IP-01 local only
+
+- Added one174-byte SVG shared by explicit Next metadata and static HTML links;
+  Next URL `/uis/website/favicon.svg`, repository-static URL
+  `/uis/website/public/favicon.svg`. Content/styles and other UIs/API unchanged.
+- Focused Node RED:14 pass, one missing-asset failure, one HTTP skip. GREEN:15 pass,
+  one HTTP skip; production-host HTTP smoke16/16 including SVG MIME/body equality
+  and unknown-route404. `npm --prefix uis/website run build` passed; existing
+  workspace-root warning remains. Exact commands are in the website README.
+- Existing Playwright/Chromium151 checked local Next3310/static3312 at375×900 and
+  1440×900: SVG decode, content/structure, capabilities anchor, no horizontal
+  overflow and zero console/page/request errors. Static repository-root and
+  folder-root mappings passed. Owned browsers/servers stopped; no API used.
+- Local source only: deployment, Nginx `/favicon.ico` mapping to corporate SVG,
+  TLS/redirects and later Lighthouse remain pending. No Docker/remote changes,
+  dependency changes, commit or production-fix claim. Parent owns task tracking.
+
 ## Frontend Performance Audit — PA-05 measured results
 
 - Both frontends show accessibility+5: corporate desktop/mobile100/91/74/100 →
@@ -1524,3 +1541,23 @@ PY
   is excluded from cleanup delivery. User authorized commit, push and a follow-up
   PR; delivery evidence is recorded in the audit task. GitHub rendering remains
   distinct from the locally verified Git attributes.
+
+## Corporate HTTPS — IP-03 passive evidence follow-up (2026-11-01)
+
+- [Separate HTTPS evidence](../audit/after/HTTPS.md) adds four byte-identical public
+  report artifacts; all twelve original JSON/PNGs and PA-06/IP-01 history preserved.
+  Desktop/mobile each100/96/100/100 versus100/96/74/100, exactly one run each;
+  matching full settings, changed HTTP3000→HTTPS443 origin/transport/time, no causal proof.
+- Independent website16/16,19 external HTTP checks, corporate375/1440 browser and
+  anonymous backoffice checks passed. Trusted IP TLS, favicon/redirects and active
+  twice-daily renewal timer verified; prior renewal dry-run hook passed.
+- UI cutover complete on `trackflow-ui:ip-https-4ca733a`; API/private env/resources/
+  mounts/network and23 service identities preserved, exactly two app containers.
+  One UI recreation/one Nginx reload;3.289s command duration is not outage.
+  Future deployments require the third HTTPS override; old image retained.
+- Authenticated backoffice acceptance PENDING: credential loader requires prohibited
+  `.env` access. Zero login POSTs, business writes or backoffice Lighthouse runs;
+  no full business acceptance. Semantic/name and JS/modern-HTTP/render-blocking
+  findings remain deferred; automated100 is not security certification.
+- Passive documentation/copy/structural checks only, no source/runtime writes or
+  build/test/browser/Lighthouse reruns. Latest observations are not future guarantees.

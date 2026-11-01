@@ -52,6 +52,46 @@ GREEN (13 passing tests) are recorded; browser/production comparison is pending.
 build. It does not render the Next App Router. The React page imports the original
 stylesheet; it does not load the custom-element script or inject raw HTML.
 
+## HTTPS deployment — observed 2026-11-01
+
+Public URL: <https://162.243.69.7/uis/website/>. Favicon/TLS/redirect deployment
+and independent website16/16,19 external HTTP checks and375/1440 browser checks
+passed. Desktop/mobile each measured100/96/100/100 once, not security certification.
+See [deployment guide](../../infra/nginx/README.md) and [HTTPS evidence/limits](../../audit/after/HTTPS.md).
+Authenticated backoffice remains pending; no complete business acceptance claim.
+The local-only pending statements below are historical, superseded by this follow-up.
+
+## Corporate favicon — IP-01 local verification
+
+One 174-byte `public/favicon.svg` (white T on a dark green tile) is shared:
+
+- Next metadata explicitly links `/uis/website/favicon.svg`, including basePath.
+- Static HTML links `public/favicon.svg`, resolving to
+  `/uis/website/public/favicon.svg` when served from the repository root, or
+  `/public/favicon.svg` when the website folder itself is the server root.
+- Future Nginx root `/favicon.ico` handling should map to the corporate
+  `/uis/website/favicon.svg` upstream with SVG content type (or redirect there).
+  No ICO file, root alias, TLS or deployment change is included here.
+
+Observed on 2026-11-01:
+
+- `node --test uis/website/tests/site-smoke.test.mjs`: RED 14 pass, one intended
+  ENOENT failure for the missing SVG, one HTTP skip; GREEN 15 pass, one HTTP skip.
+- `npm --prefix uis/website run build`: successful production build; existing
+  multiple-lockfile/workspace-root warning remains.
+- `TRACKFLOW_WEBSITE_URL=http://127.0.0.1:3310/uis/website/ node --test uis/website/tests/site-smoke.test.mjs`:
+  16/16 passed against the owned production server, including rendered icon URL,
+  HTTP200, SVG MIME/body equality, CSS and unknown-route404.
+- `node /tmp/trackflow-ip01-check.mjs`: local verification helper using existing
+  Playwright/Chromium151, no installs. Next3310 and static3312 passed at375×900
+  and1440×900: semantic sections/logistics copy, capabilities navigation, no
+  horizontal overflow, SVG decoding, exact HTTP content/type and zero console/
+  page/request errors. Static folder-root hosting also passed in the first run;
+  the final run used repository-root hosting at `/uis/website/`.
+- Both owned servers and browser were stopped after each run. No API was needed;
+  no Docker, remote operation or Lighthouse was run. Deployment and Nginx/TLS
+  verification remain pending; these results do not establish a production fix.
+
 ## Verification record — T1
 
 - RED: the structural Node test failed because the website manifest did not exist;

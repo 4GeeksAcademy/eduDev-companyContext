@@ -1,0 +1,6 @@
+services:
+  ui:
+    image: trackflow-ui:ip-https-4ca733a
+    ports: !override
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3001"
