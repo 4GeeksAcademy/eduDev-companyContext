@@ -162,33 +162,16 @@ node --test uis/backoffice/tests/inventory-navigation-sizing.test.mjs uis/backof
 Observed RED: 1 pass / 3 failures (missing class, sizing and focus rules); GREEN:
 4/4, then combined 8/8 with no skips. Existing Node module-type warning remains.
 These assertions inspect JSX and scoped CSS declarations, not computed geometry.
-Independent source checks passed 8/8 without skips; Next16.4.3 production
-compilation, TypeScript and all four route prerenders passed with unchanged Git
-status. Existing multiple-lockfile/workspace-root warnings remain alongside Node's
-module-type warning.
+Independent source 8/8 and production build passed; workspace-root warnings remain.
+Local browser checks at 390×900 and 1440×900 confirmed 44px-high targets, containment,
+no overlap/overflow, Tab/skip navigation, preserved apiPort and 3px link focus
+(Sign out: 1px auto), with no unexpected request, page or console errors.
 
-Local Next browser checks passed at 390×900 and 1440×900: skip160.40625×44px and
-operations189.578125×44px in both profiles, inside the viewport without overlap
-with each other, logout or main, and no page horizontal overflow. Tab order was
-skip → operations → Sign out; the two links had 3px solid visible focus,
-while Sign out measured 1px auto. Enter reached
-`#main-content`, then Tab entered main. Operations retained `?apiPort=8001`.
-HTTP200; each view intercepted GET `/api/auth/me` and `/api/inventory/products`
-once. No unexpected/blocked/failed requests, page exceptions or console errors;
-no favicon404 observed in this run.
-
-This used a simulated **localStorage** token and synthetic fixtures, not real
-authenticated acceptance: no backend, credentials or business writes. Narrow-table
-horizontal interaction was not tested. Evidence is retained at
-`/tmp/trackflow-pa03-browser-58YJxV/` (`results.json`, `server.log`,
-`navigation-390.png`, `navigation-1440.png`); the verifier opened both PNGs.
-Browser closed, owned server received SIGTERM and port3300 was released. Git
-short-status equality and diff-check passed, not a byte comparison. These results
-are reused without reruns. PA-03 native review was approved and acknowledged;
-commit `d1bfb26` is complete. PA-05 deployment and comparable authenticated
-production measurement are complete: accessibility95 → 100, target-size0 → 1.
-Performance97 → 96 is single-run variation, not proven regression causality.
-See [final report](../../REPORT.md) and [after evidence](../../audit/after/README.md).
+Synthetic localStorage/GET fixtures are not real authenticated acceptance; no
+backend or business writes were used, and narrow-table interaction was not tested.
+[Task history](../../odd/tasks/frontend-performance-audit.md) retains geometry,
+original captures and cleanup evidence. [Final results](../../REPORT.md) and
+[PA-05 provenance](../../audit/after/README.md) record the later authenticated audit.
 
 ## PA-04 shared inventory load status
 
@@ -216,27 +199,15 @@ console errors, page exceptions or blocked requests; two intentional 503 console
 messages per run. Departure showed no stale UI after navigation, not proof of
 server cancellation. No real authentication, backend, writes or Lighthouse ran.
 
-Evidence: `/tmp/trackflow-pa04-baseline-OuOswR/` and
-`/tmp/trackflow-pa04-after-MWplBP/` contain results JSON, server logs and six fixture
-screenshots each (not a visual audit). Runner: `/tmp/trackflow-pa04-check.mjs`.
-Two initial baseline harness failures (wrong `sku` query expectation and storage
-setup on `about:blank`) were corrected before app edits. Final runs exited 0;
-browsers closed, owned servers received SIGTERM and port3300 release passed.
-`git diff --check` passed. Subsequent independent verification passed17/17 tests,
-8/8 browser groups and exact effect/table equality; its populated products/history
-PNGs were visually inspected. Departure to about:blank is a full-document departure,
-not SPA-unmount or server-cancellation proof. PA-04 native review was approved and
-acknowledged; commit `947062f` is complete.
+Independent verification passed 17/17 tests, 8/8 browser groups and exact effect/
+table equality; populated screenshots were visually inspected. Full-document
+about:blank departure is not SPA-unmount or server-cancellation proof. Original
+fixtures, harness corrections and cleanup are in the [task history](../../odd/tasks/frontend-performance-audit.md).
 
-PA-05 deployed `trackflow-ui:pa05-947062f`; preflight14/14 and independent
-readiness18/18 passed with API/configuration/container boundaries preserved (not
-DB-byte proof). The real normal-account products audit over SSH loopback retained
-baseline settings/cache/privacy conditions, with six rows, fresh auth/me/products200
-and no warnings. Scores97/95/100/90 → 96/100/100/90. No business writes or mocks.
-[REPORT.md](../../REPORT.md) records methods, limitations and all screenshot/JSON
-links. Source review, commits, deployment and production measurement are complete;
-final documentation verification/evidence commit remain parent-owned. Older stage
-records elsewhere in this README are historical, not current PA-05 blockers.
+PA-04 review/commit and PA-05 deployment, authenticated measurement and final
+structural verification are complete. [REPORT.md](../../REPORT.md) records outcomes;
+the [after index](../../audit/after/README.md) owns historical rollout, privacy and
+rollback provenance. Older stage records below are not current PA-05 blockers.
 
 ## Inventory source verification and T4 acceptance
 
