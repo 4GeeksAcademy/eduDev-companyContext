@@ -17,7 +17,7 @@ The five original audit tasks are complete. Final evidence/report commit: `01365
 - Deliverables: `AUDIT.md`, `REPORT.md`, three before and three after JSON/report-PNG pairs, shared `InventoryLoadStatus`, focused regression coverage.
 - Source reviews, applicable local tests/builds/browser checks, final rollout preservation18/18 and final structural verification passed. Historical tooling failures and intentionally skipped/out-of-scope checks are qualified in the evidence/report; no pending required check remains.
 - Original audit merged as [PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29), merge `de7d335bc1c9f2a4c6902fc14f69c9427e899d0f`. User authorized PA-06 commit, push and a new documentation-only PR on `docs/audit-evidence-review`; no merge or deployment is authorized. Preserve separate favicon/IP-HTTPS work, including its progress entry. The audit rollout's image-tag/rollback requirements remain in `audit/after/README.md`.
-- Next action: publish the verified PA-06 cleanup and notify the coordinating session. Remaining accessibility/security/performance follow-ups are separate from this cleanup.
+- PA-06 is published as [PR #30](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/30) from `docs/audit-evidence-review` to `main`. Next action: human review and merge decision; no automatic merge. Remaining accessibility/security/performance follow-ups are separate from this cleanup.
 
 The progress history below retains earlier pending/failed stages; this completion section and the checked task list are the current state.
 
@@ -64,7 +64,7 @@ The progress history below retains earlier pending/failed stages; this completio
   - Run the smallest final affected-UI regression checks and validate all deliverable links/artifacts. Do not claim unrelated full-stack acceptance.
   - Commit evidence: `0136526dcc701f64cb35bae8e515e312009f5396` — `docs(audit): record final measured frontend results`.
 
-- [x] **PA-06 — Simplify audit documentation and generated-file review** (implemented and verified; delivery authorized).
+- [x] **PA-06 — Simplify audit documentation and generated-file review** (verified, committed and published in PR #30).
   - Keep all six Lighthouse JSON reports and six PNG captures byte-for-byte unchanged. Preserve original findings, scores, measurement settings, provenance, privacy and rollback caveats.
   - Use `AUDIT.md` for analysis/settings, `REPORT.md` for outcomes, and `audit/after/README.md` for provenance; replace repeated prose with links and correct obsolete pending/publication statements.
   - Add narrowly scoped `linguist-generated=true` rules for `audit/before/*.report.json` and `audit/after/*.report.json`, preserving the CSV binary rule. Do not hide other JSON or PNG files.
@@ -73,7 +73,8 @@ The progress history below retains earlier pending/failed stages; this completio
   - Verification: writer and independent checks passed `git diff --check`, twelve SHA-256 comparisons against HEAD, all three score/settings pairs, 100 outgoing local links and retained heading anchors. `git check-attr linguist-generated` returned six true and seven unspecified controls; CSV binary attributes remained unset. The five core documents shrank from 61,261 to 54,522 bytes (11%).
   - Existing issue: `docs/centralized-incident-manager.md` links to absent `#run-locally`; unchanged caller/heading at HEAD prove this predates PA-06. Left for a separate follow-up. Native ASSESS was unavailable because of unrelated untracked files; independent structural verification passed instead. GitHub-rendered classification remains unverified until publication.
   - Preservation limit: all twelve evidence artifacts and the original progress prefix were verified. The unrelated aggregate changed; the peer confirmed an authorized append to its `corporate-ip-https.md` task before the repository-write hold. Without original per-file hashes, all-ten-file byte preservation cannot be proven; no unrelated change was reverted.
-  - Delivery: user explicitly authorized commit, push and a new PR after the original PR was found merged. Stage only the eight cleanup paths and only the PA-06 progress hunk; keep all peer work unstaged. Work-unit commit evidence will be recorded after creation.
+  - Work-unit commit: `000a365c6050aaf50fce48c5d42a4674d97ebb82` — `docs(audit): simplify evidence review and retain generated reports`. Independent staged verification passed exactly eight paths, +124/-154 lines; only the PA-06 progress suffix was included. All ten peer files matched the preceding verifier hashes. No checkout, rebase or stash was used.
+  - Delivery: user-authorized push to `docs/audit-evidence-review` and creation of [PR #30](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/30) succeeded. This tracking update records the observed work-unit and publication; peer favicon/HTTPS files remain unstaged and outside the PR.
 
 ## Baseline evidence already observed
 
