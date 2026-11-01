@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { listOrders } from '../lib/inventory';
 import type { Order } from '../types/inventory';
+import InventoryLoadStatus from './inventory-load-status';
 
 export default function InventoryHistory() {
   const [orders, setOrders] = useState<Order[] | null>(null);
@@ -15,8 +16,9 @@ export default function InventoryHistory() {
     return () => controller.abort();
   }, [attempt]);
   return <section><h2>Movement history</h2><p>Read-only goods receipts, dispatches and losses.</p>
-    {error ? <p role="alert">{error} <button onClick={() => setAttempt(x => x + 1)}>Retry</button></p> :
-      orders === null ? <p role="status">Loading movements…</p> : orders.length === 0 ? <p>No movements recorded.</p> :
+    <InventoryLoadStatus error={error} loading={orders === null} loadingLabel="Loading movements…"
+      onRetry={() => setAttempt(x => x + 1)} />
+    {!error && orders !== null && (orders.length === 0 ? <p>No movements recorded.</p> :
         <div className="table-scroll"><table><caption>All inventory movements</caption><thead><tr>
           {['SKU', 'Quantity', 'Movement', 'Warehouse', 'Created', 'User UUID', 'Details'].map(x => <th scope="col" key={x}>{x}</th>)}
         </tr></thead><tbody>{orders.map(order => <tr key={`${order.order_type}-${order.id}`}>
@@ -24,6 +26,6 @@ export default function InventoryHistory() {
           <td><span className={order.order_type === 'inbound' ? 'stock-healthy' : 'stock-low'}>{order.order_type === 'inbound' ? 'Inbound — stock entry' : 'Outbound — stock exit'}</span></td>
           <td>{order.warehouse}</td><td><time dateTime={order.created_at}>{new Date(order.created_at).toLocaleString('en-GB')}</time></td>
           <td className="uuid">{order.user_uuid}</td><td>{order.order_type === 'inbound' ? order.reference : `${order.exit_type}${order.tracking_number ? ` — ${order.tracking_number}` : ''}`}</td>
-        </tr>)}</tbody></table></div>}
+        </tr>)}</tbody></table></div>)}
   </section>;
 }

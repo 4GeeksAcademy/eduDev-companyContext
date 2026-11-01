@@ -1,5 +1,153 @@
 # Project Progress
 
+## Frontend Performance Audit — PA-05 measured results
+
+- Both frontends show accessibility+5: corporate desktop/mobile100/91/74/100 →
+  100/96/74/100; authenticated inventory97/95/100/90 → 96/100/100/90.
+  Contrast and target-size audits pass0 → 1. Inventory Performance−1 is single-run
+  variation, not proven regression causality or a performance optimization.
+- Source commits `5fca72e`, `d1bfb26`, `947062f` are reviewed/acknowledged and
+  deployed. Shared `InventoryLoadStatus` keeps effects/stale guards/tables local
+  and unchanged. Independent17/17 tests,8/8 simulated groups and production build
+  passed; existing module-type/workspace-root warnings remain. Full-document
+  departure is not SPA-unmount/server-cancellation proof.
+- Final tag `trackflow-ui:pa05-947062f`, image
+  `sha256:dc0479d18da7d3d133ccd94b7f669a9d2204dc5ac6b70bfcd2f736695582d263`:
+  preflight14/14, build/transfer/apply and readiness18/18 passed. API/configuration/
+  resources/data-volume/network and other-container boundaries preserved, not
+  DB-byte proof. Apply5.199s is not outage. PA02 rollback retained; future UI
+  recreation requires explicit new-tag selection, deployment config unchanged.
+- Accepted real-account audit preserved baseline SSH/cache/storage/settings and
+  privacy conditions; actual measured page six rows/zero alerts, auth/me/products200.
+  One accepted login/one Lighthouse; earlier attempt stopped after login200 before
+  auth validation/Lighthouse. Total two deliberate logins/one Lighthouse. Owned
+  browsers/launchers/SSH cleaned,3311 released; no business writes or mocks.
+- [REPORT.md](../REPORT.md), [AUDIT.md](../AUDIT.md) and the
+  [three-profile after index](../audit/after/README.md) link preserved JSON/report
+  PNG evidence. Parent verified privacy, copy hashes and legible1440×1100 reports.
+  Corporate source hashes unchanged in final rollout; no remeasurement needed.
+- Technical assignment evidence is complete. This documentation-only update runs
+  passive structural checks, no functional reruns. Parent owns final verification,
+  task tracking and evidence commit; no final commit/push/PR claimed. HTTP, semantic/
+  name/favicon and JS/metadata findings remain deferred; no full a11y/INP claim.
+
+### Historical audit stages
+
+The stage records below are preserved unchanged; their pending statements are
+superseded by PA-05 above.
+
+## Frontend Performance Audit — PA-04 local status reuse
+
+- Extracted `InventoryLoadStatus` error/Retry/loading markup for products/history;
+  error precedence and null success preserve the DOM without an extra wrapper.
+  Exact requests, AbortController/cleanup/signal guards/`[attempt]`, empty messages,
+  tables and query links remain local and unchanged; no hook or dependency added.
+- Pure refactor: no artificial RED. Client/form tests 7/7 before and after;
+  new structural-only status/consumer checks 2/2; navigation/host 8/8; authorized
+  production build including TypeScript/prerenders passed. Existing Node module-type
+  and Next workspace-root warnings remain. Exact commands are in the UI README.
+- Simulated browser baseline/after each passed eight groups: products/history
+  loading, injected 503 + Retry → success, empty/populated and delayed departure.
+  No stale UI after departure, not actual cancellation proof. Synthetic localStorage
+  and intercepted GET fixtures only; no backend, credentials or business writes.
+  Only two intentional 503 console messages per run; no unexpected errors/requests.
+- Evidence `/tmp/trackflow-pa04-baseline-OuOswR/` and
+  `/tmp/trackflow-pa04-after-MWplBP/`: results, logs, six fixture PNGs each (not
+  visually audited). Two baseline harness mistakes were corrected before app edits.
+  Final commands exited0, browsers/owned servers stopped, port3300 released.
+  `git diff --check` passed. Parent task log/unrelated notes remain untouched.
+- PA-04 local implementation only: native review and separate commit are pending.
+  PA-03 review approved/acknowledged and commit `d1bfb26` complete. Required shared
+  UI deployment and authenticated after measurement are consolidated into PA-05,
+  not waived; final report/overall assignment remain pending. History below retained.
+
+## Frontend Performance Audit — PA-03 local navigation targets
+
+- Added a dedicated class to the two session-gate links outside `.inventory`,
+  declaring padded 44px-minimum-height targets, wrapping and visible focus.
+  Hrefs/query preservation, main destination, order and session/logout are unchanged;
+  no Next announcer suppression or global anchor styling was added.
+- Source-only Node RED: 1 pass / 3 intended failures; GREEN: 4/4, combined with
+  local host regressions 8/8, no skips. Existing module-type warning remains.
+  Source declarations do not prove rendered geometry, focus or Lighthouse gains.
+- Subsequent independent source8/8 and Next16.4.3 production compilation,
+  TypeScript/all four route prerenders passed with unchanged Git status. Existing
+  Node module-type and Next multiple-lockfile/workspace-root warnings remain.
+- Local browser390×900/1440×900 passed: skip160.40625×44px and operations189.578125×44px
+  in both profiles, viewport containment/no overlap with each other/logout/main,
+  no page horizontal overflow, Tab skip → operations → Sign out; 3px solid visible
+  focus applies only to Skip/Operations (Sign out: 1px auto). Enter to main then
+  Tab inside main and preserved apiPort8001 passed.
+  HTTP200, one intercepted auth/me and products GET per view, zero unexpected/
+  blocked/failed requests, page exceptions or console errors; no favicon404.
+- Simulated localStorage token/synthetic fixtures only: no backend, credentials or
+  business writes, not real authenticated acceptance. Narrow-table horizontal
+  interaction was not tested. Evidence `/tmp/trackflow-pa03-browser-58YJxV/` includes
+  results/log and two verifier-inspected PNGs. Browser closed, owned server SIGTERM,
+  port3300 released; Git short-status equality/diff-check passed, not byte comparison.
+- This passive normalization reuses accepted results without reruns. PA-03 native
+  review was approved and acknowledged; local commit `d1bfb26` is complete.
+  Deployment/authenticated measurement remain required in PA-05 after PA-04;
+  score gain is unknown. PA-02 source `5fca72e` and
+  evidence `3cf1e89` are complete; history below retained.
+
+## Frontend Performance Audit — PA-02 deployed corporate evidence
+
+- Corporate correction `5fca72e` is deployed and measured: desktop/mobile each
+  100/96/74/100, accessibility +5 points and contrast score 0 → 1; no run warnings.
+  [AUDIT.md](../AUDIT.md) records before/after deltas and applied/deferred findings;
+  [after evidence](../audit/after/README.md) indexes two original JSON/report-PNG
+  pairs copied byte-for-byte after parent privacy/hash checks and visual inspection.
+  Full settings and Lighthouse versions match the respective baselines.
+- Reused production build, HTTP smoke15/15 and static/Next browser checks at
+  390/1440 passed. Static favicon404 and an unattributed Next console error remain
+  qualified; no clean-console claim. Source review was approved and acknowledged.
+- Independent rollout readiness15/15 confirms new UI image and preserved inspected
+  API identity/configuration/resources/network/mounts, not database byte equivalence.
+  Tag `trackflow-ui:pa02-5fca72e` is deployed; old image retained for rollback.
+  Deployment configuration is unchanged; future UI recreation needs explicit tag
+  selection. See after guide for exact image and original evidence locations.
+- This passive documentation reuses accepted runtime evidence without reruns.
+  Single-run timings do not prove causal performance improvement or INP; semantic,
+  name, HTTP and favicon findings remain. PA-02 evidence commit is parent-owned;
+  PA-03, backoffice after measurement, PA-04 extraction and final `REPORT.md` remain
+  pending. No overall assignment completion claimed.
+
+### Historical PA-02 local contrast correction
+
+The local-only status below is retained as stage-specific history, superseded by
+the deployed measurement above.
+
+- Changed only the corporate shared dark-orange token and primary CTA background;
+  decorative orange and focus outlines remain intact for static and Next hosts.
+- Focused contrast runner observed RED: 11 ratio failures, 2 passes before CSS;
+  GREEN: 13/13. Source ratios now meet 4.5:1: paper/header 5.048, warm-white
+  5.555, white CTA default 4.925 and hover/focus 5.651. Shared-token usages and
+  the unchanged footprint eyebrow override are covered. Two initial test-helper
+  mistakes (grouped-rule lookup and nested CTA cases) were corrected before CSS.
+- Local source math is not browser-computed style or Lighthouse evidence.
+  Runtime comparison, production measurements and parent review remain pending;
+  baseline scores and PA-01 history below are unchanged. No score gain claimed.
+
+## Frontend Performance Audit — PA-01 baseline
+
+- Recorded three production Lighthouse baselines in [AUDIT.md](../AUDIT.md) and
+  indexed six unchanged JSON/report-PNG artifacts in the [evidence guide](../audit/before/README.md).
+  Corporate desktop/mobile: 100/91/74/100; authenticated inventory desktop:
+  97/95/100/90 (performance/accessibility/best practices/SEO). No run warnings.
+- Inventory used an encrypted SSH forward, preserved authentication storage and
+  explicitly cleared cache; guarded routing disabled HTTP cache. Six actual rows,
+  no inventory writes or seeding. Loopback best-practices 100 is not public HTTPS.
+  This bounded authenticated baseline does not establish full business acceptance.
+- Six relevant local/deployed source hashes matched; all-source/image identity is
+  not proven. Analysis selects corporate contrast and inventory navigation target
+  sizing, and documents two duplication cases with a future products/history
+  loader/state extraction. No application fixes or extraction have been applied.
+- Next: separate focused corrections and comparable after measurements, then the
+  reusable extraction and final `REPORT.md`. No after gains or final assignment
+  completion claimed. PA-01 is documentation-only; structural verification, not
+  repeated tests/builds/browser execution. Existing history below is preserved.
+
 ## Monorepo Containerization — API database configuration applied and verified
 
 - On 2026-10-30, parent API-only recreation exited0 in5.388s (not measured

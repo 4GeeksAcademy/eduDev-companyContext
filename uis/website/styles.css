@@ -4,7 +4,7 @@
   --paper: #f5f2e9;
   --white: #fffdf7;
   --orange: #f26b3a;
-  --orange-dark: #d84d1d;
+  --orange-dark: #b83d15;
   --mint: #bfe3d0;
   --line: #d8d8ca;
   --max-width: 1160px;
@@ -73,7 +73,7 @@ h2 { margin-bottom: 1rem; font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.05
 
 .button { display: inline-flex; min-height: 3.2rem; align-items: center; justify-content: center; padding: 0.75rem 1.35rem; border-radius: 0.25rem; font-weight: 800; text-decoration: none; }
 
-.button-primary { color: white; background: var(--orange); box-shadow: 5px 5px 0 var(--ink); }
+.button-primary { color: white; background: #c4471b; box-shadow: 5px 5px 0 var(--ink); }
 
 .button-primary:hover, .button-primary:focus-visible { background: var(--orange-dark); transform: translate(1px, 1px); box-shadow: 4px 4px 0 var(--ink); }
 

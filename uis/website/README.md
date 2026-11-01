@@ -2,7 +2,8 @@
 
 The public logistics website now has a small Next.js App Router host. Content,
 section anchors, responsive styles and the home URL `/uis/website/` are preserved.
-The original static files remain unchanged and independently usable.
+The original static host remains independently usable; both hosts share the
+contrast-corrected stylesheet.
 
 ## Run the Next website
 
@@ -28,13 +29,26 @@ TRACKFLOW_WEBSITE_URL=http://127.0.0.1:3310/uis/website/ node --test uis/website
 The environment variable must point to the selected website origin and base path.
 The Node tests check the Next configuration, rendered metadata and semantic
 structure, three service cards, anchor targets, home/contact links, served CSS
-and an unknown-route 404. Without the variable, only the structural test runs;
+and an unknown-route 404. Without the variable, structural and contrast tests run;
 the HTTP test explicitly skips. HTTP smoke is not visual/browser acceptance.
+
+Run only the deterministic contrast checks without a server:
+
+```bash
+node --test --test-name-pattern=contrast uis/website/tests/site-smoke.test.mjs
+```
+
+These read actual shared CSS declarations and require 4.5:1 for eyebrow text,
+service numbers, navigation/text-link hover and focus, and white CTA text in all
+three states. They cover paper, warm-white, composited header and dark footprint
+contexts. This narrow source calculation is not a CSS cascade engine, computed
+browser-style check or Lighthouse result. PA-02 local RED (11 ratio failures) and
+GREEN (13 passing tests) are recorded; browser/production comparison is pending.
 
 ## Preserved static host
 
-`npm run serve` at the repository root still serves the unchanged `index.html`,
-`components.js` and `styles.css` at `http://localhost:3000/uis/website/`, without a
+`npm run serve` at the repository root still serves the preserved `index.html`,
+`components.js` and shared `styles.css` at `http://localhost:3000/uis/website/`, without a
 build. It does not render the Next App Router. The React page imports the original
 stylesheet; it does not load the custom-element script or inject raw HTML.
 
