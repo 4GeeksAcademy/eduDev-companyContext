@@ -170,7 +170,8 @@ module-type warning.
 Local Next browser checks passed at 390×900 and 1440×900: skip160.40625×44px and
 operations189.578125×44px in both profiles, inside the viewport without overlap
 with each other, logout or main, and no page horizontal overflow. Tab order was
-skip → operations → Sign out with 3px solid visible focus; Enter reached
+skip → operations → Sign out; the two links had 3px solid visible focus,
+while Sign out measured 1px auto. Enter reached
 `#main-content`, then Tab entered main. Operations retained `?apiPort=8001`.
 HTTP200; each view intercepted GET `/api/auth/me` and `/api/inventory/products`
 once. No unexpected/blocked/failed requests, page exceptions or console errors;
@@ -183,9 +184,44 @@ horizontal interaction was not tested. Evidence is retained at
 `navigation-390.png`, `navigation-1440.png`); the verifier opened both PNGs.
 Browser closed, owned server received SIGTERM and port3300 was released. Git
 short-status equality and diff-check passed, not a byte comparison. These results
-are reused without reruns. Native review, commit, deployment and comparable
-authenticated production measurement remain pending; no score gain or PA-03
-completion is claimed.
+are reused without reruns. PA-03 native review was approved and acknowledged;
+local commit `d1bfb26` is complete. Deployment and comparable authenticated
+production measurement remain required in PA-05 after PA-04; no score gain is claimed.
+
+## PA-04 shared inventory load status
+
+Products and history reuse `InventoryLoadStatus` for error + Retry or loading
+markup (error takes precedence; success returns null, without a wrapper). Each
+page retains its exact requests, AbortController, cleanup, signal guards and
+`[attempt]` effect, plus empty messages, tables and query-preserving links. No
+loader hook, dependencies or state framework were added.
+
+Pure behavior-preserving refactor: no artificial RED. Before/after
+`node --test uis/backoffice/tests/inventory-client.test.mjs uis/backoffice/tests/inventory-form.test.mjs`
+passed 7/7. New structural-only checks with
+`node --test uis/backoffice/tests/inventory-load-status.test.mjs` passed 2/2;
+combined navigation-sizing/next-host checks passed 8/8. The authorized
+`NEXT_TELEMETRY_DISABLED=1 npm --prefix uis/backoffice run build` passed compilation,
+TypeScript and prerenders. Existing module-type/workspace-root warnings remain.
+
+Simulated browser checks on `http://127.0.0.1:3300/backoffice/inventory/products`
+and `/backoffice/inventory/orders` passed the same eight groups before/after:
+loading, injected 503/error + Retry → success, empty, populated, and departure
+while a response was delayed. Products query links and history receipt details
+were checked. Fresh contexts used synthetic localStorage auth and intercepted
+GET fixtures only, blocking external/non-GET/unlisted API traffic. No unexpected
+console errors, page exceptions or blocked requests; two intentional 503 console
+messages per run. Departure showed no stale UI after navigation, not proof of
+server cancellation. No real authentication, backend, writes or Lighthouse ran.
+
+Evidence: `/tmp/trackflow-pa04-baseline-OuOswR/` and
+`/tmp/trackflow-pa04-after-MWplBP/` contain results JSON, server logs and six fixture
+screenshots each (not a visual audit). Runner: `/tmp/trackflow-pa04-check.mjs`.
+Two initial baseline harness failures (wrong `sku` query expectation and storage
+setup on `about:blank`) were corrected before app edits. Final runs exited 0;
+browsers closed, owned servers received SIGTERM and port3300 release passed.
+`git diff --check` passed. PA-04 native review/commit remain parent-owned;
+PA-05 deployment/authenticated comparison and final report remain pending.
 
 ## Inventory source verification and T4 acceptance
 

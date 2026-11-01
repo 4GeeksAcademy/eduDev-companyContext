@@ -1,5 +1,30 @@
 # Project Progress
 
+## Frontend Performance Audit — PA-04 local status reuse
+
+- Extracted `InventoryLoadStatus` error/Retry/loading markup for products/history;
+  error precedence and null success preserve the DOM without an extra wrapper.
+  Exact requests, AbortController/cleanup/signal guards/`[attempt]`, empty messages,
+  tables and query links remain local and unchanged; no hook or dependency added.
+- Pure refactor: no artificial RED. Client/form tests 7/7 before and after;
+  new structural-only status/consumer checks 2/2; navigation/host 8/8; authorized
+  production build including TypeScript/prerenders passed. Existing Node module-type
+  and Next workspace-root warnings remain. Exact commands are in the UI README.
+- Simulated browser baseline/after each passed eight groups: products/history
+  loading, injected 503 + Retry → success, empty/populated and delayed departure.
+  No stale UI after departure, not actual cancellation proof. Synthetic localStorage
+  and intercepted GET fixtures only; no backend, credentials or business writes.
+  Only two intentional 503 console messages per run; no unexpected errors/requests.
+- Evidence `/tmp/trackflow-pa04-baseline-OuOswR/` and
+  `/tmp/trackflow-pa04-after-MWplBP/`: results, logs, six fixture PNGs each (not
+  visually audited). Two baseline harness mistakes were corrected before app edits.
+  Final commands exited0, browsers/owned servers stopped, port3300 released.
+  `git diff --check` passed. Parent task log/unrelated notes remain untouched.
+- PA-04 local implementation only: native review and separate commit are pending.
+  PA-03 review approved/acknowledged and commit `d1bfb26` complete. Required shared
+  UI deployment and authenticated after measurement are consolidated into PA-05,
+  not waived; final report/overall assignment remain pending. History below retained.
+
 ## Frontend Performance Audit — PA-03 local navigation targets
 
 - Added a dedicated class to the two session-gate links outside `.inventory`,
@@ -14,8 +39,9 @@
   Node module-type and Next multiple-lockfile/workspace-root warnings remain.
 - Local browser390×900/1440×900 passed: skip160.40625×44px and operations189.578125×44px
   in both profiles, viewport containment/no overlap with each other/logout/main,
-  no page horizontal overflow, Tab skip → operations → Sign out with 3px solid
-  visible focus, Enter to main then Tab inside main, and preserved apiPort8001.
+  no page horizontal overflow, Tab skip → operations → Sign out; 3px solid visible
+  focus applies only to Skip/Operations (Sign out: 1px auto). Enter to main then
+  Tab inside main and preserved apiPort8001 passed.
   HTTP200, one intercepted auth/me and products GET per view, zero unexpected/
   blocked/failed requests, page exceptions or console errors; no favicon404.
 - Simulated localStorage token/synthetic fixtures only: no backend, credentials or
@@ -23,9 +49,10 @@
   interaction was not tested. Evidence `/tmp/trackflow-pa03-browser-58YJxV/` includes
   results/log and two verifier-inspected PNGs. Browser closed, owned server SIGTERM,
   port3300 released; Git short-status equality/diff-check passed, not byte comparison.
-- This passive normalization reuses accepted results without reruns. Native review,
-  commit, deployment and authenticated production measurement remain pending;
-  PA-03 is not complete and score gain is unknown. PA-02 source `5fca72e` and
+- This passive normalization reuses accepted results without reruns. PA-03 native
+  review was approved and acknowledged; local commit `d1bfb26` is complete.
+  Deployment/authenticated measurement remain required in PA-05 after PA-04;
+  score gain is unknown. PA-02 source `5fca72e` and
   evidence `3cf1e89` are complete; history below retained.
 
 ## Frontend Performance Audit — PA-02 deployed corporate evidence

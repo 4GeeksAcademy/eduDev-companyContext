@@ -3,7 +3,7 @@
 **PA-02: corporate contrast deployed and measured; accessibility 91 → 96 on both
 profiles.** PA-01 baselines remain below. Inventory navigation target sizing is
 applied and verified locally, with production measurement pending. One reusable
-loading abstraction is still pending; the overall assignment and
+status-markup component is extracted and locally verified; the overall assignment and
 final `REPORT.md` are not complete.
 
 - [4Geeks assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-web-vitals/README.md)
@@ -157,8 +157,8 @@ Existing Node module-type and Next multiple-lockfile/workspace-root warnings rem
 
 Actual local browser checks at 390×900 and 1440×900 passed: skip160.40625×44px,
 operations189.578125×44px in both profiles, viewport containment, no overlap with
-each other/logout/main, no page horizontal overflow, 3px solid visible focus,
-Tab skip → operations → Sign out, Enter to `#main-content` then Tab inside main,
+each other/logout/main, no page horizontal overflow, 3px solid visible focus
+on Skip/Operations only (Sign out: 1px auto), Tab skip → operations → Sign out, Enter to `#main-content` then Tab inside main,
 and preserved `?apiPort=8001`. HTTP200 and one intercepted GET each to
 `/api/auth/me` and `/api/inventory/products` per view passed; no unexpected,
 blocked or failed requests, page exceptions or console errors (no favicon404).
@@ -168,9 +168,10 @@ authenticated acceptance; no backend, credentials or business writes. Narrow-tab
 horizontal interaction was not tested. Evidence and inspected PNGs are at
 `/tmp/trackflow-pa03-browser-58YJxV/`; see the [local check details](uis/backoffice/README.md#pa-03-local-navigation-target-correction).
 Browser/server cleanup and port3300 release passed; Git short-status equality and
-diff-check passed, not byte equivalence. Native review, commit, deployment and
-comparable authenticated production measurement remain pending. No inventory
-score gain or PA-03 completion is claimed.
+diff-check passed, not byte equivalence. PA-03 native review was approved and
+acknowledged; local commit `d1bfb26` is complete. Deployment and comparable
+authenticated production measurement remain required in PA-05 after PA-04.
+No inventory score gain is claimed.
 
 ### Follow-ups, not fixes already applied
 
@@ -187,27 +188,54 @@ score gain or PA-03 completion is claimed.
 
 | Concrete case | Why it matters | Smallest useful option / decision |
 | --- | --- | --- |
-| [Products:11–19](uis/backoffice/components/inventory-products.tsx#L11) and [history:7–15](uis/backoffice/components/inventory-history.tsx#L7) | Repeated abortable load, stale-result guard, error handling, reset and retry lifecycle can drift when maintained separately. | **PA-04 planned:** one small stable loader hook or shared loading-state component, selected after checking dependencies. Preserve cancellation, stale guards and loading/error/empty/success behavior; no new dependency. |
+| [Products:11–19](uis/backoffice/components/inventory-products.tsx#L11) and [history:7–15](uis/backoffice/components/inventory-history.tsx#L7) | Repeated abortable load, stale-result guard, error handling, reset and retry lifecycle can drift when maintained separately. | **PA-04 implemented locally:** shared `InventoryLoadStatus` error/loading/Retry markup only. Keep async lifecycle local and unchanged; no loader hook or new dependency. |
 | [Static Web Components](uis/website/components.js) and [Next page](uis/website/app/page.jsx) (brand/services), plus [static metrics](uis/website/index.html#L96) and Next metrics | Brand, service content and metrics markup duplicate across independent hosts; fixes can diverge, as the semantic/name issues illustrate. | Shared content definitions could reduce drift, but cross-host unification would complicate independently usable static and Next entry points. Prefer paired small corrections; no architecture rewrite or extraction selected here. |
 
 PA-01 introduced no application corrections. PA-02 contrast is now applied and
 measured; PA-03 target sizing is verified locally but production measurement
-remains pending, and PA-04 extraction remains deferred. Performance is
+remains pending, and PA-04 status markup is extracted locally. Performance is
 already strong; observed accessibility causes justify bounded changes rather than
 speculative bundle optimization. The category gain is proven for corporate only,
 not yet for inventory.
 
+## PA-04 local reuse verification
+
+`InventoryLoadStatus` accepts error, loading, loading label and Retry callback;
+error wins over loading, success returns null and no wrapper is added. Products
+and history keep their exact abortable effects, signal guards, `[attempt]`,
+requests, empty messages, tables and links. Corporate cross-host duplication
+remains deliberately separate.
+
+Pure refactor exception: no manufactured RED. Client/form tests passed 7/7 both
+before and after; new structural status/consumer checks passed 2/2, navigation/
+host regressions 8/8, production build including TypeScript passed. Simulated
+local browser checks passed eight groups before and after at 1440×900: both pages'
+loading, 503/error + Retry → success, empty, populated and delayed-response departure.
+Only intentional 503 console messages occurred; no page exceptions or unexpected
+requests. No actual authentication or cancellation proof is claimed. Owned browser/
+server cleanup and port3300 release passed. Existing Node module-type and Next
+workspace-root warnings remain; no production measurement was repeated.
+
+Exact commands and scope: [backoffice verification](uis/backoffice/README.md#pa-04-shared-inventory-load-status).
+Evidence: `/tmp/trackflow-pa04-baseline-OuOswR/` and
+`/tmp/trackflow-pa04-after-MWplBP/` (JSON, logs, six fixture screenshots each).
+Two initial baseline harness mistakes were corrected before source changes;
+final baseline/after commands exited 0. New tests are structural, not rendering
+coverage; screenshots were captured, not visually audited. PA-04 native review
+and commit remain pending; PA-05 production evidence is required, not waived.
+
 ## Next steps and limits
 
-1. PA-02 evidence is complete in `3cf1e89` (source `5fca72e`). Complete parent-owned
-   PA-03 review, commit and deployment, then obtain a matching authenticated after measurement.
-2. Extract the bounded PA-04 reusable unit with behavior-preserving checks.
+1. PA-02 evidence is complete in `3cf1e89` (source `5fca72e`); PA-03 local review,
+   acknowledgement and commit `d1bfb26` are complete.
+2. Complete parent-owned PA-04 review and separate work-unit commit. Deploy once
+   in PA-05 and obtain the required matching authenticated inventory measurement.
 3. Add inventory after JSON/report PNGs and final `REPORT.md` in PA-05; corporate
    artifacts are already preserved. No future score or delivery is promised here.
 
 The earlier PA-02 evidence update used passive structural checks of scores, JSON,
-PNGs and local links without repeating browser execution. This passive PA-03 normalization
-reuses the source RED/GREEN, independent build and bounded local browser evidence
-above without reruns; no new RED/GREEN applies. Whitespace and bounded readback
+PNGs and local links without repeating browser execution. The PA-03 wording corrections
+reuse its prior source RED/GREEN, build and browser evidence without reruns;
+PA-04 fresh verification is separately recorded above. Whitespace and bounded readback
 checks do not establish real authentication or full application acceptance. Existing deployment/authentication history
 is retained in [project progress](memory-bank/progress.md).

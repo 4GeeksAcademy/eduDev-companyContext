@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { listProducts } from '../lib/inventory';
 import { inventoryLink } from '../lib/inventory-form';
 import type { Product } from '../types/inventory';
+import InventoryLoadStatus from './inventory-load-status';
 
 export default function InventoryProducts() {
   const search = useSearchParams().toString();
@@ -19,8 +20,9 @@ export default function InventoryProducts() {
     return () => controller.abort();
   }, [attempt]);
   return <section><h2>Live SKUs</h2>
-    {error ? <p role="alert">{error} <button onClick={() => setAttempt(x => x + 1)}>Retry</button></p> :
-      products === null ? <p role="status">Loading SKUs…</p> : products.length === 0 ? <p>No SKUs available.</p> :
+    <InventoryLoadStatus error={error} loading={products === null} loadingLabel="Loading SKUs…"
+      onRetry={() => setAttempt(x => x + 1)} />
+    {!error && products !== null && (products.length === 0 ? <p>No SKUs available.</p> :
         <div className="table-scroll"><table><caption>Stock by SKU and warehouse</caption><thead><tr>
           {['Name', 'SKU code', 'Client', 'Category', 'Warehouse', 'Current stock', 'Actions'].map(x => <th key={x} scope="col">{x}</th>)}
         </tr></thead><tbody>{products.map(product => {
@@ -32,6 +34,6 @@ export default function InventoryProducts() {
             <td>{(['inbound', 'outbound'] as const).map(direction => <Link key={direction}
               href={inventoryLink(`/backoffice/inventory/orders/${direction}`, search, product.id)}>
               {direction === 'inbound' ? 'Stock entry' : 'Stock exit'}<span className="sr-only"> for {product.name}</span></Link>)}</td></tr>;
-        })}</tbody></table></div>}
+        })}</tbody></table></div>)}
   </section>;
 }
