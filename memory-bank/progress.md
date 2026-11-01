@@ -1,5 +1,24 @@
 # Project Progress
 
+## Frontend Performance Audit — PA-01 baseline
+
+- Recorded three production Lighthouse baselines in [AUDIT.md](../AUDIT.md) and
+  indexed six unchanged JSON/report-PNG artifacts in the [evidence guide](../audit/before/README.md).
+  Corporate desktop/mobile: 100/91/74/100; authenticated inventory desktop:
+  97/95/100/90 (performance/accessibility/best practices/SEO). No run warnings.
+- Inventory used an encrypted SSH forward, preserved authentication storage and
+  explicitly cleared cache; guarded routing disabled HTTP cache. Six actual rows,
+  no inventory writes or seeding. Loopback best-practices 100 is not public HTTPS.
+  This bounded authenticated baseline does not establish full business acceptance.
+- Six relevant local/deployed source hashes matched; all-source/image identity is
+  not proven. Analysis selects corporate contrast and inventory navigation target
+  sizing, and documents two duplication cases with a future products/history
+  loader/state extraction. No application fixes or extraction have been applied.
+- Next: separate focused corrections and comparable after measurements, then the
+  reusable extraction and final `REPORT.md`. No after gains or final assignment
+  completion claimed. PA-01 is documentation-only; structural verification, not
+  repeated tests/builds/browser execution. Existing history below is preserved.
+
 ## Monorepo Containerization — API database configuration applied and verified
 
 - On 2026-10-30, parent API-only recreation exited0 in5.388s (not measured
