@@ -33,6 +33,17 @@ class UserResponse(BaseModel):
     created_at: datetime
 
 
+class RegistrationResponse(BaseModel):
+    id: str
+    is_active: bool
+    role: Role
+    created_at: datetime
+
+
+class MessageResponse(BaseModel):
+    message: str
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"

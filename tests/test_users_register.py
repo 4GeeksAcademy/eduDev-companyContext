@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from services.api.auth import verify_password
 from services.api.auth_database import get_profile_by_user_id, get_user_by_id, list_users
-from services.api.auth_models import RegistrationInput, Role, UserResponse
+from services.api.auth_models import RegistrationInput, RegistrationResponse, Role
 from services.api.routes.users import register
 
 
@@ -20,12 +20,12 @@ def test_registration_persists_linked_identity_with_password_boundaries(password
     profile = get_profile_by_user_id(result.id)
     assert UUID(result.id).version == UUID(profile.id).version == 4
     assert profile.id != result.id and profile.user_id == result.id
-    assert result.email == "person@example.test"
+    assert stored.email == "person@example.test"
     assert stored == result and stored.role == Role.user and stored.is_active
     assert before <= stored.created_at <= datetime.now(timezone.utc)
     assert stored.hashed_password != password and verify_password(password, stored.hashed_password)
     assert {key: getattr(profile, key) for key in ("name", "phone", "address")} == {key: contacts.get(key) for key in ("name", "phone", "address")}
-    assert set(UserResponse.model_validate(result.model_dump()).model_dump()) == {"id", "email", "role", "is_active", "created_at"}
+    assert set(RegistrationResponse.model_validate(result.model_dump()).model_dump()) == {"id", "role", "is_active", "created_at"}
 
 
 def test_normalized_duplicate_cannot_create_orphan(user_factory, database_paths):

@@ -8,7 +8,9 @@ from services.api.auth_database import (
     DuplicateEmailError, create_user, delete_user, get_user_by_id, list_users, update_user,
 )
 from services.api.auth_dependencies import SensitiveInputRoute, get_current_user
-from services.api.auth_models import RegistrationInput, Role, User, UserResponse, UserUpdate
+from services.api.auth_models import (
+    RegistrationInput, RegistrationResponse, Role, User, UserResponse, UserUpdate,
+)
 
 
 router = APIRouter(prefix="/users", tags=["users"], route_class=SensitiveInputRoute)
@@ -20,7 +22,7 @@ def require_owner_or_admin(user: User, user_id: str):
         raise HTTPException(403, "Forbidden")
 
 
-@router.post("", response_model=UserResponse, status_code=201)
+@router.post("", response_model=RegistrationResponse, status_code=201)
 def register(data: RegistrationInput):
     try:
         return create_user(data)
@@ -58,7 +60,7 @@ def edit_user(user_id: str, data: UserUpdate, user: CurrentUser):
     return result
 
 
-@router.delete("/{user_id}", status_code=204)
+@router.delete("/{user_id}", status_code=204, response_model=None, response_class=Response)
 def remove_user(user_id: str, user: CurrentUser):
     require_owner_or_admin(user, user_id)
     if not delete_user(user_id):
