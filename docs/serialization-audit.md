@@ -389,6 +389,7 @@ proceeds using automated evidence; human manual acceptance is not claimed.
 | Identity contracts, tests and API docs | `99e91e3` | [#32](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/32), merged |
 | Operational contracts, tests and API docs | `bdf3a5d` | [#33](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/33), merged |
 | Complete audit and evidence | `de28087` | [#34](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/34), merged; final assignment entry point |
+| VPS rollout and live verification evidence | `22b7882` | [#35](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/35), documentation follow-up |
 
 Each source slice received native approval and acknowledgement. GitHub reported
 clean/mergeable branches and no check runs; this is not a claim of CI passing.

@@ -21,7 +21,7 @@ Implement the 4Geeks backend serialization assignment using existing FastAPI/Pyd
 - [x] T7 (done): Verify live deployed serialization and affected consumer compatibility using scoped safe checks; record cleanup and actual release identity.
 - [ ] T8 (pending, human-deferred): Record at least three actual human manual Swagger observations if required for literal bootcamp acceptance; not silently replaced by Playwright and not a blocker to user-authorized delivery.
 
-- [ ] T9 (in_progress): Publish the final deployment/live-verification evidence follow-up without changing runtime source.
+- [x] T9 (done): Publish the final deployment/live-verification evidence follow-up without changing runtime source.
 
 ## Acceptance
 All 31 routes documented with original/current state, purpose, response behavior, target fields, changes and relationships. Explicit JSON response models and separate write inputs; deliberate CSV/204 exceptions. No password/hash/reset/internal-token leaks or email in unauthenticated auth responses. Consumer-compatible minimal lists. Existing applicable tests pass after justified contract updates. At least three manual /docs checks must be recorded before claiming assignment completion.
@@ -31,6 +31,7 @@ Delivery strategy: user selected stacked-to-main. Preserve complete original com
 Focused checks during T2/T3 only; relevant full backend tests at T4 if needed, no unrelated frontend builds. Use installed environment, synthetic secrets, disposable stores and no real DB/mail or root .env. Follow TESTING.md and services/api/README.md. Native review respects candidate consent. Commit/push/PR/merge/VPS deployment are now explicitly authorized; Original implementation commit:0d85e9cefbe3bcdcfc23cd5fa04bda8bd8ab52b6 (preserved local reference); chain commit identities recorded as produced. Reuse passing tests unless source changes; final live checks must be scoped and avoid real user data modification.
 
 ## Evidence
+- Final runtime-evidence work-unit commit22b7882c09a222cabb825a1fb4a7d53453defe7a published in PR35 (docs/serialization-deployment -> main), following source/auditPR32/33/34. This closes T6/T7/T9 documentation evidence; source release remains7a2fc65 and no redeploy is needed for docs-only changes.
 - FinalT7realformbrowserrun mvyqi43s-h-qkt8 passed:login/me/suppliers200,correctreturnpath,15renderedrowsmatchingnames/rates/statuses,zeroerrors. Additionalownedfixturedeleted204;oldJWT401internal/public;2users/2profilescanonical+bytehashesand supplierhash unchanged. AllAPIandbrowserchecksnowpassed; firstbrowserErrorcause remainsunproven, noappfixneeded. HumanmanualT8deferred. Finalruntimeaudit/progress readyforpublication.
 - Browserdiagnosis correction: retainedfailurewas genericError, notprovenassertion; harnessdiscardedsafemessage anddelayedloginbodycaptureuntilnavigation. Exactcauseunproven; deployedJS/redirect/sessionbehavior matchsource. OneboundedUIonlyrerun mvyqi43s-h-qkt8 usesstatus/pathcapture andrenderedrows, notcross-navigationloginbodyreads; oneadditionalownedfixturelifecyclewithmandatorycleanup. PreviousAPIresultsreused.
 - T7 livepublicAPIchecks passed:registration201,login200,me200,suppliers15rows/products6rows/orders12rows200 with exactsafeallowlists. Ownedaccountself-deletedinternalAPI204; oldtoken401public/internal; existing2users/2profiles canonical/bytehashand supplierhashunchanged. Browserreal_form_loginharnessassertionfailedwithoutnameddiagnostic; noAPI/browsernetworkerrorobserved butauthenticatedsupplierrenderingnotproved. Read-onlyharnessdiagnosis mvyqf40q-g-u35s pending; nosecondaccountcreated.
@@ -51,4 +52,4 @@ Focused checks during T2/T3 only; relevant full backend tests at T4 if needed, n
 - Starting git status contained only the two unrelated untracked task documents listed above.
 
 ## Next step
-Publish passive final runtime-evidence follow-up and record its commit/PR. No application redeploy or test-suite rerun is required for evidence-only docs. T8 human manual Swagger observations remain explicitly deferred, not a blocker to the user-authorized completed delivery.
+Authorized implementation, publication, API deployment and automated live verification are complete. Final evidence is linked through PR35; the primary assignment entry is PR34. Only literal human manual Swagger observations (T8) remain deferred. No synthetic accounts or runtime verification processes remain; preserve unrelated untracked task documents.
