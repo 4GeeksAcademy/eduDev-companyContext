@@ -209,9 +209,15 @@ class SupplierPersistenceAndSeedTest(unittest.TestCase):
         )
         suppliers_by_name = {supplier["name"]: supplier for supplier in suppliers}
         for expected in SUPPLIERS_SEED:
-            actual = suppliers_by_name[expected["name"]]
+            listed = suppliers_by_name[expected["name"]]
+            self.assertEqual(set(listed), {
+                "id", "name", "country", "categories", "rate_per_shipment", "currency", "status",
+            })
+            actual = get_supplier(listed["id"])
             for field, value in expected.items():
                 self.assertEqual(actual[field], value)
+                if field in listed:
+                    self.assertEqual(listed[field], value)
 
 
 if __name__ == "__main__":

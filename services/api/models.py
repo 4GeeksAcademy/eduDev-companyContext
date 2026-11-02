@@ -62,11 +62,30 @@ class SupplierCreate(BaseModel):
         return self
 
 
-class SupplierResponse(SupplierCreate):
-    """Stored supplier returned by the API."""
+class SupplierListResponse(BaseModel):
+    """Directory fields consumed by the supplier table."""
 
     id: int
+    name: NonBlankString
+    country: Country
+    categories: Annotated[list[Category], Field(min_length=1)]
+    rate_per_shipment: PositiveRate
+    currency: Currency
+    status: SupplierStatus
+
+
+class SupplierResponse(SupplierListResponse):
+    """Detail and write receipt, independent of client input validation."""
+
+    service_zone: str | None = None
+    contact_email: str | None = None
+    notes: str | None = None
     updated_at: datetime
+
+
+class SupplierDeleteResponse(BaseModel):
+    success: bool
+    id: int
 
 
 class SupplierRateUpdate(BaseModel):

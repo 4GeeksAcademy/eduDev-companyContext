@@ -12,7 +12,7 @@ from packages.shared.incidents import (
     IncidentStatus, IncidentCategory, IncidentOrigin, IncidentBranch,
     InvalidStatusTransitionError,
 )
-from services.api.incident_models import Incident, IncidentCreate, IncidentStatusUpdate
+from services.api.incident_models import IncidentResponse, IncidentCreate, IncidentStatusUpdate
 from services.api.incident_store import (
     create_incident, list_incidents, get_incident, update_incident_status,
 )
@@ -74,12 +74,12 @@ class IncidentSummary(BaseModel):
     by_branch: dict[IncidentBranch, int]
 
 
-@router.post("", status_code=201, response_model=Incident)
+@router.post("", status_code=201, response_model=IncidentResponse)
 def register_incident(payload: IncidentCreate):
     return create_incident(payload)
 
 
-@router.get("", response_model=list[Incident])
+@router.get("", response_model=list[IncidentResponse])
 def find_incidents(filters: Annotated[IncidentFilters, Query()]):
     selected = filters.model_dump(exclude_none=True)
     return [record for record in list_incidents()
@@ -99,7 +99,7 @@ def summarize_incidents():
     return summary
 
 
-@router.get("/{incident_id}", response_model=Incident)
+@router.get("/{incident_id}", response_model=IncidentResponse)
 def read_incident(incident_id: str):
     record = get_incident(incident_id)
     if record is None:
@@ -107,7 +107,7 @@ def read_incident(incident_id: str):
     return record
 
 
-@router.patch("/{incident_id}/status", response_model=Incident)
+@router.patch("/{incident_id}/status", response_model=IncidentResponse)
 def change_status(incident_id: str, payload: IncidentStatusUpdate):
     try:
         record = update_incident_status(incident_id, payload.status)

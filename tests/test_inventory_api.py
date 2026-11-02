@@ -54,7 +54,8 @@ def test_stock_history_and_errors(inventory_client):
     assert {item["order_type"] for item in history} == {"inbound", "outbound"}
     for item in history:
         assert item["user_uuid"] == user.id
-        assert item["name"] == "Sneaker" and item["sku_id"] == row["id"]
+        assert item["name"] == "Sneaker" and item["sku"] == row["sku"]
+        assert not {"sku_id", "client_name", "category"} & item.keys()
         assert item["created_at"].endswith(("Z", "+00:00"))
     assert client.get("/inventory/products/9999").status_code == 404
     assert client.post("/inventory/orders/inbound", json=inbound | {"sku_id": 9999}).status_code == 404

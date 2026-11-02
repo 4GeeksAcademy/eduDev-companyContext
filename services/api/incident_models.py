@@ -33,6 +33,20 @@ class Incident(IncidentCreate):
     updated_at: UTCTimestamp = Field(default_factory=utc_now)
 
 
+class IncidentResponse(BaseModel):
+    """Public record; storage defaults and create validation stay on Incident."""
+
+    id: str
+    title: NonBlankText
+    description: NonBlankText
+    category: IncidentCategory
+    status: IncidentStatus
+    origin: IncidentOrigin
+    branch: IncidentBranch
+    created_at: UTCTimestamp
+    updated_at: UTCTimestamp
+
+
 class IncidentStatusUpdate(BaseModel):
     """The lifecycle service must validate the edge against the stored status."""
     model_config = ConfigDict(extra="forbid")
