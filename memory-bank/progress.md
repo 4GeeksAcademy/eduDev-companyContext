@@ -1,5 +1,99 @@
 # Project Progress
 
+## Backend serialization audit — source delivery chain
+
+- User authorized commit, push, PR, merge, API-only VPS deployment and live checks,
+  selecting sequential PRs toward main. Existing remote access/procedure reused.
+- Auth commit99e91e3 / PR32 merged; operations commitbdf3a5d / PR33 merged.
+  Both native source-slice reviews approved/acknowledged; GitHub had no checks or
+  rulesets, not a CI-pass claim. Complete API source/tests match the verified
+  original full candidate. This final documentation slice contains the audit.
+- Live preflight passed with existing UI/API/storage/configuration preserved;
+  next build locally, deploy only API with rollback, then scoped live verification.
+  Human manual Swagger acceptance remains deferred; no deployment success yet.
+
+## Backend serialization audit — Swagger browser verification passed
+
+- Cached Playwright/Chromium exercised actual Swagger controls: registration201,
+  login200, Authorize plus own-profile200, suppliers200 with15 exact seven-field
+  rows. Successful run4.83s, zero browser errors; no direct API-call substitute.
+- Five earlier attempts required locator/login-input adjustments (one conflicting
+  alias422); no application edits. Temporary APIs/browsers/stores were cleaned,
+  port8011 untouched, repository status and file hashes unchanged. No installs,
+  credential artifacts, VPS access or delivery actions.
+- Automated browser evidence is recorded in docs/serialization-audit.md. Human
+  manual observations remain pending; source is still local and undeployed.
+
+## Backend serialization audit — T4 automated verification passed
+
+- Independent final Python run: `uv run --offline --no-sync python -B -m pytest
+  -p no:cacheprovider -q .` — 423 passed, 249 subtests passed, two existing
+  deprecation warnings, 92.17s, exit 0; no failures/skips. Explicit dot also
+  collected shared tests. Disposable stores, synthetic configuration, no real
+  SQL/mail/dotenv. No frontend build/test or coverage rerun was needed.
+- All 31 explicit route contracts confirmed (29 JSON, CSV and empty 204).
+  Final native four-lens source review approved and acknowledgement completed;
+  `git diff --check` clean, test run left short Git status unchanged.
+- Automated implementation verification is complete. Three new manual Swagger
+  `/docs` executions remain pending; checklist/evidence is in
+  `docs/serialization-audit.md`. No overall assignment acceptance, server startup,
+  commit, push or PR claimed. Prior phase entries below are historical.
+
+## Backend serialization audit — T3 output contracts
+
+- All 31 decorators explicitly declare outputs: 29 JSON schemas and two documented
+  non-JSON exceptions. Supplier lists now have seven fields; detail/write receipts
+  retain contacts/notes/time. Supplier/product outputs are independent of inputs;
+  manager IncidentResponse retains all nine UI fields without changing storage.
+- Analyzer uses bounded aggregate count maps and nested satisfaction, preserving
+  null average and CSV bytes/filename. Export explicitly documents text/csv;
+  user-delete empty 204 and T2 auth remain intact. History removes only sku_id,
+  client_name/category; order_type discrimination preserves inbound/outbound fields
+  and actor attribution. No SQL/query/persistence redesign.
+- New HTTP/schema tests: RED 7 failed/1 passed, GREEN 8 passed, expanded 10 passed.
+  Relevant regression: initially 59 passed/2 intentional projection failures;
+  adjusted only those old wire assertions, final 61 passed plus 50 subtests.
+  Canonical supplier storage checks remain complete. Exact commands/evidence are
+  in `docs/serialization-audit.md`; existing AnyIO/Starlette warnings remain.
+- Disposable TinyDB/SQLite, synthetic JWT, dotenv-disabled offline/no-sync runner;
+  no live SQL/mail, installs, servers, browser, full suite, Git delivery or changes
+  outside authorized backend/tests/docs. Parent task and unrelated work preserved.
+  T3 implementation/focused tests complete; T4 review/final verification and three
+  new manual Swagger checks remain pending. No overall assignment completion.
+
+## Backend serialization audit — T2 identity contracts
+
+- Public registration now uses explicit four-field `RegistrationResponse` without
+  email; stored normalized email, hash and linked profile are unchanged. Directory
+  retains five-field `UserResponse`; authenticated identity/profile and login stay
+  compatible. Three password routes share explicit message-only `MessageResponse`.
+- User DELETE explicitly declares None/Response and preserves empty 204/OpenAPI.
+  HTTP/schema RED: six intended failures/two passes; GREEN: eight passes. Existing
+  focused auth/registration/list command: 52 passes and 52 subtests passed.
+  Exact commands and case evidence are in `docs/serialization-audit.md`.
+- Tests use disposable stores, synthetic JWT, mocked/blocked mail, blank SQL and
+  dotenv-disabled offline/no-sync uv. Existing AnyIO/Starlette warnings remain.
+  No full suite, server, browser or manual Swagger checks; T3/T4 remain pending.
+  No commits/staging/push/PR, UI/dependency/data/infrastructure changes. Parent task
+  and unrelated untracked notes preserved; parent owns review and task disposition.
+
+## Backend serialization audit — T1 documentation phase
+
+- Added `docs/serialization-audit.md`: all 31 application success endpoints,
+  original 24 explicit models/seven missing declarations, exact target fields,
+  consumer evidence, relationship decisions and T2/T3 source/test scope.
+- Planned email-free public registration, explicit JSON outputs and minimal
+  supplier/history lists; preserve the five-field admin user-directory contract,
+  incident inline descriptions, owner `/auth/me` email, login access token, CSV
+  export and empty user-delete 204. Rubric classifications now distinguish safe
+  create-derived schemas (structural maintenance) from wire-contract defects.
+- Documentation-only structural verification; no meaningful RED/GREEN, functional
+  tests, service startup, real SQL/mail or dotenv access. Installed uv/Python and
+  package metadata inspected read-only; future focused commands recorded in audit.
+- T2/T3 implementation and T4 backend regression plus at least three new manual
+  Swagger `/docs` executions remain pending. No source/UI/dependency/data changes,
+  commit, push or PR; parent owns task status and delivery. History below retained.
+
 ## Talent Pipeline deployment — TPD-02 local packaging
 
 - Added independent unchanged-lockfile Tracker install/build to the UI image;
