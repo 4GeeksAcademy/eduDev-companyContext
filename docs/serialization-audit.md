@@ -1,6 +1,6 @@
 # Backend serialization audit — baseline and implemented contracts
 
-**Implementation and automated verification passed; manual acceptance pending.** The inventory preserves
+**Merged, deployed and automatically verified on the VPS; human manual acceptance deferred.** The inventory preserves
 the original state of all 31 application success endpoints alongside final outputs.
 All 31 decorators are explicit: 29 JSON schemas and two non-JSON exceptions.
 Final Python verification and native review passed. Three new manual Swagger
@@ -388,11 +388,63 @@ proceeds using automated evidence; human manual acceptance is not claimed.
 |---|---|---|
 | Identity contracts, tests and API docs | `99e91e3` | [#32](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/32), merged |
 | Operational contracts, tests and API docs | `bdf3a5d` | [#33](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/33), merged |
-| Complete audit and evidence | This documentation slice | Final submission PR |
+| Complete audit and evidence | `de28087` | [#34](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/34), merged; final assignment entry point |
+| VPS rollout and live verification evidence | `22b7882` | [#35](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/35), documentation follow-up |
 
 Each source slice received native approval and acknowledgement. GitHub reported
 clean/mergeable branches and no check runs; this is not a claim of CI passing.
 Source/tests after the second merge match the originally verified full candidate.
 The advisory 400-line split retained coherent operational tests (438 lines) and
-the complete audit rather than dropping evidence. Deployment/live checks follow
-this chain and are not yet claimed in this snapshot.
+the complete audit rather than dropping evidence. The deployed source release is
+merge commit `7a2fc656dc6fb70914dec79c37d89126a96790c3`.
+
+## VPS deployment and live verification
+
+The API image was built from an archive of that exact merged commit, not the dirty
+worktree. Local production-command smoke passed with isolated storage and no
+network. Transferred image identity matched before deployment:
+
+- Tag: `trackflow-api:serialization-7a2fc65`.
+- Image: `sha256:1747959ceeb82c206b63c44c4b9ba2ad6c86d75289cca6c706be6a62f34553f0`.
+- Only the API was recreated, using the existing production/resources/HTTPS Compose
+  files. The API image pin was persisted; UI, TLS, mail settings, limits, mounts,
+  network identity and other deployment files were preserved.
+- Old image `trackflow-t5b-verify-0552b97-0622-api:production` remains available for
+  API-only rollback. No volume removal, database migration or UI rebuild was run.
+
+The first apply rolled back after an unidentified invariant assertion. Read-only
+diagnosis confirmed the old API was serving successfully and configuration was
+restored. The second controlled apply used named checks and compared environment
+variables as duplicate-rejecting name/value maps. It observed changed ordering
+with identical values; all preservation checks passed and readiness took 32.5s.
+The first assertion's exact cause was not retained and is not claimed as proven.
+
+Independent checks against public HTTPS `https://162.243.69.7` passed:
+
+| Check | Observed outcome |
+|---|---|
+| Website, Tracker login, backoffice login | 200; trusted TLS, pages rendered |
+| POST /api/users | 201; four registration fields, no email |
+| POST /api/auth/login | 200; bearer token/type only |
+| GET /api/auth/me | 200; correct own identity/profile and safe allowlists |
+| GET /api/suppliers | 200; 15 rows, seven fields each |
+| GET /api/inventory/products | 200; six rows, seven-field shape |
+| GET /api/inventory/orders | 200; 12 rows, correct inbound/outbound projections |
+| Real backoffice login and supplier page | Correct return path; all 15 displayed names/rates/statuses matched |
+| Owned synthetic account cleanup | Internal self-authorized DELETE 204; old token 401 internally/publicly |
+
+The final real-form Playwright run had zero console/page/network/HTTP errors. A
+previous automation run ended with a generic Error; its exact cause is unproven.
+A bounded rerun avoided delayed response-body reads across navigation and passed;
+no application changes or broad test reruns were made for that harness issue.
+
+Each of the two sequential synthetic-account sessions was cleaned in a finally
+path. Public user-ID routes are intentionally not proxied, so deletion used the
+internal HTTP API over authorized SSH with the same user's JWT and explicit
+ownership checks, never direct database editing. No synthetic account remains.
+Original users/profiles counts and canonical/byte hashes, plus supplier byte hashes,
+matched before/after. No inventory writes, real mail or external candidate calls.
+
+The final runtime had zero restarts/OOM; Docker healthchecks are not configured.
+These are scoped automated checks, not human manual Swagger acceptance, sustained
+load testing, full live endpoint coverage or proof of email delivery.

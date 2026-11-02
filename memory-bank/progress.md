@@ -1,5 +1,22 @@
 # Project Progress
 
+## Backend serialization audit — deployed and live-verified
+
+- Source/test/docs chain PR32/33/34 merged. Release7a2fc65 was built locally from
+  committed source, transferred with matching image identity and deployed API-only
+  as trackflow-api:serialization-7a2fc65. Image pin persisted; rollback image kept.
+- First apply rolled back after an unidentified assertion. Second named-check run
+  observed reordered but equal environment values and passed all runtime/config/UI
+  preservation guards. Fresh users/supplier file hashes were unchanged.
+- Live HTTPS registration/login/profile, suppliers15, products6 and movements12
+  passed exact response contracts. Real backoffice login and15rendered supplier
+  rows passed in a bounded Playwright rerun with zero browser errors.
+- Both sequential synthetic test accounts were self-deleted through the internal
+  HTTP API with ownership checks; no fixtures remain. Existing users/profiles and
+  supplier hashes/counts unchanged. No inventory writes, real mail or UI changes.
+- Full evidence and limitations are in docs/serialization-audit.md. Human manual
+  Swagger acceptance remains deferred; no sustained-load/mail guarantee is claimed.
+
 ## Backend serialization audit — source delivery chain
 
 - User authorized commit, push, PR, merge, API-only VPS deployment and live checks,
