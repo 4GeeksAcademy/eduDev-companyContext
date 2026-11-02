@@ -400,6 +400,11 @@ merge commit `7a2fc656dc6fb70914dec79c37d89126a96790c3`.
 
 ## VPS deployment and live verification
 
+The [deployed Swagger capture guide](evidence/serialization-audit/README.md)
+indexes the 2026-11-02 automated VPS evidence: three Swagger GET responses (200),
+the public HTTPS supplier table (200, 15 rows), unchanged PNGs and sanitized
+runtime/cleanup metadata. This follow-up is not human manual T8 acceptance.
+
 The API image was built from an archive of that exact merged commit, not the dirty
 worktree. Local production-command smoke passed with isolated storage and no
 network. Transferred image identity matched before deployment:
