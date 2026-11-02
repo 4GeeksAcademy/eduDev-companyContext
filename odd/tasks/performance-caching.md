@@ -56,7 +56,7 @@ Branch created; publishing/merge require separate human authorization. First est
 - T2 | S1,S3,S5 | delegated report unit (context backstop) | done (report and structural checks) | commit `5dbbd311c5cd486851e7195fe72adf4bf8cf0f57`;31endpoint rows,18numeric checks,17links/anchors and whitespace passed; parent readback corrected desktop/mobile overflow scope.
 - T3 | S1–S6 | inline final seam/mobile checks; backend independent high-risk verifier passed | done (scoped functional verification) | evidence recorded in `5dbbd311c5cd486851e7195fe72adf4bf8cf0f57`; parent seam11Python+13Node passed,390px4fixtures passed; wider unchanged real-auth/browser workflows not rerun.
 - T4 | S1,S6 | inline local chain commits and close | done (local delivery only) | tracker `f2e6f14`,API `a631c3e`,UI `c29e88a`,report/profiler `5dbbd31`; final passive tracking record follows; no push/PR/merge authorization.
-- T6 | S1,S6 | native outside-review availability (split from T4) | blocked: post-sync ASSESS still demands an untracked declaration; await explicit API-review request or decision to leave review pending | authorized sync passed and INSPECT ready; no reviewDue/START/lineage/approval; do not bypass by hiding/staging unrelated notes.
+- T6 | S1,S6 | native outside-review disposition and documentation reconciliation (split from T4) | done (requested disposal and documentation reconciliation only) | L23/L24 restored; actual abandonment recorded in L25; structural preservation checks passed; correctly scoped review unperformed/deferred, no automatic new review; commit: the documentation commit introducing L25 (`docs(caching): record authorized review abandonment`).
 
 ## Log
 L1 — Original request:
@@ -188,3 +188,44 @@ L22 — Authorized sync succeeded; assessment scope remains blocked:
 - Switched safely to isolated API child a631c3e and freshly ASSESSed committed-only range from f2e6f14. It still returned unassessable: `untracked files require an explicit declaration`, with no reviewDue/continuation. Security escalation retained prior independent-verifier requirement, already satisfied; no repeat tests or new verifier. Exclusion in INSPECT did not resolve this ASSESS route. Returned to docs/caching-report, preserving source/notes.
 - Do not infer review consent from maintenance approval, fabricate a reviewDue flag, run raw lifecycle commands, hide/stage unrelated notes, or keep retrying. Native INSPECT is ready, so an explicit user request to review the API candidate can use the documented manual-review entry; otherwise native review remains pending. Candidate-specific provider consent still applies after any START.
 - All application implementation, local commits and scoped functional evidence remain valid. Only T6 remains open; no application build/test rerun, push/PR/merge/deploy or further harness changes occurred.
+
+L23 — Native scope incident; repository-file update deferred safely:
+> ok, avanza
+
+- User explicitly requested proceeding with API-only native review through consent. Switched to perf/caching-api@a631c3e; source rangef2e6f14..HEAD confirmed6files/372lines. START with that base/committedOnly and4pertinent lenses returned native-start-retained-selection-candidate-mismatch, mutation_performed:false.
+- Followed returned next_action: fresh INSPECT and exact select-intended-untracked binding with[]. That call returned answer-consent/actioncreated for lineage review-b1100c476a226c92,16files747lines and only reliability, including earlier serialization artifacts. This is NOT the requested API-only candidate.
+- Stopped before materialization/capture. One bound STATUS with exact lineage/workspace confirmed reviewing/collect,747lines; no reviewer model run, capture, verdict or acknowledgement occurred. No automatic ABANDON, RESET or RECOVER. Recommend human-authorized abandonment of this exact wrong-scope review; native will derive its audit binding and request fresh approval.
+- Current checkout remains perf/caching-api@a631c3e to avoid drifting the live authority during disposition. Full implementation stays safely committed at docs/caching-report@1e6ab91. Only2original unrelated untracked notes remain; no application edits/publishing. Defer editing the feature file on the historical API branch. This Engram mirror is ahead of the authoritative feature file on docs/caching-report: reconcile L23 and T6 after disposition/return, preserving the file's full newer history. Do not write the old tracker file on API branch or pretend mirror/file are synchronized.
+
+L24 — Authorized disposition, explicit compaction pause:
+> Autorizo, pero voy a compactar la sesión ahora, guarda un resumen de lo que falta y dame un prompt para continuar con lo que falta luego de compactar.
+
+- User explicitly authorizes abandoning ONLY review-b1100c476a226c92; no abandonment executed during requested handoff. Resume through native ABANDON with freshly derived inventory and human approval of provider's audited binding. Do not reuse historical consent as opaque approval; do not invent actor/required inputs if native requests exact missing values. No source/commit/note deletion.
+- Preserve current API checkout and frozen authority until disposition. Then return to docs/caching-report@1e6ab91 and reconcile file with this full mirror (L23/L24 ahead of fileL22). Update task/report/progress only from actual native outcome; no fresh review automatically while scope-selection defect remains unresolved. Functional evidence and implementation remain complete; no broad tests needed merely for compaction.
+- Next turn must begin mem_context, project/feature mem_search, full observation25247, then actual task file after confirming branch. Observation25293 holds incident,25294 holds authorization. This mirror intentionally remains ahead of repository file until safe reconciliation after pause.
+
+L25 — Authorized abandonment confirmed; documentation reconciliation:
+> Retomá el trabajo de performance-caching en este proyecto.
+>
+>    Primero recuperá el resumen Engram 25296 y el documento completo 25247, tema
+>  odd/performance-caching/tasks. Confirmá la rama antes de editar: actualmente estamos en
+>  perf/caching-api; la implementación completa está en docs/caching-report@1e6ab91.
+>
+>    Ya autoricé abandonar únicamente la revisión review-b1100c476a226c92, creada con alcance
+>  incorrecto. El abandono sigue pendiente: usá el flujo nativo auditado y solicitá su aprobación
+>  cuando corresponda. No uses RESET/RECOVER ni inicies otra revisión automáticamente.
+>
+>    Después del abandono confirmado, volvé a docs/caching-report y reconciliá
+>  odd/tasks/performance-caching.md con su memoria: los registros L23/L24 todavía están solo en Engram.
+>  Actualizá informe, progreso y todo según el resultado real.
+>
+>    El código, las pruebas acotadas y los commits locales están completos. No repitas verificaciones
+>  innecesarias ni el flujo que creó el alcance incorrecto. Conservá las dos notas ajenas sin
+>  seguimiento. No publiques ni mergees como parte de este paso.
+
+- Parent recovered full Engram25247: its log before L23 exactly matched repository L1–L22; header/specs/T1–T5 were unchanged. L23/L24 above are the exact supplied mirror append, retained as history alongside L19–L22; their pending/check-out claims are superseded here.
+- Parent's direct native ABANDON for `review-b1100c476a226c92`, actor `pi`, reason `operator_disposition`, returned status `committed`, mutation_performed `true`, mutation_outcome `committed`, reclaimed_at `2026-11-02T23:42:05.545508278Z`. Discarded work: captured_lens_results `[]`, findings_present `false`. Only `review-state.json` was quarantined under `.git/gentle-ai/review-transactions/quarantine/review-b1100c476a226c92-3072118429`. No reviewers, captures, approval or acknowledgement occurred; disposal is not review approval.
+- Subsequent parent read-only INSPECT with exclusion returned ready/unrelated/not_replayable; offered START was not followed. No RESET/RECOVER or new review. Parent safely returned to `docs/caching-report`; worker independently confirmed HEAD `1e6ab913fb8356f7ab303550efdd0f89d920d423` and only the two original untracked notes before edits, without reading them.
+- T6 moved to in_progress solely for this S1/S6 documentation closure. Correctly scoped native review remains unperformed/deferred under the prohibition on another automatic review; S6 publication/submission remains pending. No new spec, application change, runtime/build/browser rerun or lifecycle operation by this worker. The parent retains the local documentation commit; no publication is authorized.
+- Passive-documentation exception: no meaningful behavioral RED/GREEN. Read-only structural checks passed for six unique task IDs, historical log/spec preservation, L23/L24 headings/quotes, all31 unchanged endpoint rows, unchanged report evidence and unrelated progress history, and exactly three allowed modified paths with both original notes retained. Supplied L23/L24 bodies were also compared during readback. T6 closes only requested disposal/reconciliation, not native review or assignment delivery; parent final readback confirmed the diff matches the observed native outcome. The parent owns synchronization of the full file to Engram and records the observed local commit there.
+- Required post-writer ASSESS remained unassessable: `untracked files require an explicit declaration`. Its plan retained writer self-verification without an independent verifier. No START followed; structural checks and readback stand, with no repeated runtime suites. This is not native review approval.

@@ -19,11 +19,16 @@
   (385 changed lines) form the user-selected feature-branch chain. Report/profiler
   commit `5dbbd31` closes the final `docs/caching-report` child (339 changed lines
   before its small closing tracking record). Only the two original untracked task
-  notes remain outside this work; no source changes are left uncommitted. Native assessment was unavailable; the user-authorized managed-assets sync
-  passed and INSPECT now returns ready, without application changes. A fresh API
-  ASSESS still rejects undeclared untracked scope despite INSPECT exclusion. No
-  review lineage was started or approved. An explicit API-review request or deferral,
-  and push/PR/merge/submission, remain with the user.
+  notes remain outside this work; no source changes are left uncommitted.
+  Authorized abandonment of wrong-scope lineage `review-b1100c476a226c92`
+  committed at `2026-11-02T23:42:05.545508278Z`, quarantining only review state.
+  No reviewers, captures, approval or acknowledgement occurred. Read-only INSPECT
+  returned ready/unrelated/not_replayable; no offered START, RESET/RECOVER or new
+  review followed. Correctly scoped review remains unperformed/deferred; the user
+  prohibited another automatic review. Checkout returned to `docs/caching-report@1e6ab91`;
+  task L23/L24 are reconciled and L25 records the actual outcome. The documentation
+  work unit changes no application behavior; push/PR/merge/submission remain
+  unauthorized and pending.
 
 ## Backend serialization audit — saved evidence published
 
