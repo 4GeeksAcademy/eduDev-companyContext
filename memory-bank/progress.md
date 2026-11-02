@@ -1,5 +1,66 @@
 # Project Progress
 
+## Talent Pipeline deployment — TPD-02 local packaging
+
+- Added independent unchanged-lockfile Tracker install/build to the UI image;
+  public `/talent`, identity `/api` and external candidate URL persist at runtime.
+  Only production starts fourth supervised leaf3003; development stays unchanged.
+  Dockerignore removes only whole-Tracker exclusion, retaining all secret/cache rules.
+- Supervisor/config RED13/21 (eight intended failures), GREEN21/21; routing6/6
+  and shell syntax passed. Synthetic Compose proves only UI image/loopback ports
+  and API public recovery URL change; every owned fake leaf is reaped on stop/failure.
+- Local Docker build passed: `trackflow-ui:talent-044fde0`, linux/amd64,
+  image `sha256:2f396a02c419ac5e8120e999a6a3a5e93c1e94bb1e52b133bac876809eccaaa6`,
+  size2402662191bytes. Tracker Next16.3.1, other apps16.4.3; public prefix confirmed
+  in image ENV. Log `/tmp/trackflow-tpd02-build.log`. No dotenv contents accessed.
+- Existing Node module-type warning, npm glob deprecation/install-script warnings
+  and Next telemetry notice remain; no dependency versions changed.
+- Config/docs prepared only: NO container activation, VPS transfer/apply or data
+  writes. Existing HTTPS remains deployed. Independent512MiB/.75CPU activation,
+  capacity, real auth/mail and TPD-03 rollout remain pending; API recreation later
+  must retain actual image/data and change only approved public recovery base.
+  Parent owns task/review/Git delivery; pre-existing TPD-01 work preserved.
+
+## Talent Pipeline deployment — TPD-01 local preparation
+
+- Optional build-time Tracker basePath preserves bare local usage; `/talent`
+  prefixes the framework-independent logout/401 redirect without retaining queries.
+  Next links/router/components and auth business logic remain unchanged.
+- Backoffice preserves four proxy families and adds only exact `/api/users` and
+  `/api/profiles/me`. Candidate API remains external, separate from identity `/api`.
+- Focused Node RED18/21 (three intended failures), GREEN21/21; targeted auth
+  Jest55/55 and lint passed. Next16.3.1 production build passed using the parent’s
+  dotenv-free public-source/dependency sandbox and explicit clean public settings.
+  Original dotenv files were not read; generated output stayed outside repository.
+- Chromium fixtures passed390/1440: public login/register, registration/login,
+  profile PUT, search query, dynamic detail/edit/cancel, logout, missing-token guard,
+  protected401 and70 prefixed asset responses per viewport. No candidate bearer
+  headers, external API passthrough, real writes or page exceptions. Two harness
+  selector failures were corrected; no app component correction was necessary.
+- Evidence: `/tmp/trackflow-tpd01/{browser-check.mjs,results.json,server.log}`;
+  sandbox `/tmp/trackflow-tpd01-sanitized-j3ox6w3x/` retains public-source hashes,
+  preparation report and generated build. Owned browser/server closed after runs.
+  Existing Node module-type warning and npm upgrade notice are non-blocking.
+- Local source/fixture evidence only: no packaging, VPS, recovery runtime override,
+  mail or live business acceptance. Parent owns task status and Git delivery.
+
+## Corporate favicon — IP-01 local only
+
+- Added one174-byte SVG shared by explicit Next metadata and static HTML links;
+  Next URL `/uis/website/favicon.svg`, repository-static URL
+  `/uis/website/public/favicon.svg`. Content/styles and other UIs/API unchanged.
+- Focused Node RED:14 pass, one missing-asset failure, one HTTP skip. GREEN:15 pass,
+  one HTTP skip; production-host HTTP smoke16/16 including SVG MIME/body equality
+  and unknown-route404. `npm --prefix uis/website run build` passed; existing
+  workspace-root warning remains. Exact commands are in the website README.
+- Existing Playwright/Chromium151 checked local Next3310/static3312 at375×900 and
+  1440×900: SVG decode, content/structure, capabilities anchor, no horizontal
+  overflow and zero console/page/request errors. Static repository-root and
+  folder-root mappings passed. Owned browsers/servers stopped; no API used.
+- Local source only: deployment, Nginx `/favicon.ico` mapping to corporate SVG,
+  TLS/redirects and later Lighthouse remain pending. No Docker/remote changes,
+  dependency changes, commit or production-fix claim. Parent owns task tracking.
+
 ## Frontend Performance Audit — PA-05 measured results
 
 - Both frontends show accessibility+5: corporate desktop/mobile100/91/74/100 →
@@ -1524,3 +1585,57 @@ PY
   is excluded from cleanup delivery. User authorized commit, push and a follow-up
   PR; delivery evidence is recorded in the audit task. GitHub rendering remains
   distinct from the locally verified Git attributes.
+
+## Corporate HTTPS — IP-03 passive evidence follow-up (2026-11-01)
+
+- [Separate HTTPS evidence](../audit/after/HTTPS.md) adds four byte-identical public
+  report artifacts; all twelve original JSON/PNGs and PA-06/IP-01 history preserved.
+  Desktop/mobile each100/96/100/100 versus100/96/74/100, exactly one run each;
+  matching full settings, changed HTTP3000→HTTPS443 origin/transport/time, no causal proof.
+- Independent website16/16,19 external HTTP checks, corporate375/1440 browser and
+  anonymous backoffice checks passed. Trusted IP TLS, favicon/redirects and active
+  twice-daily renewal timer verified; prior renewal dry-run hook passed.
+- UI cutover complete on `trackflow-ui:ip-https-4ca733a`; API/private env/resources/
+  mounts/network and23 service identities preserved, exactly two app containers.
+  One UI recreation/one Nginx reload;3.289s command duration is not outage.
+  Future deployments require the third HTTPS override; old image retained.
+- Authenticated backoffice acceptance PENDING: credential loader requires prohibited
+  `.env` access. Zero login POSTs, business writes or backoffice Lighthouse runs;
+  no full business acceptance. Semantic/name and JS/modern-HTTP/render-blocking
+  findings remain deferred; automated100 is not security certification.
+- Passive documentation/copy/structural checks only, no source/runtime writes or
+  build/test/browser/Lighthouse reruns. Latest observations are not future guarantees.
+
+## Talent Pipeline deployment — TPD-03 operator rollout
+
+- Supersedes the local-only TPD-01/02 deployment status above; prior history is
+  unchanged. Operator checked Tracker `https://162.243.69.7/talent/login` (private
+  entry `/talent`), website `/uis/website/` and backoffice `/uis/backoffice/login.html`
+  on the same HTTPS IP: HTTP200/TLS verify0. Exactly two app containers.
+- One UI and one explicitly approved API recreation plus Nginx validation/reload;
+  no blind repeats or rollback. UI `trackflow-ui:talent-044fde0` uses image
+  `2f396a02c419ac5e8120e999a6a3a5e93c1e94bb1e52b133bac876809eccaaa6`;
+  API identity changed but image remained
+  `af504a8e775ccbab96ae8533b4aaecfe12f8fb0f485a1201027196fce644183e`.
+  Full IDs/evidence and pre-Tracker rollback are in the [Nginx guide](../infra/nginx/README.md#tracker-tpd-03--deployed-operator-snapshot).
+- Resolved API image checked before apply; only public recovery base changed to
+  `https://162.243.69.7/talent`. Other application config/env invariants, mounts,
+  network and private-env/base-Compose/resources hashes matched. No direct user-data
+  or business writes; volume preservation is not DB-byte proof. UI loopback
+  3000/3001/3003, no API host port, public legacy redirects retained. Built UI proxy
+  returned anonymous auth/me, profiles/me, users GET401 and unknown API404 before exposure.
+- Reused TPD-01 Node21/Jest55/lint/secret-free build/fixture browser390–1440 and
+  TPD-02 config-lifecycle21/proxy6/build passes; both four-lens reviews approved
+  and acknowledged. Normal-bridge smoke138.2MiB/151MiB peak passed; internal
+  fixture publication issue did not demonstrate an application defect; its root
+  cause remains unconfirmed. VPS point UI143.2MiB/512, API72.36MiB/256, zero OOM/restarts and
+  unchanged CPU caps: brief observations, not load benchmarks/capacity guarantees.
+- Evidence `/tmp/trackflow-tpd03-8xFtnx/` (baseline.json, after-recreation.json,
+  runtime-guard.py), remote `/var/log/trackflow-tpd03-8xFtnx` nonsecret backups/apply
+  results. Rollback uses pre-Tracker `ip-https-4ca733a` plus original nonsecret
+  override/Nginx, same API image and old public recovery URL; never private env,
+  Compose down or volume removal. Third Compose file remains mandatory.
+- No new Lighthouse; prior corporate HTTPS scores remain pre-Tracker history.
+  Real HTTPS login/registration/profile writes, email delivery and shared candidate
+  CRUD are unverified/not attempted; configuration is not delivery proof. Final
+  independent verification status is owned by the [feature task](../odd/tasks/talent-pipeline-deployment.md).

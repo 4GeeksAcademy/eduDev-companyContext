@@ -46,7 +46,7 @@ export function logout(): void {
   clearToken();
   // Framework-independent client: also usable outside React and during guard failures.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-  if (typeof window !== 'undefined') window.location.assign('/login');
+  if (typeof window !== 'undefined') window.location.assign(`${process.env.NEXT_PUBLIC_TRACKER_BASE_PATH || ''}/login`);
 }
 
 async function request<T>(path: string, options: RequestInit, protectedRequest = false): Promise<T> {

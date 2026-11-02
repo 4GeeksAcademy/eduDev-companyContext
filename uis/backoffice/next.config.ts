@@ -32,6 +32,9 @@ export default {
       for (const family of ['auth', 'suppliers', 'inventory', 'api/incidents']) {
         apiRules.push({ source: `/api/${family}/:path*`, destination: `${origin.origin}/${family}/:path*` });
       }
+      for (const path of ['users', 'profiles/me']) {
+        apiRules.push({ source: `/api/${path}`, destination: `${origin.origin}/${path}` });
+      }
     }
     return [...files.map(file => ({
       source: `/uis/backoffice/${file}`,

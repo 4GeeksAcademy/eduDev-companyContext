@@ -83,6 +83,18 @@ test('contrast calculation handles equal colors and black/white extremes', () =>
   assert.equal(contrast([0, 0, 0], [255, 255, 255]), 21);
 });
 
+test('static and Next explicitly share a small SVG favicon', async () => {
+  const svg = await readFile(new URL('public/favicon.svg', root), 'utf8');
+  assert.match(svg, /<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
+  assert.match(svg, /viewBox="0 0 32 32"/);
+  assert.ok(Buffer.byteLength(svg) < 1024);
+  assert.doesNotMatch(svg, /<script|<foreignObject|href=/i);
+  const html = await readFile(new URL('index.html', root), 'utf8');
+  assert.match(html, /<link rel="icon" type="image\/svg\+xml" href="public\/favicon\.svg"\s*\/>/);
+  const layout = await readFile(new URL('app/layout.jsx', root), 'utf8');
+  assert.match(layout, /icons:\s*\{\s*icon:\s*\{\s*url: '\/uis\/website\/favicon\.svg',\s*type: 'image\/svg\+xml'/);
+});
+
 const websiteURL = process.env.TRACKFLOW_WEBSITE_URL;
 test('Next HTTP response preserves public content, anchors and stylesheet', { skip: !websiteURL }, async () => {
   const url = new URL(websiteURL);
@@ -90,6 +102,15 @@ test('Next HTTP response preserves public content, anchors and stylesheet', { sk
   const response = await fetch(url, { signal: AbortSignal.timeout(60000) });
   assert.equal(response.status, 200);
   const html = await response.text();
+  const icon = html.match(/<link\b[^>]*rel="icon"[^>]*>/);
+  assert.ok(icon, 'Rendered head declares favicon');
+  assert.match(icon[0], /type="image\/svg\+xml"/);
+  const iconHref = icon[0].match(/href="([^"]+)"/)[1];
+  assert.equal(iconHref, '/uis/website/favicon.svg');
+  const favicon = await fetch(new URL(iconHref, url), { signal: AbortSignal.timeout(10000) });
+  assert.equal(favicon.status, 200);
+  assert.match(favicon.headers.get('content-type'), /image\/svg\+xml/);
+  assert.equal(await favicon.text(), await readFile(new URL('public/favicon.svg', root), 'utf8'));
   assert.match(html, /\/uis\/website\/_next\//);
   assert.match(html, /<title>TrackFlow \| Logistics that keeps commerce moving<\/title>/);
   assert.match(html, /content="TrackFlow provides warehouse, delivery, and returns operations for e-commerce brands in the United States and Spain\."/);

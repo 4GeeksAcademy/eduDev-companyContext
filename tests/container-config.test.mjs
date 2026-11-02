@@ -23,7 +23,7 @@ function config(overrides = {}, file = 'docker-compose.yml') {
     .map(key => [key, process.env[key]]));
   Object.assign(env, settings, overrides, { COMPOSE_DISABLE_ENV_FILE: '1' });
   return spawnSync('docker', ['compose', '--env-file', '/dev/null', '--project-name',
-    `trackflow-contract-${process.pid}`, '-f', resolve(file),
+    `trackflow-contract-${process.pid}`, ...[file].flat().flatMap(path => ['-f', resolve(path)]),
     'config', '--format', 'json'], { env, encoding: 'utf8' });
 }
 function rendered() {
@@ -157,6 +157,42 @@ test('UI image defaults to dev and builds sequentially with only public proxy ar
   assert.match(image, /ARG TRACKFLOW_API_ORIGIN=/);
   assert.doesNotMatch(image, /JWT_SECRET_KEY|DATABASE_URL|RESEND/);
   assert.match(image, /CMD \["sh", "\/app\/uis\/start.sh"\]/);
+});
+test('Tracker packaging retains secret/cache exclusions and public build/runtime settings', () => {
+  const image = readFileSync('uis/Dockerfile', 'utf8');
+  assert.match(image, /COPY talent-pipeline-tracker\/package.json talent-pipeline-tracker\/package-lock.json/);
+  assert.match(image, /cd talent-pipeline-tracker && npm ci --include=dev/);
+  assert.match(image, /COPY talent-pipeline-tracker\/ .\/talent-pipeline-tracker\//);
+  assert.match(image, /cd ..\/talent-pipeline-tracker && npm run build/);
+  for (const [key, value] of Object.entries({ NEXT_PUBLIC_TRACKER_BASE_PATH: '/talent', NEXT_PUBLIC_AUTH_API_URL: '/api', NEXT_PUBLIC_API_URL: 'https://playground.4geeks.com/tracker/api/v1' })) {
+    assert.ok(image.includes(`ARG ${key}=${value}`));
+    assert.ok(image.includes(`ENV ${key}=\${${key}}`));
+  }
+  const patterns = readFileSync('uis/.dockerignore', 'utf8').trim().split('\n');
+  assert.ok(!patterns.includes('talent-pipeline-tracker'));
+  for (const name of ['node_modules', '.next', '.env*', '*.log', '.git', 'coverage', '.cache']) {
+    assert.ok(patterns.includes(name));
+    assert.ok(patterns.includes(`**/${name}`));
+  }
+  assert.ok(!patterns.some(pattern => pattern.startsWith('!')));
+});
+test('HTTPS override changes only UI image/loopback ports and API recovery base', () => {
+  const base = config({}, 'docker-compose.production.yml');
+  const result = config({}, ['docker-compose.production.yml', 'infra/nginx/https.override.yml']);
+  assert.equal(base.status, 0, base.stderr);
+  assert.equal(result.status, 0, result.stderr);
+  const expected = JSON.parse(base.stdout);
+  expected.services.ui.image = 'trackflow-ui:talent-044fde0';
+  expected.services.ui.ports.push({ mode: 'ingress', host_ip: '127.0.0.1', target: 3003, published: '3003', protocol: 'tcp' });
+  expected.services.api.environment.FRONTEND_PUBLIC_URL = 'https://162.243.69.7/talent';
+  assert.deepEqual(JSON.parse(result.stdout), expected);
+});
+test('Nginx preserves Tracker prefix for exact and descendant routes', () => {
+  const nginx = readFileSync('infra/nginx/trackflow.conf', 'utf8');
+  for (const location of ['= /talent', '^~ /talent/']) {
+    assert.ok(nginx.includes(`location ${location} {\n        proxy_pass http://127.0.0.1:3003;\n    }`));
+  }
+  assert.doesNotMatch(nginx, /listen[^;]*3003/);
 });
 test('API image uses uv virtualenv, exact source copies and single reload process', () => {
   const image = readFileSync('services/Dockerfile', 'utf8');

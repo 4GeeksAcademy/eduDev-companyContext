@@ -38,10 +38,21 @@ route returns fixed JavaScript selecting `/api` only in mode1, otherwise a harml
 no-op file, preserving defaults and existing manual overrides. The script remains
 outside the legacy rewrite/server allowlist; no upstream URL or secrets reach it.
 
-Only `/api/auth`, `/api/suppliers`, `/api/inventory` and `/api/api/incidents`
-are proxied to their corresponding backend paths. The doubled incident prefix
-preserves existing analyzer/manager clients. No users/profiles or catchall proxy
-is provided. Local mode without opt-in retains hostname/validated apiPort behavior.
+The `/api/auth`, `/api/suppliers`, `/api/inventory` and `/api/api/incidents`
+families are proxied to their corresponding backend paths. The doubled incident
+prefix preserves existing analyzer/manager clients. Exact `/api/users` and
+`/api/profiles/me` paths additionally support Tracker registration and profile
+updates; user-ID routes, other profile routes, unknown and server-private paths
+remain unproxied. There is no catchall proxy or method-based authorization here;
+the backend retains authentication/permissions. Local mode without opt-in retains
+hostname/validated apiPort behavior.
+
+TPD-01 local preparation: Tracker builds with `NEXT_PUBLIC_TRACKER_BASE_PATH=/talent`
+and `NEXT_PUBLIC_AUTH_API_URL=/api`, keeping candidate requests external. A future
+gateway must route `/api` here and `/talent` to Tracker. Focused config/auth checks
+passed21/21; production Tracker fixtures verified browser API paths, not a live
+backoffice upstream. No backoffice rebuild was needed for the exact source-config
+allowlist test. Packaging, gateway and VPS changes are not part of this unit.
 
 Focused Node tests passed27/27 and TypeScript passed. Synthetic Compose/browser
 checks confirmed real login, auth/me, supplier rows, logout and same-origin traffic;

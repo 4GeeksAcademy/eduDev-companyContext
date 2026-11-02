@@ -6,6 +6,9 @@ Performance changed97 → 96 in a single run, not a proven code-caused regressio
 See [final report](../../REPORT.md), [analysis](../../AUDIT.md) and
 [baseline index](../before/README.md).
 
+Separate [IP-03 HTTPS follow-up](HTTPS.md): corporate100/96/100/100 on2026-11-01;
+favicon/HTTP findings below are historical and resolved there. PA-05 evidence stays intact.
+
 ## Evidence index
 
 | Profile | Lighthouse JSON | Visual report capture | Scores P / A / BP / SEO |
@@ -78,8 +81,8 @@ select the intended image tag; the audit did not edit deployment configuration.
 ## Limits
 
 Single runs do not prove causal performance changes, INP or field acceptance.
-Corporate96 is not full accessibility; definition-list/name/favicon/HTTP issues
-remain. Inventory100 is automated accessibility evidence only; loopback best
+Corporate96 is not full accessibility; definition-list/name issues remain.
+Favicon/HTTP findings describe this historical PA-05 snapshot (see HTTPS follow-up above). Inventory100 is automated accessibility evidence only; loopback best
 practices100 is not public HTTPS proof. Meta description, unused/legacy JS and
 render-blocking/network-tree findings remain deferred. Existing source/build/
 browser results are reused; this documentation update reruns no runtime checks.

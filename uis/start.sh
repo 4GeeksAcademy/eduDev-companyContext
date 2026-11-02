@@ -36,6 +36,10 @@ pids="$pids $!"
 pids="$pids $!"
 (cd backoffice && exec node node_modules/next/dist/bin/next "$next_command" --hostname 0.0.0.0 --port 3001) &
 pids="$pids $!"
+if [ "$next_command" = start ]; then
+  (cd talent-pipeline-tracker && exec node node_modules/next/dist/bin/next start --hostname 0.0.0.0 --port 3003) &
+  pids="$pids $!"
+fi
 while :; do
   for pid in $pids; do
     if ! kill -0 "$pid" 2>/dev/null; then

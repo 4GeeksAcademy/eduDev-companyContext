@@ -17,7 +17,7 @@ async function until(check) {
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
 const cases = ['development', 'production'].flatMap(mode =>
-  [null, 0, 1, 2].map(failedChild => ({ mode, failedChild })));
+  (mode === 'production' ? [null, 0, 1, 2, 3] : [null, 0, 1, 2]).map(failedChild => ({ mode, failedChild })));
 for (const { mode, failedChild } of cases) {
   const failure = failedChild !== null;
   test(`${mode}: ` + (failure ? `child ${failedChild} exit stops siblings and exits nonzero` : 'TERM stops and reaps all owned children'), async () => {
@@ -32,7 +32,7 @@ fs.writeFileSync(__filename + '.args', JSON.stringify(process.argv.slice(2)));
 process.on('SIGTERM', () => process.exit(0));
 setInterval(() => {}, 1000);
 `;
-      for (const app of ['website', 'backoffice']) {
+      for (const app of ['website', 'backoffice', 'talent-pipeline-tracker']) {
         const directory = join(root, app, 'node_modules/next/dist/bin');
         await mkdir(directory, { recursive: true });
         await writeFile(join(directory, 'next'), fake);
@@ -42,15 +42,19 @@ setInterval(() => {}, 1000);
       let output = '';
       child.stderr.on('data', chunk => { output += chunk; });
       const exited = new Promise(resolve => child.once('exit', (code, signal) => resolve({ code, signal })));
-      for (const file of ['website/node_modules/next/dist/bin/next', 'backoffice/node_modules/next/dist/bin/next', 'backoffice/legacy-server.mjs']) {
+      const apps = mode === 'production' ? ['website', 'backoffice', 'talent-pipeline-tracker'] : ['website', 'backoffice'];
+      const files = ['website/node_modules/next/dist/bin/next', 'backoffice/node_modules/next/dist/bin/next', 'backoffice/legacy-server.mjs'];
+      if (mode === 'production') files.push('talent-pipeline-tracker/node_modules/next/dist/bin/next');
+      for (const file of files) {
         await until(async () => {
           try { return Number(await readFile(join(root, `${file}.pid`), 'utf8')); } catch { return false; }
         });
         pids.push(Number(await readFile(join(root, `${file}.pid`), 'utf8')));
       }
-      for (const app of ['website', 'backoffice']) {
+      if (mode === 'development') await assert.rejects(readFile(join(root, 'talent-pipeline-tracker/node_modules/next/dist/bin/next.pid')));
+      for (const app of apps) {
         const args = JSON.parse(await readFile(join(root, app, 'node_modules/next/dist/bin/next.args'), 'utf8'));
-        assert.deepEqual(args, [mode === 'production' ? 'start' : 'dev', '--hostname', '0.0.0.0', '--port', app === 'website' ? '3000' : '3001']);
+        assert.deepEqual(args, [mode === 'production' ? 'start' : 'dev', '--hostname', '0.0.0.0', '--port', app === 'website' ? '3000' : app === 'backoffice' ? '3001' : '3003']);
       }
       if (failure) process.kill(pids[failedChild], failedChild === 1 ? 'SIGTERM' : 'SIGKILL');
       else child.kill('SIGTERM');

@@ -69,9 +69,23 @@ retains the chronology. Full-document departure does not prove SPA unmount or se
 cancellation. Broad suites and all-four-route business writes were not repeated.
 This cleanup uses structural checks only, with no new runtime acceptance.
 
-Deferred: corporate definition-list semantics, visible-label/name mismatch, favicon404, public HTTP/no HTTPS redirect (96 is not full accessibility); inventory meta description, unused JavaScript (~27KiB), legacy JavaScript (~14KiB), network dependency tree and render blocking (~260ms). Estimated savings overlap and are not proven gains. Loopback best-practices100 is not public HTTPS proof. No infrastructure/domain/TLS/dependency/API changes were added.
+Deferred in PA-05: corporate definition-list semantics, visible-label/name mismatch, favicon404, public HTTP/no HTTPS redirect (96 is not full accessibility); inventory meta description, unused JavaScript (~27KiB), legacy JavaScript (~14KiB), network dependency tree and render blocking (~260ms). Estimated savings overlap and are not proven gains. Loopback best-practices100 is not public HTTPS proof. No infrastructure/domain/TLS/dependency/API changes were added.
 
 Technical assignment evidence is complete. Verification and commit evidence are tracked in the [task](odd/tasks/frontend-performance-audit.md). The original audit was merged in [PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29). This documentation-only follow-up preserves its measurements and makes no new runtime acceptance claim.
+
+## Separate IP-03 HTTPS follow-up — 2026-11-01
+
+Favicon404 and public HTTP/no-redirect findings above are historical and resolved
+by the deployed follow-up; original PA-05 tables and artifacts are unchanged.
+[Separate HTTPS evidence](audit/after/HTTPS.md) records corporate desktop/mobile
+100/96/100/100 versus100/96/74/100, exactly one run each with matching full settings.
+Transport/origin and time changed; this is not controlled causal or security proof.
+Independent website16/16,19 external HTTP checks and corporate/anonymous backoffice
+browser checks passed. Authenticated backoffice acceptance remains **PENDING**
+because the credential loader requires prohibited `.env` access; zero login POSTs,
+business writes or backoffice Lighthouse runs. Semantic/name and JS/modern-HTTP/
+render-blocking findings remain deferred. This documentation copies existing
+public evidence only; no runtime, browser, build or Lighthouse reruns.
 
 ## Key Learnings
 

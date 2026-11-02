@@ -21,7 +21,8 @@ docker run --rm --init -p 3000:3000 -p 3001:3001 trackflow-ui
 The isolated image passed local Docker startup and shutdown checks, including
 website/login/assets and the inventory validation shell (not authenticated API
 acceptance). Stop the owned container with Ctrl+C. The image installs each app independently
-with `npm ci`; no tracker, backend or root dependencies are copied.
+with `npm ci`, including Tracker's unchanged separate lockfile; no backend or
+root dependencies are copied. Tracker is packaged but not started in development.
 
 | Host | URL |
 | --- | --- |
@@ -33,7 +34,7 @@ with `npm ci`; no tracker, backend or root dependencies are copied.
 asset server on private `127.0.0.1:3002`. `BACKOFFICE_LEGACY_PORT` configures both
 the upstream and rewrites; never set it to either Next port. Any unexpected child
 exit fails the launcher and stops its siblings; termination is forwarded and
-owned children are reaped. The image is for development, not production serving.
+owned children are reaped. Development remains the default mode.
 
 Root Compose binds only `./uis/website` to `/app/uis/website`,
 `./uis/backoffice` to `/app/uis/backoffice` and read-only `./uis/start.sh` to
@@ -58,6 +59,30 @@ node --test uis/backoffice/tests/next-host.test.mjs uis/backoffice/tests/legacy-
 sh -n uis/start.sh
 node --check uis/backoffice/legacy-server.mjs
 ```
+
+## Tracker production packaging and deployed URLs
+
+`TRACKFLOW_UI_MODE=production` builds all three apps sequentially and starts
+Tracker as the fourth supervised leaf on `0.0.0.0:3003`; development still starts
+only website, backoffice and private legacy3002. Docker build args and image ENV
+retain `NEXT_PUBLIC_TRACKER_BASE_PATH=/talent`, `NEXT_PUBLIC_AUTH_API_URL=/api`
+and `NEXT_PUBLIC_API_URL=https://playground.4geeks.com/tracker/api/v1` at build
+and start. Rebuild to change public settings. Dotenv, node_modules, .next, caches,
+logs and Git remain excluded from Docker context; never copy local env files.
+
+Local image `trackflow-ui:talent-044fde0` built successfully (Tracker Next16.3.1,
+website/backoffice16.4.3). Supervisor/config tests passed21/21, routing6/6 and
+shell syntax passed. Local three-frontend normal-bridge smoke passed under the
+existing caps; TPD-03 is deployed with exactly one UI and one API container.
+Operator HTTP200/TLS verify0 checks passed for:
+- Tracker: `https://162.243.69.7/talent/login` (private entry `/talent`).
+- Website: `https://162.243.69.7/uis/website/`.
+- Backoffice: `https://162.243.69.7/uis/backoffice/login.html`.
+
+API recreation retained its image and changed only the public recovery base to
+`https://162.243.69.7/talent`. Real HTTPS authentication/registration/profile
+writes, email delivery and shared candidate CRUD are unverified/not attempted;
+brief readiness is not capacity proof. See [operator evidence and rollback](../infra/nginx/README.md#tracker-tpd-03--deployed-operator-snapshot).
 
 ## Available Interfaces
 
