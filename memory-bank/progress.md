@@ -1,5 +1,13 @@
 # Project Progress
 
+## Backend serialization audit — saved evidence published
+
+- Saved VPS screenshot/report work unit `3bf9fdf` was pushed on
+  `docs/serialization-browser-evidence`; [PR36](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/36)
+  is open toward main. Only intended evidence/docs were included; unrelated
+  untracked task documents remain untouched. This request authorizes no merge
+  or redeployment; prior independent artifact/privacy checks remain the evidence.
+
 ## Backend serialization audit — T10 capture documentation (2026-11-02)
 
 - Indexed existing deployed Swagger GET captures: auth/me200, suppliers200/15,
