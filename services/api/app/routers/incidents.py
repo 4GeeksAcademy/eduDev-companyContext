@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import io
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 
+from services.api.analysis_schemas import AnalysisResponse
 from shared.incident_analysis import (
     EmptyCSVError,
     InvalidHeaderError,
@@ -18,13 +19,13 @@ from shared.incident_analysis import (
 
 
 router = APIRouter(prefix="/api/incidents", tags=["incidents"])
-_last_result: dict[str, Any] | None = None
+_last_result: dict[str, object] | None = None
 
 
-@router.post("/analyze")
+@router.post("/analyze", response_model=AnalysisResponse)
 async def analyze_incidents(
     file: Annotated[UploadFile | None, File()] = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Analyze one uploaded CSV without persisting its source content."""
     if file is None:
         raise HTTPException(status_code=400, detail="A CSV file is required.")
@@ -59,7 +60,12 @@ async def analyze_incidents(
     return summary
 
 
-@router.get("/results/export")
+@router.get(
+    "/results/export",
+    response_model=None,
+    response_class=StreamingResponse,
+    responses={200: {"content": {"text/csv": {"schema": {"type": "string", "format": "binary"}}}}},
+)
 def export_results() -> StreamingResponse:
     """Download the most recent successful aggregate analysis."""
     if _last_result is None:

@@ -18,6 +18,8 @@ from services.api.models import (
     Category,
     Country,
     SupplierCreate,
+    SupplierDeleteResponse,
+    SupplierListResponse,
     SupplierRateUpdate,
     SupplierResponse,
     SupplierStatusUpdate,
@@ -45,7 +47,7 @@ def create_supplier(supplier: SupplierCreate) -> dict[str, object]:
     return {"id": supplier_id, **payload}
 
 
-@router.get("", response_model=list[SupplierResponse])
+@router.get("", response_model=list[SupplierListResponse])
 def read_suppliers(
     country: Country | None = None,
     category: Category | None = None,
@@ -89,7 +91,7 @@ def change_supplier_status(
     return supplier
 
 
-@router.delete("/{supplier_id}")
+@router.delete("/{supplier_id}", response_model=SupplierDeleteResponse)
 def remove_supplier(supplier_id: int) -> dict[str, object]:
     if not delete_supplier(supplier_id):
         raise HTTPException(status_code=404, detail="Supplier not found.")

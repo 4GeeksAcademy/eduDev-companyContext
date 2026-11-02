@@ -10,6 +10,7 @@ from services.api.inventory_database import get_inventory_session
 from services.api.inventory_models import SKU, StockEntry, StockExit
 from services.api.inventory_schemas import (
     ProductCreate, ProductResponse, EntryCreate, ExitCreate, EntryResponse, ExitResponse,
+    HistoryResponse,
 )
 
 router = APIRouter(prefix="/inventory", tags=["inventory"], dependencies=[Depends(get_current_user)])
@@ -106,7 +107,7 @@ def outbound(data: ExitCreate, session: Session = Depends(get_inventory_session)
     return record_movement(session, data, user.id)
 
 
-@router.get("/orders", response_model=list[EntryResponse | ExitResponse])
+@router.get("/orders", response_model=list[HistoryResponse])
 def orders(session: Session = Depends(get_inventory_session)):
     results = []
     for model in (StockEntry, StockExit):

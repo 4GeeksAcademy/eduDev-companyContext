@@ -100,8 +100,10 @@ operational routes. Every active role may use them. There is no ownership filter
 POST accepts only `title`, `description`, `category`, `origin`, `branch`, and
 optional `status` (default `open`). Title/description must be nonblank strings;
 branch is always required. Enums are defined in `packages/shared/incidents.py`.
-The full record contains exactly those six fields plus `id` (generated UUID4),
-`created_at` and `updated_at` (UTC ISO timestamps). Generated fields are forbidden
+The full record uses independent `IncidentResponse` and contains exactly those
+six fields plus `id` (generated UUID4), `created_at` and `updated_at` (UTC ISO
+timestamps), including descriptions in lists. Persisted `Incident` is unchanged.
+Generated fields are forbidden
 in requests. PATCH accepts only `{"status":"in_progress"}`; it preserves every
 other field except `updated_at`. Allowed edges: open to in_progress/discarded,
 and in_progress to resolved/discarded. Self, reverse and terminal edges fail.
@@ -181,6 +183,31 @@ authenticated users**, not user-owned. A failed upload preserves it; a restart
 clears it. Only aggregates are retained/exported, never source rows or customer
 email values. Uploaded source files remain transient. Use one API worker for
 TinyDB and consistent latest-summary behavior; this is not multi-worker storage.
+
+### Serialization contracts (T3)
+
+Every application decorator now declares its output explicitly: **29 JSON schemas**
+and **two intentional non-JSON exceptions**. Full original/final endpoint inventory
+and exact focused test commands are in the [serialization audit](../../docs/serialization-audit.md).
+
+- Supplier lists return only `id`, `name`, `country`, `categories`,
+  `rate_per_shipment`, `currency`, `status`. Detail/create/PATCH additionally retain
+  `service_zone`, `contact_email`, `notes`, `updated_at`. Outputs no longer inherit
+  creation validation; create requests still reject unknown fields and invalid
+  country/currency pairs. DELETE returns explicit `{success, id}`, not 204.
+- Analyzer JSON uses `AnalysisResponse` with integer count maps bounded to legacy
+  CSV keys and nested `SatisfactionResponse`. No source rows are exposed.
+  Satisfaction keeps `closed_incidents`, `scored_incidents`, nullable numeric
+  `average`, and string score keys `1`–`5`; no scored incidents means null.
+- Export remains a streaming `results.csv` attachment with unchanged aggregate
+  content and `section,metric,value` header. It explicitly declares no JSON model
+  and OpenAPI `text/csv` string/binary content. User DELETE likewise explicitly
+  declares no model, retaining empty 204 with no OpenAPI success content.
+- Focused T3 contracts pass 10 tests; relevant regressions pass 61 tests plus
+  50 subtests. Storage, auth and query behavior are unchanged. Final verification
+  passed 423 tests plus 249 subtests; native review and four automated Swagger
+  browser flows passed. **Human manual Swagger evidence remains deferred**;
+  automation is recorded separately in the serialization audit.
 
 ## Public registration
 
@@ -503,10 +530,14 @@ match the SKU row (**400**). Unknown SKU/product is **404**.
 
 Inbound requires nonblank `reference`. Outbound `exit_type` is dispatch/loss:
 dispatch requires nonblank `tracking_number`; loss requires null (or omission).
-Both movement responses contain `id`, `sku_id`, `name`, `sku`, `client_name`,
+Both movement write receipts contain `id`, `sku_id`, `name`, `sku`, `client_name`,
 `category`, `quantity`, `warehouse`, UTC `created_at`, and `user_uuid`.
 `order_type: "inbound"` adds `reference`; `order_type: "outbound"` adds
-`exit_type` and nullable `tracking_number`. History has no generic `product_id`.
+`exit_type` and nullable `tracking_number`. History omits only `sku_id`,
+`client_name`, `category` from those receipts; it preserves `user_uuid` and all
+movement-specific fields. Its `order_type`-discriminated output union prevents
+outbound rows losing their exit fields. History has no generic `product_id`.
+`ProductResponse` is independent of `ProductCreate` and retains all seven fields.
 
 Stock is summed entries minus exits by **sku_id AND warehouse**, never a stored
 column. Outbound locks the SKU with PostgreSQL `SELECT FOR UPDATE` before checking

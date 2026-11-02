@@ -21,8 +21,13 @@ class ProductCreate(Input):
     warehouse: Warehouse
 
 
-class ProductResponse(ProductCreate):
+class ProductResponse(BaseModel):
     id: int
+    name: Text
+    sku: Text
+    client_name: Text
+    category: Literal["fashion", "electronics", "cosmetics"]
+    warehouse: Warehouse
     current_stock: int
 
 
@@ -47,13 +52,10 @@ class ExitCreate(MovementCreate):
         return self
 
 
-class MovementResponse(BaseModel):
+class MovementListResponse(BaseModel):
     id: str
-    sku_id: int
     name: str
     sku: str
-    client_name: str
-    category: str
     warehouse: Warehouse
     quantity: int
     created_at: datetime
@@ -64,6 +66,26 @@ class MovementResponse(BaseModel):
     def utc_date(cls, value):
         # SQLite test storage drops timezone information; production uses timestamptz.
         return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+
+
+class MovementResponse(MovementListResponse):
+    sku_id: int
+    client_name: str
+    category: str
+
+
+class EntryListResponse(MovementListResponse):
+    order_type: Literal["inbound"]
+    reference: str
+
+
+class ExitListResponse(MovementListResponse):
+    order_type: Literal["outbound"]
+    exit_type: Literal["dispatch", "loss"]
+    tracking_number: str | None
+
+
+HistoryResponse = Annotated[EntryListResponse | ExitListResponse, Field(discriminator="order_type")]
 
 
 class EntryResponse(MovementResponse):
