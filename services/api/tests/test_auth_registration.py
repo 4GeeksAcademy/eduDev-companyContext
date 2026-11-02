@@ -38,6 +38,7 @@ class RegistrationTest(unittest.TestCase):
         response = self.register(name="Person", phone="123", address="Zaragoza")
         self.assertEqual(response.status_code, 201)
         result = response.json()
+        self.assertEqual(set(result), {"id", "is_active", "role", "created_at"})
         self.assertEqual(result["role"], "user")
         self.assertTrue(result["is_active"])
         UUID(result["id"])

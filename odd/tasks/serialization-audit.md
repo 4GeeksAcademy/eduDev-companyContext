@@ -1,0 +1,43 @@
+# Backend Serialization Audit
+
+## Objective and authority
+Implement the 4Geeks backend serialization assignment using existing FastAPI/Pydantic and storage. User approved services/api changes, focused tests and audit/progress documentation; no UI, dependency, infrastructure or data changes. User now explicitly authorizes commit, push, PR creation, merge, existing VPS deployment and live agent-run tests. Exact remote destination/session and safe deployment scope must be established before remote operations. Preserve unrelated services, storage and configuration.
+
+## Baseline
+- Source: https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-serialization/README.md (read in full).
+- Branch: feature/serialization-audit, created from feat/talent-pipeline-deployment without changing its history.
+- Static inventory: 31 application routes; 24 explicit response_model, 7 missing. Framework docs/OpenAPI excluded.
+- Registration exposes email; /auth/me may retain caller email. CSV and empty 204 must retain their wire formats with explicit non-JSON declarations and documented exceptions.
+- Preserve existing consumers; do not drop incident descriptions or other actually consumed fields. No speculative abstractions, new technologies, pagination or feature additions.
+- Preserve preexisting untracked odd/tasks/auth-frontend.md and odd/tasks/centralized-incident-manager.md.
+
+## Tasks
+- [x] T1 (done): Write the original 31-endpoint audit, field/consumer/relationship decisions and exact implementation/test scope. Check completeness structurally; no functional tests for passive documentation.
+- [x] T2 (done): Correct authentication/registration response contracts with separate inputs and focused regression tests. Observe RED then GREEN where meaningful; document changed expectations.
+- [x] T3 (done): Complete remaining response contracts and payload projections with focused regression tests, preserving CSV/204 and storage. Avoid arbitrary removal of consumed fields.
+- [x] T4 (done): Complete automated final regression, native review, Playwright Swagger verification and evidence documentation. Human-only acceptance is separately deferred under T8, never claimed.
+- [ ] T5 (in_progress): Confirm clean delivery scope/base and authorized remote destination; commit intended feature files, push, create PR, pass required checks and merge.
+- [ ] T6 (pending): Build/transfer the reviewed API image and deploy only the intended VPS service with rollback and storage/config preservation.
+- [ ] T7 (pending): Verify live deployed serialization and affected consumer compatibility using scoped safe checks; record cleanup and actual release identity.
+- [ ] T8 (pending, human-deferred): Record at least three actual human manual Swagger observations if required for literal bootcamp acceptance; not silently replaced by Playwright and not a blocker to user-authorized delivery.
+
+## Acceptance
+All 31 routes documented with original/current state, purpose, response behavior, target fields, changes and relationships. Explicit JSON response models and separate write inputs; deliberate CSV/204 exceptions. No password/hash/reset/internal-token leaks or email in unauthenticated auth responses. Consumer-compatible minimal lists. Existing applicable tests pass after justified contract updates. At least three manual /docs checks must be recorded before claiming assignment completion.
+
+## Verification and delivery
+Delivery strategy: user selected stacked-to-main. Preserve complete original commit0d85e9cefbe3bcdcfc23cd5fa04bda8bd8ab52b6. Three sequential PRs: auth+tests+matching API docs, operations+tests+matching API docs, full audit/progress evidence. One honest split leaves operations and documentation above advisory400lines; retain coherent tests and31endpoint inventory rather than artificial splits. No destination size/issue/label/template workflow found.
+Focused checks during T2/T3 only; relevant full backend tests at T4 if needed, no unrelated frontend builds. Use installed environment, synthetic secrets, disposable stores and no real DB/mail or root .env. Follow TESTING.md and services/api/README.md. Native review respects candidate consent. Commit/push/PR/merge/VPS deployment are now explicitly authorized; Original implementation commit:0d85e9cefbe3bcdcfc23cd5fa04bda8bd8ab52b6 (preserved local reference); chain commit identities recorded as produced. Reuse passing tests unless source changes; final live checks must be scoped and avoid real user data modification.
+
+## Evidence
+- Delivery preflight: origin/main cab4c7be4f051c88d1c7f35467d36c9dbd2ddf1b includes PR31; no unrelated ancestor diff. Independent precommit inspected21intended files,excluded2unrelated taskdocs; whitespace clean and inventory history spotcheck1pass(2knownwarnings). Live VPSpreflight matched existing API/UI and private deployment.env; all3Compose files required. Sanitized baseline /tmp/trackflow-serialization-preflight-vxfxr55z; preserve service/config/storage baseline, update only API image selection and retain old image for rollback.
+- T4 automated Swagger Playwright verification mvyo3wt0-9-klfh passed four rendered-control flows: registration201,login200,Authorize/me200,suppliers200(15rows), exact response allowlists. Playwright1.62.1/Chromium151.0.7922.34; successful4.83s,zero browser errors. Five earlier harness/input attempts failed; no app defect/fix. All owned six APIs/browsers/temp stores cleaned,8011 untouched, repo hashes/status unchanged. No installs or VPS access. Human manual execution remains pending.
+- T4 native final review review-4def64cd314979ea: four lenses approved; acknowledgement completed with authority=burned for target sha256:43f25f635c03edf41c8b6284babee5c9f4e0accbafe8def7890abfd034b1835b. Independent full isolated Python suite mvynu73c-8-22tk passed:423tests,249subtests,2knownwarnings,92.17s,exit0,no failures/skips. Explicit dot collected shared/ beyond configured testpaths. Manual Swagger remains pending.
+- T3 writer implemented29JSON schemas plus2explicit non-JSON declarations across31routes. RED7failed/1passed, GREEN8passed, expanded contract suite10passed; targeted operational regressions61passed+50subtests. Parent inspected inventory/CSV diffs and reran clean git diff --check. Existing warnings only. Final independent integrated verification and native review subsequently passed in T4.
+- T2 writer: registration email removed at HTTP boundary; MessageResponse on three password endpoints; explicit None/Response DELETE204. RED:6failed/2passed; GREEN:8new tests passed twice; focused existing auth regression:52passed +52subtests. All checks used isolated stores/synthetic configuration. Existing AnyIO/Starlette-httpx deprecation warnings remain.
+- Native auth review review-6f8f75708492eb6d: four lenses approved; exact acknowledgement returned authority=burned for target sha256:2ff20ebd990af7f99dec5013d9a28bbbf238cffec7bdb33d23fbd76408318984. No commit/publishing. Subsequent ASSESS was unassessable (untracked declaration), requiring separate verifier; independent eight-test auth verification passed (8 passed,2 deprecation warnings,2.57s) with unchanged status and clean diff check. Parent inspected source diff and test isolation, reran clean git diff --check.
+- T1 writer produced a 237-line original audit and progress entry; reported AST equality for all31 routes and clean whitespace. Parent read the inventory/targets and reran git diff --check successfully. Independent documentation-only verification passed31-route coverage but requested two corrections: preserve the five-field admin user-list contract without runtime reduction evidence, and map classifications explicitly to the three assignment categories. Corrections completed: parent confirmed explicit rubric mapping and retained five-field directory row; corrected writer reconciled all31 routes and parent git diff --check passed. No functional tests run. Native ASSESS was unassessable due to undeclared untracked files; no review authority created.
+- Parent AST route inventory succeeded using python3; initial python executable was unavailable. No tests run yet.
+- Starting git status contained only the two unrelated untracked task documents listed above.
+
+## Next step
+Read-only scout maps current Git ancestry, destination policy and documented VPS operator procedure. Resolve remote target/session or genuine scope blockers before publishing. Then deliver T5–T7; T8 remains transparently deferred, not claimed as human execution.

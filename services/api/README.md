@@ -191,8 +191,10 @@ TinyDB and consistent latest-summary behavior; this is not multi-worker storage.
 {"email": "person@example.test", "password": "choose-a-private-password", "name": "Person"}
 ```
 
-A successful request returns **201** with `id`, normalized `email`, `is_active`,
-`role`, and `created_at`. It never returns the password or hash. Registration
+A successful request returns **201** through `RegistrationResponse` with exactly
+`id`, `is_active`, `role`, and `created_at`. It never returns email, passwords,
+hashes or reset tokens/state. Email is still normalized and persisted internally;
+the authenticated owner can read it through `/auth/me`. Registration
 always assigns role `user`, active status and a UTC timestamp server-side. All
 unknown fields (including `role`, `is_active`, and IDs) return **422**. Passwords
 must contain 1–72 UTF-8 bytes; oversized multibyte input is rejected, not truncated.
@@ -219,7 +221,7 @@ No JWT secret or `.env` file is required for registration; `.env` files are igno
 
 | Route | Permission | Success |
 | --- | --- | --- |
-| `POST /users` | Public, always creates an ordinary user | 201 safe identity |
+| `POST /users` | Public, always creates an ordinary user | 201 email-free registration metadata |
 | `GET /users` | Admin only (directory policy) | 200 safe identity list |
 | `GET /users/{id}` | Self or admin | 200 safe identity |
 | `PUT /users/{id}` | Self or admin; only admin may supply `role` | 200 safe identity |
@@ -266,7 +268,9 @@ This is an operator procedure, not startup code: do not commit account data,
 print hashes, or run it against an unverified database. Restart the single API
 worker afterward. These trusted services do not perform HTTP authorization;
 routers enforce permissions. Services return full internal `User` objects;
-HTTP routes filter through `UserResponse`.
+HTTP registration filters through `RegistrationResponse`; authenticated directory,
+detail and update filter through the unchanged five-field `UserResponse`
+(`id`, `email`, `is_active`, `role`, `created_at`).
 
 ## Login and current user
 
@@ -309,6 +313,10 @@ not claimed as manually exercised.
 ## Password recovery (PR-1)
 
 Public `POST /auth/forgot-password` accepts JSON `{ "email": "person@example.test" }`.
+All three password actions use the explicit shared `MessageResponse` containing
+only `message`, never email or tokens. Forgot success is exactly
+`If the account exists, a password reset link will be sent.`; reset success is
+`Password reset successfully.`; change success is documented below.
 Registered and unknown accounts receive the same **200** message; provider/config
 failures also receive that message. No token is returned. Invalid input returns
 credential-free **422**. Delivery is a bounded (10-second timeout) HTTPS call to

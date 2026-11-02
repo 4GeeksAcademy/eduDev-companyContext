@@ -16,7 +16,7 @@ from services.api.auth_database import (
 from services.api.auth_dependencies import SensitiveInputRoute, get_current_user, unauthorized
 from services.api.auth_models import (
     ChangePasswordInput, CurrentUserResponse, ForgotPasswordInput, ResetPasswordInput,
-    TokenResponse, User, normalize_email,
+    MessageResponse, TokenResponse, User, normalize_email,
 )
 
 
@@ -41,7 +41,7 @@ def login(
     return TokenResponse(access_token=create_access_token(user.id))
 
 
-@router.post("/forgot-password")
+@router.post("/forgot-password", response_model=MessageResponse)
 def forgot_password(data: ForgotPasswordInput):
     # Provider/configuration failures deliberately share the unknown-account result.
     try:
@@ -56,7 +56,7 @@ def forgot_password(data: ForgotPasswordInput):
     return {"message": "If the account exists, a password reset link will be sent."}
 
 
-@router.post("/reset-password")
+@router.post("/reset-password", response_model=MessageResponse)
 def reset_password(data: ResetPasswordInput):
     try:
         claims = decode_reset_token(data.token.get_secret_value())
@@ -71,7 +71,7 @@ def reset_password(data: ResetPasswordInput):
     return {"message": "Password reset successfully."}
 
 
-@router.post("/change-password")
+@router.post("/change-password", response_model=MessageResponse)
 def change_own_password(data: ChangePasswordInput, user: Annotated[User, Depends(get_current_user)]):
     try:
         changed = change_password(
