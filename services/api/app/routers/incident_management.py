@@ -1,7 +1,7 @@
 """Authenticated manager routes with local, value-free error responses."""
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
@@ -12,9 +12,11 @@ from packages.shared.incidents import (
     IncidentStatus, IncidentCategory, IncidentOrigin, IncidentBranch,
     InvalidStatusTransitionError,
 )
+from services.api.auth_dependencies import get_current_user
+from services.api.auth_models import User
 from services.api.incident_models import IncidentResponse, IncidentCreate, IncidentStatusUpdate
 from services.api.incident_store import (
-    create_incident, list_incidents, get_incident, update_incident_status,
+    create_incident, list_incidents, get_incident, update_incident_status, cached_incident_read,
 )
 
 
@@ -79,14 +81,12 @@ def register_incident(payload: IncidentCreate):
     return create_incident(payload)
 
 
-@router.get("", response_model=list[IncidentResponse])
 def find_incidents(filters: Annotated[IncidentFilters, Query()]):
     selected = filters.model_dump(exclude_none=True)
     return [record for record in list_incidents()
             if all(getattr(record, key) == value for key, value in selected.items())]
 
 
-@router.get("/summary", response_model=IncidentSummary)
 def summarize_incidents():
     records = list_incidents()
     summary = {"total": len(records)}
@@ -97,6 +97,23 @@ def summarize_incidents():
             counts[getattr(record, field)] += 1
         summary["by_" + field] = counts
     return summary
+
+
+@router.get("", response_model=list[IncidentResponse],
+            name="find_incidents")
+def cached_find_incidents(filters: Annotated[IncidentFilters, Query()],
+                          user: Annotated[User, Depends(get_current_user)]):
+    selected = tuple(sorted(filters.model_dump(mode="json", exclude_none=True).items()))
+    return cached_incident_read(user.id, "list", selected, lambda: [
+        IncidentResponse.model_validate(record.model_dump()) for record in find_incidents(filters)
+    ])
+
+
+@router.get("/summary", response_model=IncidentSummary,
+            name="summarize_incidents")
+def cached_summarize_incidents(user: Annotated[User, Depends(get_current_user)]):
+    return cached_incident_read(user.id, "summary", (), lambda:
+                               IncidentSummary.model_validate(summarize_incidents()))
 
 
 @router.get("/{incident_id}", response_model=IncidentResponse)
