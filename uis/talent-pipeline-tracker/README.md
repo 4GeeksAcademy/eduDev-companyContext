@@ -29,6 +29,8 @@ Internal frontend for the TrackFlow People & Talent team to manage the Zaragoza 
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_PUBLIC_API_URL` | Public base URL for direct browser requests to the candidate tracker API. |
+| `NEXT_PUBLIC_AUTH_API_URL` | Separate identity API base; default `http://localhost:8000`, deployment `/api`. |
+| `NEXT_PUBLIC_TRACKER_BASE_PATH` | Build-time Next prefix; default empty for local usage, deployment `/talent`. |
 
 The candidate example points to `https://playground.4geeks.com/tracker/api/v1`.
 `NEXT_PUBLIC_AUTH_API_URL` separately configures the identity API (default
@@ -57,6 +59,50 @@ fields with null, and displays the returned profile. Loading failures offer retr
 save failures preserve edits. Pending saves disable editing and duplicate submits;
 unmount aborts requests and ignores stale completions. This is a client-side access
 gate, not authorization for the separate external candidate API.
+
+## Prefix-safe deployment (TPD-01–03)
+
+Build with `NEXT_PUBLIC_TRACKER_BASE_PATH=/talent` and
+`NEXT_PUBLIC_AUTH_API_URL=/api`; keep the candidate URL external. Rebuild when
+changing public settings. Next Link/router destinations remain app-relative;
+only the raw logout/protected-401 redirect explicitly adds the prefix and still
+removes queries. `agentRules: false` prevents generated agent instructions.
+The deployment gateway must route `/talent` to Tracker and `/api` to the existing
+backoffice proxy: Tracker does not serve `/talent/api` or implement an API proxy.
+Backoffice opt-in routing adds only exact `/api/users` and `/api/profiles/me`
+alongside its existing families. Proxy routing does not authorize requests.
+
+Local evidence: focused Node21/21, targeted auth Jest55/55, lint and Next16.3.1
+production build passed. To avoid automatic loading of local dotenv files, the
+production check used a parent-prepared public-source/dependency copy with no
+dotenv files and a clean environment; generated files stayed in that sandbox.
+Chromium fixtures passed at390/1440: login/registration, profile update routing,
+search query, dynamic detail/edit/cancel navigation, logout, missing-token guard,
+protected401 and prefixed Next assets. Candidate GETs carried no identity JWT;
+all identity/candidate responses were synthetic with external passthrough blocked.
+No framework component rewrites were needed. Two initial helper selector failures
+were corrected without application changes; final browser checks passed with no
+page exceptions. This is not live API, business acceptance, mail or deployment
+proof. TPD-02 now packages Tracker locally in `trackflow-ui:talent-044fde0`
+using unchanged lockfile dependencies and a successful Next16.3.1 production
+build. Shared-image production starts Tracker on3003 with `/talent` retained in
+both build and runtime environment; shared development does not start it.
+Standalone `npm run dev` above remains available with the default bare prefix.
+All local dotenv files remain excluded from Docker context. The checked-in
+Nginx/Compose changes are now deployed: loopback3003, prefix-preserving `/talent`
+routing and the sole API override `FRONTEND_PUBLIC_URL=https://162.243.69.7/talent`.
+
+### Deployed URL and acceptance boundary
+
+Open `https://162.243.69.7/talent/login`; `/talent` is the private entry.
+Operator checks observed HTTP200/TLS verify0 for Tracker login and the existing
+website/backoffice login. Local normal-bridge three-frontend smoke passed under
+existing caps; TPD-01/02 four-lens native reviews were approved and acknowledged.
+The API was explicitly recreated with its same image, not its same container ID.
+Real HTTPS login/registration/profile writes, email delivery and shared candidate
+CRUD remain unverified/not attempted. Correct recovery configuration is not mail
+proof; local fixtures and brief resource observations are not live business or
+capacity acceptance. See [deployment evidence and rollback](../../infra/nginx/README.md#tracker-tpd-03--deployed-operator-snapshot).
 
 ## Password recovery and change
 

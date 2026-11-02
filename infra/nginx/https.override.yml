@@ -1,6 +1,10 @@
 services:
   ui:
-    image: trackflow-ui:ip-https-4ca733a
+    image: trackflow-ui:talent-044fde0
     ports: !override
       - "127.0.0.1:3000:3000"
       - "127.0.0.1:3001:3001"
+      - "127.0.0.1:3003:3003"
+  api:
+    environment:
+      FRONTEND_PUBLIC_URL: https://162.243.69.7/talent

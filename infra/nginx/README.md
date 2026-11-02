@@ -1,4 +1,6 @@
-# TrackFlow public-IP HTTPS: completed cutover
+# TrackFlow public-IP HTTPS and Tracker deployment
+
+## Historical HTTPS cutover snapshot (before Tracker)
 
 **HTTPS bootstrap and UI cutover complete; independently checked2026-11-01.** Ubuntu22.04, `162.243.69.7`:
 Nginx `1.18.0-6ubuntu14.22`, Snap Certbot `5.9.0`. Staging/production issuance,
@@ -8,13 +10,55 @@ scheduled04:18/14:26UTC. Evidence: VPS `/var/log/trackflow-ip02-GDJuisrA/`,
 local `/tmp/trackflow-ip02-bootstrap-GDJuisrA/`. Steps2–3 record completed bootstrap;
 do not repeat issuance/dry-run for cutover. Exactly two application containers;
 no API recreation, domain, HSTS/CSP, auth or cache-policy work.
-Current UI: `d0175efd667613e4796ca584a2daf0b0b4c0387ad2a74695f70b89114c466509`,
+UI at that cutover: `d0175efd667613e4796ca584a2daf0b0b4c0387ad2a74695f70b89114c466509`,
 tag `trackflow-ui:ip-https-4ca733a`; API identity below is unchanged.
 Independent website16/16,19 external HTTP checks and corporate375/1440 plus
 anonymous backoffice browser checks passed. [Public HTTPS evidence](../../audit/after/HTTPS.md)
 records scores and limits; authenticated backoffice acceptance remains **PENDING**.
 Future deployment must retain the third `-f https.override.yml` after production
 and resources files (full paths in step5); private environment stays unchanged.
+
+## Tracker TPD-03 — deployed operator snapshot
+
+Operator checks returned HTTP200/TLS verify0 for
+`https://162.243.69.7/talent/login` (private entry `/talent`),
+`https://162.243.69.7/uis/website/` and
+`https://162.243.69.7/uis/backoffice/login.html`. Exactly two app containers:
+- UI `ad71eb932d4d2d6d978d53ad4fe2d03f526312db6d60b9fc8e98848943825a96`,
+  tag `trackflow-ui:talent-044fde0`, image
+  `sha256:2f396a02c419ac5e8120e999a6a3a5e93c1e94bb1e52b133bac876809eccaaa6`.
+- API `6ffa361b575408787ab4948024c64ad11804c4c783f3c994e577988bedd96545`,
+  unchanged image `sha256:af504a8e775ccbab96ae8533b4aaecfe12f8fb0f485a1201027196fce644183e`.
+
+Resolved API image was checked before apply. One approved UI and one API
+recreation changed both identities; Nginx validation/reload passed, with no blind
+repeat or rollback. Only API `FRONTEND_PUBLIC_URL` changed, through the nonsecret
+HTTPS override, to `https://162.243.69.7/talent`. Other application config/env
+invariants, mounts/network and private-env/base-Compose/resources hashes matched.
+No direct user-data/business writes; preserved volumes are not DB-byte proof.
+UI publications are loopback3000/3001/3003, API has no host port, and public legacy
+redirects remain. Before Nginx exposure, the built UI proxy returned anonymous
+GET401 for `/api/auth/me`, `/api/profiles/me`, `/api/users`, and unknown API404.
+
+Local build/config-lifecycle21/21/proxy6/6 passed. Normal-bridge three-frontend
+smoke observed138.2MiB/151MiB peak; the earlier internal-fixture publication issue
+did not demonstrate an application defect; its root cause was not investigated further.
+Operator VPS point: UI143.2MiB/512MiB, API72.36MiB/256MiB, zero OOM/restarts,
+unchanged .75/.25CPU caps. Brief observations are not load/capacity guarantees.
+Evidence: `/tmp/trackflow-tpd03-8xFtnx/{baseline.json,after-recreation.json,runtime-guard.py}`;
+remote `/var/log/trackflow-tpd03-8xFtnx` holds nonsecret config backups and
+UI/API/Nginx apply results. Final verification status belongs to the
+[feature task](../../odd/tasks/talent-pipeline-deployment.md).
+
+Rollback source is **pre-Tracker** `trackflow-ui:ip-https-4ca733a`, not PA-05.
+Restore only the original nonsecret `https.override.yml` and installed Nginx
+site; recreate UI/API only as needed with the same API image and old public
+recovery URL `http://162.243.69.7:3000`, then validate/reload and recheck routes.
+Never restore private env, use Compose down or remove volumes. Future deployment
+must retain the third Compose file. Real HTTPS login/registration/profile writes,
+email delivery and shared candidate CRUD remain unverified/not attempted;
+correct recovery configuration is not delivery proof. No new Lighthouse run:
+the corporate HTTPS scores above are historical pre-Tracker evidence.
 
 ## HISTORICAL FIRST ROLLOUT — steps1–6
 
@@ -195,7 +239,7 @@ This fourth file explicitly overrides the HTTPS pin/ports, not a stale env tag.
 Never `down`, recreate API, remove volumes or alter deployment.env. Recheck old UI
 readiness/API invariants; TLS80/443 may remain.
 
-## Observed completion — 2026-11-01
+## Historical HTTPS completion — 2026-11-01
 
 One UI recreation/one Nginx cutover reload completed; old image retained, no rollback.
 Apply3.289s is command duration, not measured outage. Two application containers,
@@ -205,4 +249,4 @@ favicon and anonymous routing passed. No API/data writes. Prior renewal dry-run
 hook verification and active twice-daily timer remain the renewal evidence.
 Authenticated backoffice remains pending (credential loader requires prohibited
 `.env` access): zero login POSTs/business writes/backoffice Lighthouse runs.
-This is bounded latest verification, not complete business acceptance or a future guarantee.
+This is bounded pre-Tracker verification, not complete business acceptance or a future guarantee.
