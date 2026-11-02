@@ -1,5 +1,27 @@
 # Project Progress
 
+## Performance caching — local implementation verified; delivery pending
+
+- [Caching report](../CACHING_REPORT.md) retains all 31 endpoint assessments,
+  two user/filter-scoped 30-second incident caches, synthetic measurements and
+  the independently verified partial-write invalidation correction.
+- Separate lazy history/form boundaries now defer small chunks until session
+  validation; existing option elements are memoized on `[products]`. Larger
+  synthetic fixtures reduced script CPU, not meaningful frame latency. Builds,
+  TypeScript and focused checks passed; final seam passed 11 Python + 13 Node.
+  Four fixtures at 1440×900 and 390×900 preserved outputs and pre-auth isolation.
+- Existing browser tools were reused under explicit sandbox-disabled permission
+  for local fixtures only; [TESTING.md](../TESTING.md#existing-local-browser-tools--reuse-before-installing)
+  retains paths/security limits. No real-auth/production/global UI acceptance or
+  wider unchanged browser sweep is claimed. This passive update reran no runtime
+  checks. [Task L16–L17](../odd/tasks/performance-caching.md#log) records evidence;
+  Local tracker `f2e6f14`, API `a631c3e` (372 changed lines) and UI `c29e88a`
+  (385 changed lines) form the user-selected feature-branch chain; the report and
+  profiling helper close its final child. Native assessment was unavailable, and
+  one authority inspection stopped at `managed_assets_outdated`; no review lineage
+  was started or approved and no harness update was run. That maintenance decision
+  and push/PR/merge/submission remain with the user.
+
 ## Backend serialization audit — saved evidence published
 
 - Saved VPS screenshot/report work unit `3bf9fdf` was pushed on
