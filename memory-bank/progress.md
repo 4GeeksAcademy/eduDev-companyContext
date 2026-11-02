@@ -1,5 +1,26 @@
 # Project Progress
 
+## Backend serialization audit — saved evidence published
+
+- Saved VPS screenshot/report work unit `3bf9fdf` was pushed on
+  `docs/serialization-browser-evidence`; [PR36](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/36)
+  is open toward main. Only intended evidence/docs were included; unrelated
+  untracked task documents remain untouched. This request authorizes no merge
+  or redeployment; prior independent artifact/privacy checks remain the evidence.
+
+## Backend serialization audit — T10 capture documentation (2026-11-02)
+
+- Indexed existing deployed Swagger GET captures: auth/me200, suppliers200/15,
+  products200/6; public HTTPS supplier table200/15, zero recorded browser errors.
+  [Evidence guide](../docs/evidence/serialization-audit/README.md) links unchanged
+  PNGs and sanitized release/browser/hash/cleanup metadata.
+- Parent-owned cleanup passed: synthetic account deleted204, old token401,
+  original records/supplier hashes preserved; browser/tunnel closed and private
+  credentials removed. Initial locator failure preceded capture; corrected run
+  succeeded without application changes.
+- Documentation only; no remote/browser/test-suite rerun or Git delivery.
+  Automated evidence does not complete deferred human manual Swagger T8.
+
 ## Backend serialization audit — deployed and live-verified
 
 - Source/test/docs chain PR32/33/34 merged. Release7a2fc65 was built locally from

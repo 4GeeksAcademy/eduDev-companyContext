@@ -1,0 +1,111 @@
+{
+  "captured_at_utc": "2026-11-02T13:40:56.904Z",
+  "method": "automated Playwright through rendered Swagger controls",
+  "public_origin": "https://162.243.69.7",
+  "swagger_transport": "Owned loopback SSH forward to the actual deployed VPS API; no local API instance",
+  "api_release": "7a2fc656dc6fb70914dec79c37d89126a96790c3",
+  "image_id": "sha256:1747959ceeb82c206b63c44c4b9ba2ad6c86d75289cca6c706be6a62f34553f0",
+  "playwright": "1.62.1",
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200,
+      "fields": [
+        "id",
+        "email",
+        "is_active",
+        "role",
+        "created_at",
+        "profile"
+      ],
+      "count": 1,
+      "transport": "deployed Swagger via SSH forward"
+    },
+    {
+      "method": "GET",
+      "path": "/suppliers",
+      "status": 200,
+      "fields": [
+        "id",
+        "name",
+        "country",
+        "categories",
+        "rate_per_shipment",
+        "currency",
+        "status"
+      ],
+      "count": 15,
+      "transport": "deployed Swagger via SSH forward"
+    },
+    {
+      "method": "GET",
+      "path": "/inventory/products",
+      "status": 200,
+      "fields": [
+        "id",
+        "name",
+        "sku",
+        "client_name",
+        "category",
+        "warehouse",
+        "current_stock"
+      ],
+      "count": 6,
+      "transport": "deployed Swagger via SSH forward"
+    },
+    {
+      "method": "browser",
+      "path": "/uis/backoffice/suppliers.html",
+      "status": 200,
+      "visible_rows": 15,
+      "names_match_api": true,
+      "transport": "public HTTPS"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-current-user.png",
+      "sha256": "5e022cf65f3989a3c8736f7cf45f7ede9476999562acd17d1f75377ca55c3712",
+      "area": "Live Server response table only; request curl and authorization controls excluded"
+    },
+    {
+      "file": "02-suppliers.png",
+      "sha256": "05f53ea53ff4618ebb5b8a54c8362163c08edd4dacd164cea70b374068569b25",
+      "area": "Live Server response table only; request curl and authorization controls excluded"
+    },
+    {
+      "file": "03-inventory-products.png",
+      "sha256": "95be7cf5d3fa6f7050e2da12a68aaa1f2253d42f6f6ca92cdbcc5133ef5ca13c",
+      "area": "Live Server response table only; request curl and authorization controls excluded"
+    },
+    {
+      "file": "04-backoffice-suppliers.png",
+      "sha256": "d915aaf7f9cbfe5816f517e3c976af985e82f9252e09a0a91b81f1b5a7b1e476",
+      "area": "Public supplier table only; session/account controls excluded"
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "status": "passed",
+    "completed_at_utc": "2026-11-02T13:42:25.416480+00:00",
+    "ownership_verified": true,
+    "owned_account_deleted_status": 204,
+    "old_token_internal_status": 401,
+    "old_token_public_status": 401,
+    "original_record_counts_unchanged": true,
+    "original_record_canonical_and_byte_hashes_unchanged": true,
+    "supplier_byte_hash_unchanged": true,
+    "owned_tunnel_closed": true,
+    "browser_closed": true,
+    "private_credentials_removed": true
+  },
+  "prior_attempt": "Authorization locator used visible text instead of the distinct accessible name; timed out before capture. That account and tunnel were cleaned.",
+  "chromium": "151.0.7922.34",
+  "status": "passed",
+  "privacy": {
+    "capture_areas_exclude_credentials_and_authorization_headers": true,
+    "actual_password_and_token_scan_passed": true,
+    "only_synthetic_profile_captured": true
+  }
+}
