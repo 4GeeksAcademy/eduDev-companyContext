@@ -274,8 +274,8 @@ or blocked requests.
 The [caching report](../../CACHING_REPORT.md) records full CPU results and provenance.
 Broader unchanged error/retry/keyboard/cancellation browser checks were not rerun;
 no screenshots, live-auth/DB or global UI acceptance is claimed. Local implementation
-is verified and committed on the local UI child. Native review is unavailable
-pending managed-asset maintenance; publication remains unapproved.
+is verified and committed on the local UI child. Managed-asset maintenance passed,
+but native assessment still rejects untracked scope; publication remains unapproved.
 
 Node tests execute the actual transpiled components with controlled hooks/module
 boundaries: they verify deferred module execution, option identity reuse and

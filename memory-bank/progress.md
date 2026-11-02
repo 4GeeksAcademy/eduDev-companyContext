@@ -19,10 +19,11 @@
   (385 changed lines) form the user-selected feature-branch chain. Report/profiler
   commit `5dbbd31` closes the final `docs/caching-report` child (339 changed lines
   before its small closing tracking record). Only the two original untracked task
-  notes remain outside this work; no source changes are left uncommitted. Native assessment was unavailable, and
-  one authority inspection stopped at `managed_assets_outdated`; no review lineage
-  was started or approved and no harness update was run. That maintenance decision
-  and push/PR/merge/submission remain with the user.
+  notes remain outside this work; no source changes are left uncommitted. Native assessment was unavailable; the user-authorized managed-assets sync
+  passed and INSPECT now returns ready, without application changes. A fresh API
+  ASSESS still rejects undeclared untracked scope despite INSPECT exclusion. No
+  review lineage was started or approved. An explicit API-review request or deferral,
+  and push/PR/merge/submission, remain with the user.
 
 ## Backend serialization audit — saved evidence published
 
