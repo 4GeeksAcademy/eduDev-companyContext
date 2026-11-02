@@ -1,2 +1,2 @@
-import InventoryOrderForm from '../../../../../components/inventory-order-form';
-export default function Outbound() { return <InventoryOrderForm direction="outbound" />; }
+import { LazyInventoryOrderForm } from '../../../../../components/inventory-lazy';
+export default function Outbound() { return <LazyInventoryOrderForm direction="outbound" />; }

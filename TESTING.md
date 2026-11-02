@@ -33,6 +33,39 @@ Tests isolate the stores/configuration they touch and mock outbound transport.
 Do not substitute personal accounts or production data. Keep real secrets and
 reset URLs out of Git, terminal output and reports.
 
+## Existing local browser tools — reuse before installing
+
+This workspace's host already has Playwright Core **1.62.1** and Chromium
+**151.0.7922.34**. Their presence and versions were checked during the caching
+assignment. They persist between sessions; they are not project dependencies or
+run-owned temporary installations. Check these exact locations before proposing
+another download:
+
+```bash
+export TRACKFLOW_PLAYWRIGHT_MODULE=/home/lab/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core
+export TRACKFLOW_CHROMIUM_PATH=/home/lab/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome
+```
+
+Browser scripts can require the first path and pass the second as `executablePath`.
+These are host-specific cache locations, not portable paths or a guarantee against
+manual cache cleanup. If missing, prefer an explicitly authorized persistent local
+`.tools/browser/` setup, excluded from Git, rather than a fresh temporary install
+for every run. Do not change the application's package or lock files for this.
+
+**Current launch limitation:** a sandbox-enabled smoke test failed with
+`No usable sandbox!`. Reinstalling Playwright does not fix host sandbox support.
+Historical runs used Playwright's sandbox-disabled default; that history is not
+fresh permission to disable isolation. Do not silently fall back: obtain explicit
+approval for sandbox-disabled local synthetic checks, or use a host with a working
+sandbox. Never use real credentials or external pages in those synthetic checks.
+For the current caching task, the user explicitly authorized sandbox-disabled
+local synthetic checks. After readiness, four application fixtures passed at
+1440×900 and 390×900 with intercepted auth/API calls, preserved public outputs,
+pre-auth isolation and no page overflow. See [caching evidence](CACHING_REPORT.md).
+No real credentials, live API/DB or broader error/retry/keyboard/cancellation
+browser sweep was used; this is not global UI acceptance. That scoped permission
+is not a system security change or a standing grant for other tasks.
+
 ## Choose the right suite
 
 | Suite / command | What it establishes |
