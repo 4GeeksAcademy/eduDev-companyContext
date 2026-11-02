@@ -16,8 +16,10 @@
   wider unchanged browser sweep is claimed. This passive update reran no runtime
   checks. [Task L16–L17](../odd/tasks/performance-caching.md#log) records evidence;
   Local tracker `f2e6f14`, API `a631c3e` (372 changed lines) and UI `c29e88a`
-  (385 changed lines) form the user-selected feature-branch chain; the report and
-  profiling helper close its final child. Native assessment was unavailable, and
+  (385 changed lines) form the user-selected feature-branch chain. Report/profiler
+  commit `5dbbd31` closes the final `docs/caching-report` child (339 changed lines
+  before its small closing tracking record). Only the two original untracked task
+  notes remain outside this work; no source changes are left uncommitted. Native assessment was unavailable, and
   one authority inspection stopped at `managed_assets_outdated`; no review lineage
   was started or approved and no harness update was run. That maintenance decision
   and push/PR/merge/submission remain with the user.
