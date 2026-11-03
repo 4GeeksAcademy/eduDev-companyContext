@@ -13,8 +13,9 @@
 - Existing browser tools were reused under explicit sandbox-disabled permission
   for local fixtures only; [TESTING.md](../TESTING.md#existing-local-browser-tools--reuse-before-installing)
   retains paths/security limits. No real-auth/production/global UI acceptance or
-  wider unchanged browser sweep is claimed. This passive update reran no runtime
-  checks. [Task L16–L17](../odd/tasks/performance-caching.md#log) records evidence;
+  wider unchanged browser sweep is claimed. Earlier passive status updates reran
+  no runtime checks; the new middleware measurement is recorded below.
+  [Task L16–L17](../odd/tasks/performance-caching.md#log) records earlier evidence;
   Local tracker `f2e6f14`, API `a631c3e` (372 changed lines) and UI `c29e88a`
   (385 changed lines) form the user-selected feature-branch chain. Report/profiler
   commit `5dbbd31` closes the final `docs/caching-report` child (339 changed lines
@@ -27,8 +28,15 @@
   review followed. Correctly scoped review remains unperformed/deferred; the user
   prohibited another automatic review. Checkout returned to `docs/caching-report@1e6ab91`;
   task L23/L24 are reconciled and L25 records the actual outcome. The documentation
-  work unit changes no application behavior; push/PR/merge/submission remain
-  unauthorized and pending.
+  work unit changes no application behavior. Push/PR/submission remain pending;
+  merge and deployment are not authorized.
+- The missing seeded middleware evidence is now captured: one direct Python run
+  passed in 7s with 32 reads, identical 200 bodies, one cold scan and zero warm
+  scans per case; temporary stores cleaned. At 1,000 rows, list cold/warm-median
+  was 7.889/1.316ms and summary 7.541/0.663ms. These are actual final-code middleware
+  values, not historical uncached/TestClient timings. [Samples and protocol](../docs/evidence/caching-middleware.md)
+  retain provenance. No Pi restart, subagent, install or broad test rerun was needed;
+  one existing Starlette/httpx deprecation warning remains. GitHub delivery is next.
 
 ## Backend serialization audit — saved evidence published
 

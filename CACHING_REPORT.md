@@ -1,6 +1,6 @@
 # Caching report — local implementation verified; delivery pending
 
-**Frontend and backend implementation and scoped local checks passed.** This report covers T2 / S1, S2, S3 and S5 of the [assignment task](odd/tasks/performance-caching.md). Work is organized in a local feature-branch chain; the wrong-scope native review was abandoned with authorization, correctly scoped review remains unperformed/deferred, and publication remains unapproved. This is not full submission, production or real-authenticated UI acceptance.
+**Frontend and backend implementation and scoped local checks passed.** This report covers T2 / S1, S2, S3 and S5 of the [assignment task](odd/tasks/performance-caching.md). Work is organized in a local feature-branch chain; the wrong-scope native review was abandoned with authorization, correctly scoped review remains unperformed/deferred, and publication remains pending. This is not full submission, production or real-authenticated UI acceptance.
 
 ## Frontend decisions
 
@@ -114,9 +114,9 @@ Totals: identity 12 + suppliers 6 + analyzer/export 2 + manager 5 + inventory 6 
 | GET /api/incidents | 1,000 | 7.771 | 1.641 | 7 → 0 |
 | GET /api/incidents/summary | 1,000 | 7.376 | 0.966 | 7 → 0 |
 
-The first request made one store scan per endpoint. Wall timings include authentication, serialization and TestClient overhead; seeding and login are excluded. The baseline was measured **before caching code**. No benchmark was rerun after the conservative partial-write invalidation correction; these numbers describe the original implementation comparison, not a fresh corrected-candidate run. Seven requests establish bounded local reuse, not sustained-load, expiry-duration or production latency conclusions.
+The first request made one store scan per endpoint. Wall timings include authentication, serialization and TestClient overhead; seeding and login are excluded. The baseline was measured **before caching code**. These historical numbers describe the original implementation comparison, not a fresh corrected-candidate TestClient run. A separate final-code middleware measurement is recorded below. Seven requests establish bounded local reuse, not sustained-load, expiry-duration or production latency conclusions.
 
-The implemented timing middleware logs method, route template, status and elapsed milliseconds via `trackflow.timing` at INFO; it excludes query/body/headers and arbitrary IDs. Those logs are available after implementation, but are not the source of the medians above. A comparable middleware before/after measurement is not claimed.
+The implemented timing middleware logs method, route template, status and elapsed milliseconds via `trackflow.timing` at INFO; it excludes query/body/headers and arbitrary IDs. Those logs are not the source of the historical medians above. The final-code measurement below captures their actual duration arguments; a middleware comparison against the pre-implementation code is not claimed.
 
 For a later authorized reproduction from repository root (documented only, **not executed for this report**):
 
@@ -125,7 +125,35 @@ env -u UV_ENV_FILE UV_NO_ENV_FILE=1 DATABASE_URL= PYTHONDONTWRITEBYTECODE=1 \
   uv run --offline --no-sync python -B scripts/profile_caching.py --rows 50 1000 --repeats 7
 ```
 
-[Profiler source](scripts/profile_caching.py) defines `--rows` as one to four counts, each 1–2000 (default `50 1000`), and `--repeats` as 3–20 (default 7); standard `--help` describes them. It owns a system `TemporaryDirectory`, isolates all three TinyDB stores before lifespan, uses synthetic JWT settings, blanks SQL/mail configuration, blocks outbound urllib transport and cleans its temporary data. It seeds through the existing `insert_incident_if_absent` helper. No running API, real data, credentials or installation is needed. This command measures current code only; it cannot recreate the old uncached baseline by itself. Do not point temporary/cache paths into the repository.
+[Profiler source](scripts/profile_caching.py) defines `--rows` as one to four counts, each 1–2000 (default `50 1000`), and `--repeats` as 3–20 (default 7); standard `--help` describes them. It owns a system `TemporaryDirectory`, isolates all three TinyDB stores before lifespan, uses synthetic JWT settings, blanks SQL/mail configuration, blocks outbound urllib transport and cleans its temporary data. It seeds through the existing `insert_incident_if_absent` helper. No running API, real data, credentials or installation is needed. This command measures current code only; it cannot recreate the old uncached baseline by itself. Never point the profiler at application data. The optional private `.git/pi-tmp` root used below keeps disposable stores outside tracked paths.
+
+### Final-code middleware measurement after seeding
+
+One direct isolated run on 2026-11-03, source `79c4271`, passed in 7 seconds:
+two datasets of 50 and 1,000 varied synthetic incidents, each with one cold and
+seven warm requests per endpoint. Durations come from `trackflow.timing`
+LogRecords, not the outer TestClient timer.
+
+| Endpoint | Seeded rows | Cold middleware sample (ms) | Warm middleware median (ms) |
+|---|---:|---:|---:|
+| GET /api/incidents | 50 | 2.492 | 0.720 |
+| GET /api/incidents/summary | 50 | 1.358 | 0.713 |
+| GET /api/incidents | 1,000 | 7.889 | 1.316 |
+| GET /api/incidents/summary | 1,000 | 7.541 | 0.663 |
+
+All 32 reads returned 200 with identical cold/warm public bodies. Each case
+observed one cold store scan and zero warm scans. The small-to-large dataset
+increased cold work while warm reads reused cached results. This compares final
+cached code across dataset sizes and cold/warm reads; **cold is not an uncached
+pre-implementation baseline**. Both disposable store directories were cleaned.
+One existing Starlette/httpx deprecation warning remained; no install, real data,
+browser, full suite, Pi restart or application source change was needed.
+[Raw samples and medians](docs/evidence/caching-middleware.json) retain six-decimal
+LogRecord values; this table and normal log formatting use three.
+[Capture protocol and reproduction](docs/evidence/caching-middleware.md) preserve
+the fixture, assertions, isolation and limitations. This is synthetic middleware
+evidence after seeding, not production performance or a historical middleware
+before/after implementation comparison.
 
 ### Reused verification evidence and provenance
 
@@ -136,7 +164,7 @@ These are previous writer/verifier observations, **not checks rerun by this docu
 - Partial-write regression: **RED 2 failed → GREEN 2 passed**; final caching-only guard: **11 passed**.
 - Independent limited corrected-candidate recheck: **6 passed in 5.51s**, covering partial writes, successful-write invalidation and lock contention. Original wider evidence was reused, not globally repeated.
 - Reported differential over **31 application responses** preserved exact status/body and stdout/stderr; the independent verifier also found complete OpenAPI JSON equal before the correction. No schema/differential rerun after correction is claimed. No permanent raw-output artifact was retained: provenance is writer/verifier reports in the task log, not an attached reproducible output archive.
-- Two existing dependency deprecation warnings remain. Backend evidence above is reused; the final 11-test seam run and scoped frontend evidence are recorded separately. This passive report update reran no tests, builds, browsers or benchmarks.
+- Two existing dependency deprecation warnings remain. Backend evidence above is reused; the final 11-test seam run and scoped frontend evidence are recorded separately. These historical checks were not rerun. The separate final-code middleware measurement above is the only new runtime check.
 
 ## Tradeoffs acknowledged
 
@@ -157,4 +185,4 @@ User-specific keys intentionally reduce hit sharing for privacy even though acti
 
 ## Remaining delivery and limits
 
-S2/S3 implementation and scoped local verification passed; this report supplies S5 decisions and the complete endpoint assessment within S1's authorized scope. S4 evidence remains the explicitly qualified synthetic comparisons above, not middleware medians or production performance. Local delivery follows `feature/caching-optimisation` → `perf/caching-api` → `perf/caching-ui` → `docs/caching-report`; each future child PR targets its immediate parent. API `a631c3e` and UI `c29e88a` are committed. After the scope-selection incident, authorized abandonment of wrong-scope lineage `review-b1100c476a226c92` committed at `2026-11-02T23:42:05.545508278Z`; only native review state was quarantined. No reviewers, captures, approval or acknowledgement occurred. Subsequent read-only INSPECT returned ready/unrelated/not_replayable; its offered START was not followed. No RESET/RECOVER or new review occurred. Correctly scoped review remains unperformed/deferred under the user's prohibition on another automatic review. The checkout returned to `docs/caching-report@1e6ab91`; L23/L24 are reconciled in the task, with the actual outcome in L25. Both unrelated untracked notes remain untouched. This documentation-only work unit records the reconciliation; it changes no application behavior. S6 push/PR/merge/submission remain unauthorized and pending. Local fixture acceptance does not establish real-authenticated, production or global UI acceptance.
+S2/S3 implementation and scoped local verification passed; this report supplies S5 decisions and the complete endpoint assessment within S1's authorized scope. S4 now includes both the historical synthetic TestClient comparison and the separately captured final-code middleware medians after seeding; neither establishes production performance. Local delivery follows `feature/caching-optimisation` → `perf/caching-api` → `perf/caching-ui` → `docs/caching-report`; each future child PR targets its immediate parent. API `a631c3e` and UI `c29e88a` are committed. After the scope-selection incident, authorized abandonment of wrong-scope lineage `review-b1100c476a226c92` committed at `2026-11-02T23:42:05.545508278Z`; only native review state was quarantined. No reviewers, captures, approval or acknowledgement occurred. Subsequent read-only INSPECT returned ready/unrelated/not_replayable; its offered START was not followed. No RESET/RECOVER or new review occurred. Correctly scoped review remains unperformed/deferred under the user's prohibition on another automatic review. The checkout returned to `docs/caching-report@1e6ab91`; L23/L24 are reconciled in the task, with the actual outcome in L25. Both unrelated untracked notes remain untouched. This documentation-only work unit records the reconciliation; it changes no application behavior. S6 push/PR/submission remain pending; merge and deployment are not authorized. Local fixture acceptance does not establish real-authenticated, production or global UI acceptance.
