@@ -154,6 +154,50 @@ uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_inci
 
 No delete, general update, pagination, startup seed or frontend is added by T3.
 
+## Incident read cache and timing
+
+`GET /api/incidents` and `GET /api/incidents/summary` use a process-local dictionary
+with **30-second monotonic TTL** and at most **128 entries**, evicting the oldest
+insertion when full and pruning expired entries on reads. Keys include the resolved
+incident database path, authenticated user ID, endpoint and canonical validated
+filters. Authentication still checks the current active identity on every request;
+errors, authentication, detail reads and writes are not cached. FastAPI still
+validates each response. Only public response models enter the cache.
+
+Validated insert attempts (including the seed helper) and status updates clear
+every user/filter entry under the existing store RLock immediately before storage
+mutation. Invalidation is conservative even if the write fails: TinyDB can flush
+changed bytes before raising, so a sanitized 500 does not promise rollback.
+Subsequent reads reload the observable store rather than retaining an old snapshot.
+That same lock covers cache lookup, loading and population, so a concurrent read
+cannot repopulate stale data after a write attempt. Validation failures and duplicate
+seed records do not attempt mutation. Direct-call list/summary helpers remain uncached.
+Different temporary store paths cannot share entries; entries expire or are evicted
+without a test-only reset endpoint. Bounds are by entry count, not payload bytes;
+large unpaginated lists still cost serialization and memory, and reads serialize
+with writes. This intentionally favors simplicity over throughput.
+
+Use **one API worker**. Stop the API before the separate seed CLI and restart it
+afterward; an external process cannot invalidate this process's cache or coordinate
+TinyDB writes. Out-of-band changes while running are unsupported. The TTL bounds
+normal retained dashboard snapshots to 30 seconds, while supported in-process
+writes invalidate immediately. Inventory stock and identity endpoints stay uncached.
+
+The `trackflow.timing` logger emits INFO records containing only method, matched
+route template (or `<unmatched>`), status and elapsed milliseconds. Enable that
+logger in the runner's logging configuration to collect them. No query strings,
+request bodies, tokens, IDs or exception details are logged. Timings end when
+response headers are available, not after streaming downloads finish.
+
+Reproduce the isolated HTTP profile via the
+[synthetic profiling guide](../../scripts/README.md#synthetic-cache-profile).
+Focused tests use temporary stores, real authentication and event-controlled
+concurrency without sleeps:
+
+```bash
+uv run --no-sync pytest tests/test_caching.py -q
+```
+
 ## Protected operational endpoints
 
 All active authenticated roles (`user`, `manager`, `admin`) may use these eight

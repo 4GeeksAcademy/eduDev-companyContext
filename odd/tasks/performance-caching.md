@@ -51,11 +51,14 @@ Use isolated synthetic stores only. Distinguish local measurements, estimated fr
 Branch created; publishing/merge require separate human authorization. First establish bounded isolated runtime baselines, not global suites. Frontend and backend are independent units; commits retain tests and documentation with each behavior.
 
 ## Tasks
-- T1 | S1,S3–S4,S6 | delegated backend unit, initially parallel with frontend (several files, independent surfaces; context backstop active) | done (implementation and independent functional verification only) | commit pending in T4; risk items2/4; cache11pass, corrected-blocker independent6pass, broader68+3subtests reused.
-- T5 | S1–S2,S4,S6 | delegated frontend unit (split from original T1) | done (implementation and measured focused verification) | commit pending T4; RED→GREEN2/2, preserved11/11, TypeScript/build passed,4browser fixtures/differential passed; final scoped integration in T3.
-- T2 | S1,S3,S5 | delegated report unit (context backstop) | done (report and structural checks) | commit pending T4;31endpoint rows,18numeric checks,17links/anchors and whitespace passed; parent readback corrected desktop/mobile overflow scope.
-- T3 | S1–S6 | inline final seam/mobile checks; backend independent high-risk verifier passed | done (scoped functional verification) | commit pending; parent seam11Python+13Node passed,390px4fixtures passed; wider unchanged real-auth/browser workflows not rerun.
-- T4 | S1,S6 | inline reviewable commits/native review and close | in_progress | user selected feature-branch-chain; tracker then API/frontend/report children; no push/PR/merge authorization.
+- T1 | S1,S3–S4,S6 | delegated backend unit, initially parallel with frontend (several files, independent surfaces; context backstop active) | done (implementation and independent functional verification only) | commit `a631c3e98fdb058a6a5bfb374a0672653c540bec`; risk items2/4; cache11pass, corrected-blocker independent6pass, broader68+3subtests reused.
+- T5 | S1–S2,S4,S6 | delegated frontend unit (split from original T1) | done (implementation and measured focused verification) | commit `c29e88af476c5aa874bc25aa4f598b9a6dcd5821`; RED→GREEN2/2, preserved11/11, TypeScript/build passed,4browser fixtures/differential passed; final scoped integration in T3.
+- T2 | S1,S3–S5 | report completion after bounded middleware evidence | done |4cases/32samples, medians/table,31endpoint rows,protocol syntax/local links and whitespace checked; historical evidence preserved; commit introducing L33 (`docs(caching): record seeded middleware measurements`).
+- T3 | S1–S6 | direct isolated Python middleware measurement; prior functional evidence reused | done | job8 exit0/7s,32HTTP200, matching bodies,1cold/0warm scans per case,stores cleaned; source79c4271; evidence/protocol under docs/evidence/caching-middleware.*.
+- T4 | S1,S6 | inline local chain commits and close | done (local delivery only) | tracker `f2e6f14`,API `a631c3e`,UI `c29e88a`,report/profiler `5dbbd31`; final passive tracking record follows; no push/PR/merge authorization.
+- T6 | S1,S6 | native outside-review disposition and documentation reconciliation (split from T4) | done (requested disposal and documentation reconciliation only) | L23/L24 restored; actual abandonment recorded in L25; structural preservation checks passed; correctly scoped review unperformed/deferred, no automatic new review; commit: the documentation commit introducing L25 (`docs(caching): record authorized review abandonment`).
+
+- T7 | S1,S6 | publish user-confirmed feature-branch-chain | done (publication for review only) | PR37draft/main,PR38/tracker,PR39/API,PR40/UI verified OPEN with intended heads/bases; no reported CI checks or approval. Links recorded by `docs(caching): record published review chain`; human review/integration/instructor submission remain outside this completed publication step.
 
 ## Log
 L1 — Original request:
@@ -160,4 +163,132 @@ L18 — Delivery shape selected and local commit plan:
 - One honest slicing pass: tracker `feature/caching-optimisation` first holds this task/evidence document only (~180lines); child1 `perf/caching-api` adds cache/invalidation/timing,11tests and API guide (~371lines); child2 `perf/caching-ui` adds two lazy components/memo,tests/profile harness,UI guide and existing-tool guide (~390lines); child3 `docs/caching-report` adds synthetic backend profiler/guide,CACHING_REPORT,progress and closing task evidence (~350lines). Exact counts recorded after staging. No code-golf or test omission.
 - Planned chain: main ← feature/caching-optimisation (future draft/no-merge tracker) ← perf/caching-api ← perf/caching-ui ← docs/caching-report. Each future child PR targets its immediate parent; all branches/commits initially local only. Tracker documentation records work observed in the shared worktree; source enters child commits, not the tracker commit.
 - API guide's optional profiling link is deferred to child3 with its target section/script so child1 contains no new broken link. Frontend child includes TESTING.md so tool-location links resolve. Tests and direct behavior documentation stay with each implementation.
-- Final report worker `mvzqyusa-a-2ife` completed local-implementation wording,31rows,18numeric values/28byte arithmetic and17links/anchors checks. Parent read report/progress, corrected overflow claim to narrow-only measurement, and `git diff --check` passed. No native approval/commits yet.
+- Final report worker `mvzqyusa-a-2ife` completed local-implementation wording,31rows,18numeric values/28byte arithmetic and17links/anchors checks. Parent read report/progress, corrected overflow claim to narrow-only measurement, and `git diff --check` passed. Commit results follow.
+
+L19 — Tracker and API child committed locally:
+- Tracker `f2e6f14ae5061e94bc787f068d307d5c7a874cba`:163authored lines, task/evidence only, base2ee31dd. Child `perf/caching-api` commit `a631c3e98fdb058a6a5bfb374a0672653c540bec`:372authored lines (367add/5delete),6intended files, tests/API docs included, exact basef2e6f14. Index/path/whitespace checks passed before each commit; no unrelated notes staged. Source checked by prior seam/independent proof, not redundant test reruns.
+- Native ASSESS of each committed-only range still failed with `untracked files require an explicit declaration` even though ranges were explicit. No reviewDue or provider continuation was supplied. No ordinary review/consent/lineage was started, and no authority approval claimed. Failed assessment informs only; independent API risk verification already passed. Do not infer native review permission from chain selection or bypass provider scope via raw CLI/worktree tricks. Native outside review is unavailable through this assessment route; record transparently rather than retrying the same candidate.
+- Slice boundary for next child is API commit a631c3e, NOT stale origin/main. Harness aggregate747line warning includes prior documentation/tracker history; current child scope is372lines against its immediate parent. User-selected chain remains unchanged. No remote read/push/PR/merge performed.
+
+L20 — UI child committed; native maintenance blocker isolated:
+- UI child `perf/caching-ui`, commit `c29e88af476c5aa874bc25aa4f598b9a6dcd5821`,385authored lines (377add/8delete),9intended files; basea631c3e. Scope/index/whitespace checks passed; source matches prior measured build. Native assessment for this exact committed range explicitly records review unavailable; writer self-verification stands, no redundant independent UI verifier added.
+- Parent temporarily switched to API child and made one read-only authority inspection with `untrackedScope:exclude` to diagnose the failed scope preflight, not to start a review. It stopped with `managed_assets_outdated`; no START/consent/lineage issued. Returned to UI child without losing any staged/worktree changes or including unrelated notes.
+- Exact provider maintenance continuation (NOT executed): `/home/lab/.local/share/gentle-shell/install/prefix/lib/node_modules/gentle-pi/.gentle-ai/v4.2.0/gentle-ai sync --agent pi`. It changes harness-managed assets outside the application task and needs explicit human authorization. No raw STATUS, reset/recovery, alternate worktree bypass or mode change attempted.
+- Split native availability into blocked T6; continue authorized local recording in T4. Final report/progress now disclose unavailable native review versus passed functional verification. Ordinary local commit policy remains separate from review authority; no publication permitted by these outcomes.
+
+L21 — Local chain saved; only native-maintenance decision remains:
+- Final child `docs/caching-report`, source/report commit `5dbbd311c5cd486851e7195fe72adf4bf8cf0f57`:339authored lines (332add/7delete),8intended files, basec29e88a. Includes the bounded synthetic profiler/help guide, complete31-endpoint report,progress and restored optional API profiling link. Initial staged whitespace check caught one extra blank line at report EOF (exit2, no commit); removed only that blank line, restaged report, and final check/commit passed.
+- Whole implementation is now locally committed and verified within stated scope. `git status --short` shows only the2original unrelated untracked notes; index/worktree diffs and whitespace checks are clean. Parent inspected each staged path list and actual source/report content; no unwanted files, secrets, dependency/lockfile changes, system settings or production data entered commits.
+- Final branch order and immediate bases: feature/caching-optimisation@f2e6f14 ← perf/caching-api@a631c3e (372lines) ← perf/caching-ui@c29e88a (385lines) ← docs/caching-report@5dbbd31 (339lines before this small closing record). Tracker's163lines are planning/evidence, not an application slice. Harness aggregate warnings against stale origin/main include earlier unrelated committed history; do not rebase/reset or confuse them with child scopes.
+- T1/T5/T3/T2/T4 local outcomes complete. T6 alone remains blocked on the exact maintenance authorization in L20 (or explicit human deferral); native review is NOT approved and no receipt/consent/lineage is claimed. No remote access/push/PR/merge/deployment performed. Required next decision at that point was narrow harness maintenance, not more tests or a generic continue; L22 records its authorization and result.
+
+L22 — Authorized sync succeeded; assessment scope remains blocked:
+> autorizo
+
+- User authorized the exact command in L20. Job6 ran it unchanged, exit0 in1s. Provider reported2managed files changed: `/home/lab/.gentle-shell/agent/settings.json` and `/home/lab/.pi/gentle-ai/gentle-ai/background-subagents.json`; pi/engram synchronized, background intent/policy on. No application source change: fresh Git tracked/index comparisons stayed clean, HEAD6190a8b and2original unrelated notes preserved.
+- First INSPECT invocation through codemode was rejected before native execution (facade requires direct tool); direct INSPECT with untrackedScope:exclude returned ready, so managed_assets_outdated is resolved. No START/consent/lineage created.
+- Switched safely to isolated API child a631c3e and freshly ASSESSed committed-only range from f2e6f14. It still returned unassessable: `untracked files require an explicit declaration`, with no reviewDue/continuation. Security escalation retained prior independent-verifier requirement, already satisfied; no repeat tests or new verifier. Exclusion in INSPECT did not resolve this ASSESS route. Returned to docs/caching-report, preserving source/notes.
+- Do not infer review consent from maintenance approval, fabricate a reviewDue flag, run raw lifecycle commands, hide/stage unrelated notes, or keep retrying. Native INSPECT is ready, so an explicit user request to review the API candidate can use the documented manual-review entry; otherwise native review remains pending. Candidate-specific provider consent still applies after any START.
+- All application implementation, local commits and scoped functional evidence remain valid. Only T6 remains open; no application build/test rerun, push/PR/merge/deploy or further harness changes occurred.
+
+L23 — Native scope incident; repository-file update deferred safely:
+> ok, avanza
+
+- User explicitly requested proceeding with API-only native review through consent. Switched to perf/caching-api@a631c3e; source rangef2e6f14..HEAD confirmed6files/372lines. START with that base/committedOnly and4pertinent lenses returned native-start-retained-selection-candidate-mismatch, mutation_performed:false.
+- Followed returned next_action: fresh INSPECT and exact select-intended-untracked binding with[]. That call returned answer-consent/actioncreated for lineage review-b1100c476a226c92,16files747lines and only reliability, including earlier serialization artifacts. This is NOT the requested API-only candidate.
+- Stopped before materialization/capture. One bound STATUS with exact lineage/workspace confirmed reviewing/collect,747lines; no reviewer model run, capture, verdict or acknowledgement occurred. No automatic ABANDON, RESET or RECOVER. Recommend human-authorized abandonment of this exact wrong-scope review; native will derive its audit binding and request fresh approval.
+- Current checkout remains perf/caching-api@a631c3e to avoid drifting the live authority during disposition. Full implementation stays safely committed at docs/caching-report@1e6ab91. Only2original unrelated untracked notes remain; no application edits/publishing. Defer editing the feature file on the historical API branch. This Engram mirror is ahead of the authoritative feature file on docs/caching-report: reconcile L23 and T6 after disposition/return, preserving the file's full newer history. Do not write the old tracker file on API branch or pretend mirror/file are synchronized.
+
+L24 — Authorized disposition, explicit compaction pause:
+> Autorizo, pero voy a compactar la sesión ahora, guarda un resumen de lo que falta y dame un prompt para continuar con lo que falta luego de compactar.
+
+- User explicitly authorizes abandoning ONLY review-b1100c476a226c92; no abandonment executed during requested handoff. Resume through native ABANDON with freshly derived inventory and human approval of provider's audited binding. Do not reuse historical consent as opaque approval; do not invent actor/required inputs if native requests exact missing values. No source/commit/note deletion.
+- Preserve current API checkout and frozen authority until disposition. Then return to docs/caching-report@1e6ab91 and reconcile file with this full mirror (L23/L24 ahead of fileL22). Update task/report/progress only from actual native outcome; no fresh review automatically while scope-selection defect remains unresolved. Functional evidence and implementation remain complete; no broad tests needed merely for compaction.
+- Next turn must begin mem_context, project/feature mem_search, full observation25247, then actual task file after confirming branch. Observation25293 holds incident,25294 holds authorization. This mirror intentionally remains ahead of repository file until safe reconciliation after pause.
+
+L25 — Authorized abandonment confirmed; documentation reconciliation:
+> Retomá el trabajo de performance-caching en este proyecto.
+>
+>    Primero recuperá el resumen Engram 25296 y el documento completo 25247, tema
+>  odd/performance-caching/tasks. Confirmá la rama antes de editar: actualmente estamos en
+>  perf/caching-api; la implementación completa está en docs/caching-report@1e6ab91.
+>
+>    Ya autoricé abandonar únicamente la revisión review-b1100c476a226c92, creada con alcance
+>  incorrecto. El abandono sigue pendiente: usá el flujo nativo auditado y solicitá su aprobación
+>  cuando corresponda. No uses RESET/RECOVER ni inicies otra revisión automáticamente.
+>
+>    Después del abandono confirmado, volvé a docs/caching-report y reconciliá
+>  odd/tasks/performance-caching.md con su memoria: los registros L23/L24 todavía están solo en Engram.
+>  Actualizá informe, progreso y todo según el resultado real.
+>
+>    El código, las pruebas acotadas y los commits locales están completos. No repitas verificaciones
+>  innecesarias ni el flujo que creó el alcance incorrecto. Conservá las dos notas ajenas sin
+>  seguimiento. No publiques ni mergees como parte de este paso.
+
+- Parent recovered full Engram25247: its log before L23 exactly matched repository L1–L22; header/specs/T1–T5 were unchanged. L23/L24 above are the exact supplied mirror append, retained as history alongside L19–L22; their pending/check-out claims are superseded here.
+- Parent's direct native ABANDON for `review-b1100c476a226c92`, actor `pi`, reason `operator_disposition`, returned status `committed`, mutation_performed `true`, mutation_outcome `committed`, reclaimed_at `2026-11-02T23:42:05.545508278Z`. Discarded work: captured_lens_results `[]`, findings_present `false`. Only `review-state.json` was quarantined under `.git/gentle-ai/review-transactions/quarantine/review-b1100c476a226c92-3072118429`. No reviewers, captures, approval or acknowledgement occurred; disposal is not review approval.
+- Subsequent parent read-only INSPECT with exclusion returned ready/unrelated/not_replayable; offered START was not followed. No RESET/RECOVER or new review. Parent safely returned to `docs/caching-report`; worker independently confirmed HEAD `1e6ab913fb8356f7ab303550efdd0f89d920d423` and only the two original untracked notes before edits, without reading them.
+- T6 moved to in_progress solely for this S1/S6 documentation closure. Correctly scoped native review remains unperformed/deferred under the prohibition on another automatic review; S6 publication/submission remains pending. No new spec, application change, runtime/build/browser rerun or lifecycle operation by this worker. The parent retains the local documentation commit; no publication is authorized.
+- Passive-documentation exception: no meaningful behavioral RED/GREEN. Read-only structural checks passed for six unique task IDs, historical log/spec preservation, L23/L24 headings/quotes, all31 unchanged endpoint rows, unchanged report evidence and unrelated progress history, and exactly three allowed modified paths with both original notes retained. Supplied L23/L24 bodies were also compared during readback. T6 closes only requested disposal/reconciliation, not native review or assignment delivery; parent final readback confirmed the diff matches the observed native outcome. The parent owns synchronization of the full file to Engram and records the observed local commit there.
+- Required post-writer ASSESS remained unassessable: `untracked files require an explicit declaration`. Its plan retained writer self-verification without an independent verifier. No START followed; structural checks and readback stand, with no repeated runtime suites. This is not native review approval.
+
+
+L26 — Literal assignment-compliance readback:
+> ok, y ahora ya terminamos con las exigencias del readme para esta tarea? ya podemos hacer la antrega o nos falta algo para cumplir 100%?
+
+- Read the full official README live and current report/profiler. Existing implementation and stored checks cover the8explicit evaluation checklist items. S4's middleware-after-seeding instruction remains without measured middleware evidence: historical timings are TestClient wall time, explicitly not middleware. S6 GitHub PR/share-link delivery also remains incomplete. Native Gentle review is not an assignment criterion; no new native review is required by this academic comparison.
+
+L27 — Authorize bounded middleware evidence and delivery preparation:
+> ok, avanza
+
+- User accepts the recommendation to close that specific evidence gap, then prepare delivery. Scope:2existing cached endpoints,50/1000 isolated synthetic rows, cold/warm requests and middleware durations; update report, preserve historical provenance, no broad tests/production data/deployment. Keep chosen feature-branch-chain; merge remains outside this step. Do not repeat the failed native scope flow.
+- Reopen only T3 evidence and dependent T2 report; add T7 delivery preparation. Earlier functional passes remain valid. Engram/file differed only in a trailing newline; no substantive history was lost. Current local HEAD79c4271, existing origin git@github.com:4GeeksAcademy/eduDev-companyContext.git; fresh remote target/base/policy proof has not yet been obtained.
+
+
+L28 — Middleware run blocked before startup; delivery metadata checked:
+- Worker `mvzxs9zy-d-jiu0` exited1 before agent_settled while loading `/home/lab/.gentle-shell/agent/npm/node_modules/pi-btw/extensions/btw.ts`: `Unknown system error -122 ... write`. No benchmark, report/evidence artifact or application edit occurred. No automatic retry, extension bypass, installation or deletion.
+- One read-only diagnostic maps errno122 to EDQUOT. `df -h .` reports611Gfree and `df -i .` reports~54.7million free inodes; this checks only the workspace filesystem, not the unidentified runtime write-cache/quota target. `quota` is not installed. Request narrowly scoped read-only runtime-path/quota diagnosis; do not claim disk exhaustion or a known cleanup target.
+- Independent background job7 exited0: `gh repo view 4GeeksAcademy/eduDev-companyContext --json nameWithOwner,url,defaultBranchRef,viewerPermission` confirmed target/defaultmain/WRITE. Target-bound open issue/PR list queries returned[]. No publishing, merge, remote mutation, fetch/rebase or alternate delivery strategy occurred.
+- T3 is blocked on this external runtime diagnosis; T2 and T7 remain pending in dependency order. Existing code/tests remain valid but do not fill the new middleware evidence gap. Only this parent tracking document is modified; original untracked notes remain intact.
+
+L29 — Authorized read-only quota diagnosis (memory-only continuation):
+> autorizo
+
+- Exact grant was diagnosis of the runtime loading the named pi-btw package and its quota, without changes/deletion/retry. Package ownership/readability and ext4space are normal. Runtime TMPDIR is /tmp/gpdH8goB on tmpfs /tmp with usrquota; global filesystem space alone does not establish user quota availability.
+- Read-only Q_GETQUOTA for uid1001 showed6269427KiB hard/soft limit and5095325696bytes used,1324567552bytes remaining (~1.23GiB), no inode caps. Session TMPDIR2.9MiB. The quota is not currently exhausted. Original EDQUOT may reflect transient/child-specific state; no exact failed destination is available in retained child error. Do not claim a proven persistent quota exhaustion or delete caches speculatively.
+- No source/report/configuration edits, deletion, install, extension bypass, runtime retry or measurement. Repository file still endsL28; this Engram-only continuation/status must be reconciled during the next authorized documentation update. T3 remains blocked because new middleware proof is still missing; T2/T7 remain dependent pending steps.
+
+L30 — Additional loader/launcher inspection authorized; diagnosis boundary reached (memory only):
+> autorizo
+
+- User authorized read-only access to the exact Pi package and Gentle launcher package paths. Source confirms the common extension-load catch preserves only err.message, not stack/destination; both module import and factory execution share that catch. The error does not establish pi-btw as the cause or identify the failed write.
+- Gentle runner assigns a private gaXXXXXX TMPDIR nested under inherited session temp and removes it after confirmed child exit. The post-failure~1.23GiBquota headroom therefore does not rule out a transient peak during startup. No explicit Jiti/Node cache overrides are present in current parent environment. No child was restarted and no source/configuration/files were changed or deleted.
+- Further read-only inspection cannot recover the lost historical write target. Possible next action is a separately authorized reversible runtime mitigation: private project-local TMPDIR on the workspace's ext4 filesystem, then human restart preserving extensions. This is not a proven repair; no change or restart is authorized by this read-only grant. No automatic retry/bypass.
+- T3 remains blocked on usable runtime/required measurement proof. T2/T7 pending. This continuation and L29 remain Engram-only; repository task file still endsL28 and should be reconciled on the next authorized documentation update.
+
+L31 — Private temporary root prepared; human restart pending:
+> ok
+
+- User authorized preparing `/srv/workspaces/4geeks/eduDev-companyContext/.git/pi-tmp` and restart instructions, not an automatic restart or global configuration change. Exact mkdir succeeded with0700/current uid1001 after verifying the Git directory and absence of the destination; no symlink traversal or existing content overwrite. findmnt/df confirm ext4 `/dev/sda2`,611Gfree. No cache/file deletion, install, extension bypass, application change or benchmark.
+- Read Pi CLI/environment documentation. Human restart from the project directory: `TMPDIR="$PWD/.git/pi-tmp" PI_CODING_AGENT_DIR=/home/lab/.gentle-shell/agent pi --session 01a19daa-05d5-7591-9746-4d9977d9654d`. Exit the current Pi first. This preserves the current profile and exact session; environment overrides apply only to this invocation. On resume verify actual TMPDIR before measuring; preparation is not proof the original failure is fixed.
+- Reconciled prior memory-only L29/L30 and current T3 status into this file, preserving L1–L28 and all prior completed evidence. T3 remains blocked on human restart; T2/T7 remain pending. Current application HEAD79c4271 and both unrelated notes unchanged. Only task tracking is uncommitted; no push/PR/merge/deploy.
+
+
+L32 — Remove unnecessary runtime detour; execute minimum completion path:
+> Hey, espera, creo que te estás yendo por las ramas, eso es lo minimo que tenemos que ahcer para poder terminar y cumplir con el 100% del readme? no tenemos otra forma mas simple de resolverlo?
+> ok sigue entonces
+
+- Parent acknowledged over-expanding a delegated-process startup failure into runtime repair. The current session can execute Python directly; no evidence established failure of the actual API measurement. User accepted the minimal path: direct isolated Python run, report update, then complete-feature delivery preparation. No restart, extra installation, repeated suites, native review or deployment. Existing private temp root may be used for this process only; do not claim the old startup failure repaired.
+
+L33 — Minimal middleware evidence completed:
+- Direct isolated Python job8 passed exit0 in7s at source79c4271:32actual trackflow.timing records,2endpoints,50/1000synthetic rows,1cold+7warm requests each. All responses200/bodies equal,1cold scan/0warm scans per case,owned stores removed. No restart/subagent/install/global-suite/application change. Existing Starlette/httpx deprecation warning only.
+- Cold/warm-median ms: list50 2.492181/0.720338; summary50 1.358013/0.713301; list1000 7.889307/1.316475; summary1000 7.540654/0.662977. Raw LogRecord values rounded6decimals, normal formatted logs3. JSON/protocol retained under docs/evidence/caching-middleware.*; report distinguishes this final-code cold/warm measurement from historical uncached/TestClient evidence.
+- Target-bound HTTPS fetch using existing gh credentials passed(job9), no SSH-agent reuse or remote mutation. Fresh main is cea081c9be25205c060f84756a6c37497e14d3c4(PR36 merge); merge-base2ee31dd confirms prior serialization docs are already integrated. Main has AGENTS.md and no .github/CONTRIBUTING.md in inspected paths. Current committed feature scope is20files,1296add/13delete before this new evidence. Complete-feature delivery shape must retain all behavior/tests/docs; no merge/deploy/native-review restart.
+- Final structural check passed:4cases/32samples and all medians/table values,31unchanged endpoint rows, unrelated progress history unchanged, Python protocol syntax, local link targets and whitespace. This documentation unit introduces no application changes; no additional runtime suites or native review.
+
+L34 — User confirmed feature-branch-chain; publication observed:
+> Mantener la cadena de feature/tracker
+
+- User selected option1 after reviewing full feature22files/1591lines and three delivery alternatives; no merge authorization. Evidence commitf2d889769712c71dfafe4ab124b86111f49596a6 holds5files/306authoredlines. Atomic non-force HTTPS push job10 passed; four branch heads published using existing gh credentials, no SSH-agent reuse/global config changes.
+- Job11 passed exit0/12s: https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37 draft tracker→main; /pull/38 API→tracker; /pull/39 UI→API; /pull/40 report→UI. Tracker body links all children and explicitly states it is planning-only until integration; full implementation is on docs/caching-report. No issue, label, CI pass or native approval was invented; no merge/deployment.
+- Immediate child scopes:tracker163,API372,UI385,report689authoredlines before closing records. Report overage is cohesive retained evidence/profiler/history, disclosed rather than golfed or repeatedly resliced. Job12 then confirmed all4PRs OPEN with intended heads/bases, only37draft, mergeStateStatus CLEAN, empty reviewDecision and statusCheckRollup. No repository rulesets were returned and main protected=false; this is no CI-pass or human-approval claim. Final passive publication records preserve application/evidence bytes; no runtime rerun or native review. No merge/deploy.

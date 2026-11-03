@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createMovement, getProduct, InventoryError, listProducts } from '../lib/inventory';
 import { movementPayload, stockWarning } from '../lib/inventory-form';
@@ -42,6 +42,9 @@ export default function InventoryOrderForm({ direction }: { direction: Direction
     }
     return () => controller.abort();
   }, [skuId, outbound, products, stockAttempt]);
+  // Keep the option tree stable while movement fields change; refresh on SKU reload.
+  const productOptions = useMemo(() => products?.map(product =>
+    <option key={product.id} value={product.id}>{product.name} — {product.sku} — {product.warehouse}</option>), [products]);
   const selected = products?.find(product => String(product.id) === skuId) ?? null;
   const product = outbound ? (detail && String(detail.id) === skuId ? detail : null) : selected;
   const warning = outbound && product ? stockWarning(quantity, product.current_stock) : '';
@@ -75,7 +78,7 @@ export default function InventoryOrderForm({ direction }: { direction: Direction
           <fieldset disabled={saving}><legend>Movement details</legend>
             <label htmlFor="inventory-sku">SKU</label><select id="inventory-sku" required value={selected ? skuId : ''} onChange={event => {
               setSkuId(event.target.value); setQuantity(''); setDetail(null); setStockError(''); setError(''); setQuantityError(''); setSuccess('');
-            }}><option value="">Select a SKU</option>{products.map(product => <option key={product.id} value={product.id}>{product.name} — {product.sku} — {product.warehouse}</option>)}</select>
+            }}><option value="">Select a SKU</option>{productOptions}</select>
             {selected && <p>Warehouse: <strong>{selected.warehouse}</strong></p>}
             {outbound && selected && (stockError ? <p role="alert">{stockError} <button type="button" onClick={() => setStockAttempt(x => x + 1)}>Retry stock</button></p> :
               product ? <p role="status">Current stock: <strong>{product.current_stock}</strong></p> : <p role="status">Loading current stock…</p>)}
