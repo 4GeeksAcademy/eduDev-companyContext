@@ -86,6 +86,5 @@ Favicon/HTTP findings describe this historical PA-05 snapshot (see HTTPS follow-
 practices100 is not public HTTPS proof. Meta description, unused/legacy JS and
 render-blocking/network-tree findings remain deferred. Existing source/build/
 browser results are reused; this documentation update reruns no runtime checks.
-Final evidence commit `0136526` and publication are recorded in the
-[task](../../odd/tasks/frontend-performance-audit.md); detailed attempt/debug history
-remains there rather than being repeated in this index.
+Final evidence commit: `0136526`. The [results report](../../REPORT.md)
+summarizes verification and publication.

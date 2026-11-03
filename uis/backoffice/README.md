@@ -180,8 +180,7 @@ no overlap/overflow, Tab/skip navigation, preserved apiPort and 3px link focus
 
 Synthetic localStorage/GET fixtures are not real authenticated acceptance; no
 backend or business writes were used, and narrow-table interaction was not tested.
-[Task history](../../odd/tasks/frontend-performance-audit.md) retains geometry,
-original captures and cleanup evidence. [Final results](../../REPORT.md) and
+[Final results](../../REPORT.md) and
 [PA-05 provenance](../../audit/after/README.md) record the later authenticated audit.
 
 ## PA-04 shared inventory load status
@@ -212,8 +211,8 @@ server cancellation. No real authentication, backend, writes or Lighthouse ran.
 
 Independent verification passed 17/17 tests, 8/8 browser groups and exact effect/
 table equality; populated screenshots were visually inspected. Full-document
-about:blank departure is not SPA-unmount or server-cancellation proof. Original
-fixtures, harness corrections and cleanup are in the [task history](../../odd/tasks/frontend-performance-audit.md).
+about:blank departure is not SPA-unmount or server-cancellation proof.
+The [public audit](../../AUDIT.md#pa-04-local-reuse-verification) summarizes these results.
 
 PA-04 review/commit and PA-05 deployment, authenticated measurement and final
 structural verification are complete. [REPORT.md](../../REPORT.md) records outcomes;
