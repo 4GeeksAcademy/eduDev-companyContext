@@ -5,7 +5,7 @@ the original state of all 31 application success endpoints alongside final outpu
 All 31 decorators are explicit: 29 JSON schemas and two non-JSON exceptions.
 Final Python verification and native review passed. Three new manual Swagger
 executions remain pending; the assignment is not yet fully accepted.
-The authoritative plan is [serialization-audit](../odd/tasks/serialization-audit.md).
+Implementation scope and verification evidence are documented below.
 
 ## Review path
 

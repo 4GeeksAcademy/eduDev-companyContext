@@ -264,8 +264,8 @@ zero existing package records changed/removed. Deprecated glob was reported;
 install scripts were not manually approved/executed. No audit fix, upgrades,
 exploitability assessment or risk acceptance is claimed; remediation is separate.
 
-Full chronological evidence belongs in the [task](odd/tasks/bullet-proof-tests.md)
-and [progress](memory-bank/progress.md), not an expanding run log here.
+Verification results and limitations are summarized [above](#final-verification-evidence)
+and in [progress](memory-bank/progress.md).
 Review approval does not resolve the disclosed dependency findings. The user
 explicitly deferred R5 acknowledgement and authorized commit, push and PR; merge
 remains a separate decision.
