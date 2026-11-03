@@ -9,10 +9,19 @@ from tinydb import Query, TinyDB
 
 from packages.shared.incidents import IncidentStatus, utc_now, validate_status_transition
 from services.api.incident_models import Incident, IncidentCreate
+from services.api.cache import TTLCache
 
 DEFAULT_DB_PATH = Path(__file__).resolve().parent / "data" / "incidents.json"
 DB_PATH_ENV = "TRACKFLOW_INCIDENTS_DB_PATH"
 _LOCK = RLock()
+incident_cache = TTLCache()
+
+
+def cached_incident_read(user_id, endpoint, filters, load):
+    """Serialize population with writes: no stale read can refill after invalidation."""
+    with _LOCK:
+        key = (str(database_path().resolve()), user_id, endpoint, filters)
+        return incident_cache.get_or_load(key, load)
 
 
 def database_path() -> Path:
@@ -38,7 +47,10 @@ def insert_incident_if_absent(incident: Incident) -> bool:
     with _open_database() as database:
         if database.contains(Query().id == incident.id):
             return False
-        database.insert(incident.model_dump(mode="json"))
+        serialized = incident.model_dump(mode="json")
+        # TinyDB may flush changed bytes before a write raises (for example fsync).
+        incident_cache.clear()
+        database.insert(serialized)
         return True
 
 
@@ -71,5 +83,7 @@ def update_incident_status(incident_id: str, status: IncidentStatus | str) -> In
         incident.status = validate_status_transition(incident.status, status)
         incident.updated_at = utc_now()
         serialized = incident.model_dump(mode="json")
+        # Invalidate before mutation: a failed write does not guarantee rollback.
+        incident_cache.clear()
         database.update({key: serialized[key] for key in ("status", "updated_at")}, doc_ids=[record.doc_id])
         return incident

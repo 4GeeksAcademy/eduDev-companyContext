@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import logging
+from time import perf_counter
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
@@ -43,6 +45,24 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="TrackFlow Operations API", version="1.1.0", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def request_timing(request: Request, call_next):
+    start = perf_counter()
+    status = 500
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        return response
+    finally:
+        # Template paths avoid recording arbitrary IDs; never log query/body/headers.
+        route = request.scope.get("route")
+        path = getattr(route, "path", "<unmatched>")
+        logging.getLogger("trackflow.timing").info(
+            "%s %s %s %.3fms", request.method, path, status,
+            (perf_counter() - start) * 1000,
+        )
 
 
 @app.exception_handler(StorageError)
