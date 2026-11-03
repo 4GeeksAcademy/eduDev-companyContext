@@ -1,5 +1,51 @@
 # Project Progress
 
+## Performance caching — implementation verified; review chain published
+
+- [Caching report](../CACHING_REPORT.md) retains all 31 endpoint assessments,
+  two user/filter-scoped 30-second incident caches, synthetic measurements and
+  the independently verified partial-write invalidation correction.
+- Separate lazy history/form boundaries now defer small chunks until session
+  validation; existing option elements are memoized on `[products]`. Larger
+  synthetic fixtures reduced script CPU, not meaningful frame latency. Builds,
+  TypeScript and focused checks passed; final seam passed 11 Python + 13 Node.
+  Four fixtures at 1440×900 and 390×900 preserved outputs and pre-auth isolation.
+- Existing browser tools were reused under explicit sandbox-disabled permission
+  for local fixtures only; [TESTING.md](../TESTING.md#existing-local-browser-tools--reuse-before-installing)
+  retains paths/security limits. No real-auth/production/global UI acceptance or
+  wider unchanged browser sweep is claimed. Earlier passive status updates reran
+  no runtime checks; the new middleware measurement is recorded below.
+  [Task L16–L17](../odd/tasks/performance-caching.md#log) records earlier evidence;
+  Local tracker `f2e6f14`, API `a631c3e` (372 changed lines) and UI `c29e88a`
+  (385 changed lines) form the user-selected feature-branch chain. Report/profiler
+  commit `5dbbd31` closes the final `docs/caching-report` child (339 changed lines
+  before its small closing tracking record). Only the two original untracked task
+  notes remain outside this work; no source changes are left uncommitted.
+  Authorized abandonment of wrong-scope lineage `review-b1100c476a226c92`
+  committed at `2026-11-02T23:42:05.545508278Z`, quarantining only review state.
+  No reviewers, captures, approval or acknowledgement occurred. Read-only INSPECT
+  returned ready/unrelated/not_replayable; no offered START, RESET/RECOVER or new
+  review followed. Correctly scoped review remains unperformed/deferred; the user
+  prohibited another automatic review. Checkout returned to `docs/caching-report@1e6ab91`;
+  task L23/L24 are reconciled and L25 records the actual outcome. The documentation
+  work unit changes no application behavior. Branches/PRs are published for review;
+  instructor link sharing and chain integration remain pending. No merge/deployment.
+- The missing seeded middleware evidence is now captured: one direct Python run
+  passed in 7s with 32 reads, identical 200 bodies, one cold scan and zero warm
+  scans per case; temporary stores cleaned. At 1,000 rows, list cold/warm-median
+  was 7.889/1.316ms and summary 7.541/0.663ms. These are actual final-code middleware
+  values, not historical uncached/TestClient timings. [Samples and protocol](../docs/evidence/caching-middleware.md)
+  retain provenance. No Pi restart, subagent, install or broad test rerun was needed;
+  one existing Starlette/httpx deprecation warning remains.
+- Published chain: [draft tracker #37](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37)
+  → [API #38](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/38)
+  → [frontend #39](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/39)
+  → [report/evidence #40](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/40).
+  Each child targets its immediate parent. The complete feature is on the final
+  branch; tracker/main integration awaits separate review and authorization.
+  Readback confirmed all four PRs open with intended heads/bases, only tracker
+  draft, no reported CI checks and no approval decision. No merge or deployment.
+
 ## Backend serialization audit — saved evidence published
 
 - Saved VPS screenshot/report work unit `3bf9fdf` was pushed on

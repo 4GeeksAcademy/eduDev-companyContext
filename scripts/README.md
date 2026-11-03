@@ -69,4 +69,38 @@ Focused isolated verification:
 uv run --no-sync python -m unittest discover -s services/api/tests -p 'test_incident_seed.py' -v
 ```
 
+## Synthetic cache profile
+
+`profile_caching.py` measures authenticated incident list/summary HTTP requests
+through in-process TestClient, not a production server. It always creates disposable
+users/suppliers/incidents stores, overrides SQL/mail configuration and uses a
+synthetic signing secret. It never reads dotenv files or accepts a production
+store path. Temporary stores and clients close even on failure; outbound mail
+transport is blocked. No installation, network service or deployment is required.
+
+From the repository root with the existing uv environment:
+
+```bash
+unset UV_ENV_FILE
+export UV_NO_ENV_FILE=1 UV_NO_SYNC=1 UV_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1
+uv run --no-sync python scripts/profile_caching.py --help
+uv run --no-sync python scripts/profile_caching.py --rows 50 1000 --repeats 7
+```
+
+`--rows` accepts up to four counts from 1 to 2000; `--repeats` accepts 3–20.
+Each size gets a new store. The existing idempotent insertion helper creates
+validated, distinct synthetic titles/descriptions, dates, UUIDs and all manager
+enum variants. Seeding and real registration/login are outside measured time.
+There are no foreign keys in incident records and no artificial sleeps.
+
+Each JSON output line reports row count, endpoint, first-request milliseconds,
+median of subsequent requests, repeat count and observed full-store scan counts.
+The list uses `status=open&branch=central`; summary covers all rows. Expected cache
+behavior is one cold scan and zero warm scans. Every repeat must return the same
+successful public body or the script fails. There is no production debug endpoint.
+Compare the exact command before and after a change; first-request timings are
+single samples, not medians. HTTP timings include authentication, response
+validation/serialization and TestClient overhead. They do not measure production
+network latency, sustained load, multi-worker behavior or real call frequency.
+
 > _Spanish version: [README.es.md](./README.es.md)._

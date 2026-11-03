@@ -61,7 +61,7 @@ sandbox. Never use real credentials or external pages in those synthetic checks.
 For the current caching task, the user explicitly authorized sandbox-disabled
 local synthetic checks. After readiness, four application fixtures passed at
 1440×900 and 390×900 with intercepted auth/API calls, preserved public outputs,
-pre-auth isolation and no page overflow. See [caching evidence](CACHING_REPORT.md).
+pre-auth isolation and narrow-viewport containment. See [caching evidence](CACHING_REPORT.md).
 No real credentials, live API/DB or broader error/retry/keyboard/cancellation
 browser sweep was used; this is not global UI acceptance. That scoped permission
 is not a system security change or a standing grant for other tasks.

@@ -189,6 +189,8 @@ logger in the runner's logging configuration to collect them. No query strings,
 request bodies, tokens, IDs or exception details are logged. Timings end when
 response headers are available, not after streaming downloads finish.
 
+Reproduce the isolated HTTP profile via the
+[synthetic profiling guide](../../scripts/README.md#synthetic-cache-profile).
 Focused tests use temporary stores, real authentication and event-controlled
 concurrency without sleeps:
 

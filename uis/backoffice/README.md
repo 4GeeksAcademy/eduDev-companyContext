@@ -269,11 +269,13 @@ deferral, not total JavaScript reduction. Baseline/after builds passed; focused
 Node RED0/2→GREEN2/2, existing11/11 and TypeScript passed. Final seam11Python+13Node
 passed with existing dependency/module-type warnings. Four fixtures (not four
 distinct routes) at1440×900 and390×900 preserved status/history/options/POST payloads,
-pre-auth isolation and page containment; no page errors or blocked requests.
+pre-auth isolation, with containment additionally checked at390px; no page errors
+or blocked requests.
 The [caching report](../../CACHING_REPORT.md) records full CPU results and provenance.
 Broader unchanged error/retry/keyboard/cancellation browser checks were not rerun;
 no screenshots, live-auth/DB or global UI acceptance is claimed. Local implementation
-is verified; native review, commits and publication remain pending.
+is verified and committed on the local UI child. Managed-asset maintenance passed,
+but native assessment still rejects untracked scope; publication remains unapproved.
 
 Node tests execute the actual transpiled components with controlled hooks/module
 boundaries: they verify deferred module execution, option identity reuse and
