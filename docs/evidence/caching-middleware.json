@@ -1,0 +1,92 @@
+{
+  "measured_at": "2026-11-03T01:09:14.442446+00:00",
+  "source_commit": "79c42717b825f97c63a15c7b6260dff4cd2aa728",
+  "timing_source": "trackflow.timing LogRecord.args[3] (milliseconds)",
+  "precision_decimals": 6,
+  "formatted_log_precision_decimals": 3,
+  "comparison": "Final cached code: small/large seeded datasets and cold/warm reads; not a pre-implementation baseline",
+  "synthetic_stores_cleaned": true,
+  "middleware_get_records": 32,
+  "results": [
+    {
+      "rows": 50,
+      "method": "GET",
+      "url": "/api/incidents?status=open&branch=central",
+      "status": 200,
+      "cold_ms": 2.492181,
+      "warm_ms": [
+        0.783897,
+        0.720338,
+        0.688744,
+        0.69109,
+        0.716082,
+        0.878424,
+        0.892974
+      ],
+      "warm_median_ms": 0.720338,
+      "cold_scans": 1,
+      "warm_scans": 0,
+      "identical_public_bodies": true
+    },
+    {
+      "rows": 50,
+      "method": "GET",
+      "url": "/api/incidents/summary",
+      "status": 200,
+      "cold_ms": 1.358013,
+      "warm_ms": [
+        0.853359,
+        0.876752,
+        0.713301,
+        0.653676,
+        0.724412,
+        0.619477,
+        0.608176
+      ],
+      "warm_median_ms": 0.713301,
+      "cold_scans": 1,
+      "warm_scans": 0,
+      "identical_public_bodies": true
+    },
+    {
+      "rows": 1000,
+      "method": "GET",
+      "url": "/api/incidents?status=open&branch=central",
+      "status": 200,
+      "cold_ms": 7.889307,
+      "warm_ms": [
+        1.437869,
+        1.316475,
+        1.339932,
+        1.351315,
+        1.286335,
+        1.171082,
+        1.282846
+      ],
+      "warm_median_ms": 1.316475,
+      "cold_scans": 1,
+      "warm_scans": 0,
+      "identical_public_bodies": true
+    },
+    {
+      "rows": 1000,
+      "method": "GET",
+      "url": "/api/incidents/summary",
+      "status": 200,
+      "cold_ms": 7.540654,
+      "warm_ms": [
+        0.904712,
+        0.773132,
+        0.626823,
+        0.596782,
+        0.662977,
+        0.623851,
+        0.705776
+      ],
+      "warm_median_ms": 0.662977,
+      "cold_scans": 1,
+      "warm_scans": 0,
+      "identical_public_bodies": true
+    }
+  ]
+}

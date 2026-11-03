@@ -220,6 +220,68 @@ structural verification are complete. [REPORT.md](../../REPORT.md) records outco
 the [after index](../../audit/after/README.md) owns historical rollout, privacy and
 rollback provenance. Older stage records below are not current PA-05 blockers.
 
+## Inventory loading and option reuse (performance caching)
+
+History and movement entry use separate `React.lazy` boundaries. The unchanged
+session gate mounts them only after validation; Suspense announces “Loading
+movements…” or “Loading SKUs…” while their code loads. History is read-only and
+not needed for entry; the movement form is not needed for history. Ordinary Next
+route splitting previously fetched each visited route's component before session
+validation. Navigation may still prefetch other routes; this is not a claim that
+all cross-route requests disappear. These boundaries do not cache API responses.
+
+The form memoizes its existing product option elements with `[products]`, avoiding
+recreation during quantity/reference/tracking edits. Reloaded products invalidate
+that tree; the first render still creates all options. Selection, fresh stock,
+validation and submissions are unchanged. Small scalar calculations are not memoized.
+
+Focused checks from the repository root:
+
+```bash
+node --test uis/backoffice/tests/inventory-caching.test.mjs
+node uis/backoffice/tests/profile-inventory.mjs
+# Same synthetic flows at the supported narrow viewport:
+TRACKFLOW_BROWSER_WIDTH=390 node uis/backoffice/tests/profile-inventory.mjs
+```
+
+`TRACKFLOW_BROWSER_WIDTH` accepts only `390` or `1440` (default). The script also
+checks that the rendered page does not overflow the chosen viewport.
+
+The browser script requires a matching production build and the existing cached
+Playwright/Chromium paths recorded in `TESTING.md`. It owns loopback port3397 and
+fails if occupied; it closes its server/browser on exit. Sandbox-disabled Chromium
+is authorized only for these synthetic fixtures. All API responses/submissions
+are intercepted, service workers are blocked, and other network is denied. No
+real authentication, credentials or inventory writes are involved.
+
+Run the same script before changes and after a fresh build; retain stdout outside
+the repository. Compare exact history text, options and submitted payloads as well
+as chunk request phases. Six versus 1,000 varied synthetic products exercise the
+existing operation, not production row counts or observed usage frequency. Thirty
+sequential field fills measure CDP script/task CPU totals and fill-plus-animation-
+frame latency, not isolated option cost, React Profiler time or production INP.
+One desktop before/after comparison measured script CPU10.833→10.113ms
+(six-product inbound),84.109→11.622ms (1,000-product inbound) and80.051→10.684ms
+(1,000-product outbound). Frame medians stayed approximately16.7–17ms: no meaningful
+frame improvement or production INP claim. History/form chunks moved from before
+validation (3,447/5,850 decoded bytes) to after validation (3,447/5,878): small-chunk
+deferral, not total JavaScript reduction. Baseline/after builds passed; focused
+Node RED0/2→GREEN2/2, existing11/11 and TypeScript passed. Final seam11Python+13Node
+passed with existing dependency/module-type warnings. Four fixtures (not four
+distinct routes) at1440×900 and390×900 preserved status/history/options/POST payloads,
+pre-auth isolation, with containment additionally checked at390px; no page errors
+or blocked requests.
+The [caching report](../../CACHING_REPORT.md) records full CPU results and provenance.
+Broader unchanged error/retry/keyboard/cancellation browser checks were not rerun;
+no screenshots, live-auth/DB or global UI acceptance is claimed. Local implementation
+is verified and committed on the local UI child. Managed-asset maintenance passed,
+but native assessment still rejects untracked scope; publication remains unapproved.
+
+Node tests execute the actual transpiled components with controlled hooks/module
+boundaries: they verify deferred module execution, option identity reuse and
+invalidation, rendered labels, prefill and empty/loading states. They supplement,
+not replace, actual browser behavior and network measurements.
+
 ## Inventory source verification and T4 acceptance
 
 Run from the repository root:
