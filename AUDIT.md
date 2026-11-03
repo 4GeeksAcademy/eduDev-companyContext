@@ -7,7 +7,7 @@ and structural verification are complete. See [REPORT.md](REPORT.md) and
 [PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29).
 
 - [4Geeks assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-web-vitals/README.md)
-- [Task and staged plan](odd/tasks/frontend-performance-audit.md)
+- [Implementation and verification summary](REPORT.md)
 - [Before evidence index](audit/before/README.md)
 - [After evidence index](audit/after/README.md)
 
@@ -203,8 +203,7 @@ Pure refactor: no manufactured RED. Independent verification passed 17/17 tests,
 8/8 simulated browser groups and exact effect/table equality; populated screenshots
 were visually inspected. Full-document departure is not SPA-unmount or server-
 cancellation proof. [Backoffice verification](uis/backoffice/README.md#pa-04-shared-inventory-load-status)
-retains commands and limitations; the [task history](odd/tasks/frontend-performance-audit.md)
-retains original evidence locations and harness corrections. Commit `947062f` was
+retains commands and limitations. Commit `947062f` was
 reviewed, acknowledged and deployed in PA-05.
 
 ## Completion and limits

@@ -1,6 +1,6 @@
 # Caching report — implementation verified; review chain published
 
-**Frontend and backend implementation and scoped local checks passed.** This report covers T2 / S1, S2, S3 and S5 of the [assignment task](odd/tasks/performance-caching.md). Work is published in the user-selected feature-branch chain; the wrong-scope native review was abandoned with authorization, correctly scoped native review remains unperformed/deferred, and human review/integration remain pending. This is not full submission, production or real-authenticated UI acceptance.
+**Frontend and backend implementation, scoped verification and integration into `main` are complete.** This report documents the [performance-caching assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-performance-caching/README.md), including measured results and limitations. Local fixture acceptance is not production or real-authenticated UI acceptance.
 
 ## Frontend decisions
 
@@ -105,7 +105,7 @@ Totals: identity 12 + suppliers 6 + analyzer/export 2 + manager 5 + inventory 6 
 
 ## Measurements and reproducibility
 
-**Writer-reported local synthetic public TestClient measurements**, recorded in the [task log](odd/tasks/performance-caching.md#log), not production improvements or middleware medians. Two isolated datasets contained **50 and 1,000 incidents**, with varied titles, descriptions, dates, categories, statuses, origins and branches. They are separate small/seeded scenarios, not real database counts. Seven warm requests per endpoint repeated identical filters without sleeps; list URL was `/api/incidents?status=open&branch=central`.
+**Writer-reported local synthetic public TestClient measurements**, summarized below, not production improvements or middleware medians. Two isolated datasets contained **50 and 1,000 incidents**, with varied titles, descriptions, dates, categories, statuses, origins and branches. They are separate small/seeded scenarios, not real database counts. Seven warm requests per endpoint repeated identical filters without sleeps; list URL was `/api/incidents?status=open&branch=central`.
 
 | Endpoint | Synthetic rows | Before warm median (ms) | After warm median (ms) | Warm store scans before → after |
 |---|---:|---:|---:|---:|
@@ -163,7 +163,7 @@ These are previous writer/verifier observations, **not checks rerun by this docu
 - Independent combined backend verification: **68 passed + 3 subtests**. It subsequently found stale cached data after partial writes despite those passes.
 - Partial-write regression: **RED 2 failed → GREEN 2 passed**; final caching-only guard: **11 passed**.
 - Independent limited corrected-candidate recheck: **6 passed in 5.51s**, covering partial writes, successful-write invalidation and lock contention. Original wider evidence was reused, not globally repeated.
-- Reported differential over **31 application responses** preserved exact status/body and stdout/stderr; the independent verifier also found complete OpenAPI JSON equal before the correction. No schema/differential rerun after correction is claimed. No permanent raw-output artifact was retained: provenance is writer/verifier reports in the task log, not an attached reproducible output archive.
+- Reported differential over **31 application responses** preserved exact status/body and stdout/stderr; the independent verifier also found complete OpenAPI JSON equal before the correction. No schema/differential rerun after correction is claimed. No permanent raw-output artifact was retained: these are summarized historical writer/verifier observations, not an attached reproducible output archive.
 - Two existing dependency deprecation warnings remain. Backend evidence above is reused; the final 11-test seam run and scoped frontend evidence are recorded separately. These historical checks were not rerun. The separate final-code middleware measurement above is the only new runtime check.
 
 ## Tradeoffs acknowledged
@@ -183,22 +183,26 @@ User-specific keys intentionally reduce hit sharing for privacy even though acti
 - **Uploads, all mutations and CSV export:** writes must execute; export already formats an in-memory aggregate. No exception/raw-upload caching.
 - **Frontend session gate and API data:** authentication remains unchanged; memoization reuses option elements only, not fresh-stock requests, session results or trivial scalar calculations.
 
-## Remaining delivery and limits
+## Delivery and limits
 
-S2/S3 implementation and scoped local verification passed; this report supplies S5 decisions and the complete endpoint assessment within S1's authorized scope. S4 now includes both the historical synthetic TestClient comparison and the separately captured final-code middleware medians after seeding; neither establishes production performance. Published delivery follows `feature/caching-optimisation` → `perf/caching-api` → `perf/caching-ui` → `docs/caching-report`; each child PR targets its immediate parent. API `a631c3e` and UI `c29e88a` are committed. After the scope-selection incident, authorized abandonment of wrong-scope lineage `review-b1100c476a226c92` committed at `2026-11-02T23:42:05.545508278Z`; only native review state was quarantined. No reviewers, captures, approval or acknowledgement occurred. Subsequent read-only INSPECT returned ready/unrelated/not_replayable; its offered START was not followed. No RESET/RECOVER or new review occurred. Correctly scoped review remains unperformed/deferred under the user's prohibition on another automatic review. The checkout returned to `docs/caching-report@1e6ab91`; L23/L24 are reconciled in the task, with the actual outcome in L25. Both unrelated untracked notes remain untouched. This documentation-only work unit records the reconciliation; it changes no application behavior. S6 branches and PRs are now published for review; instructor link sharing and chain integration remain pending. Merge and deployment are not authorized. Local fixture acceptance does not establish real-authenticated, production or global UI acceptance.
+Implementation, seeded measurements and scoped local verification are complete.
+PRs #40, #39, #38 and #37 were merged in that order on 2026-11-03. The integration
+commit `9982f3e502feba6108c94f869e5981b887ec6375` on `main` includes the complete
+implementation and evidence through `22fa5aca43eebc52daf924af9a137b2d3d567921`.
+Share [PR #37](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37)
+for instructor review; instructor submission/acceptance is not verified here.
 
-## Published review chain
+The historical TestClient comparison and final-code middleware medians are local
+synthetic measurements, not production performance. No deployment or real-authenticated,
+production or global UI acceptance is claimed. Native review was not completed;
+the functional verification above is not a native review approval. GitHub reported
+no CI checks at publication; the merges are not proof of a new test run.
 
-| PR | Head → base | Status at publication |
+## Integrated PR chain
+
+| PR | Head → base | Status |
 |---|---|---|
-| [#37 — tracker](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37) | feature/caching-optimisation → main | Draft; planning only until children are integrated |
-| [#38 — API](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/38) | perf/caching-api → feature/caching-optimisation | Open for review |
-| [#39 — frontend](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/39) | perf/caching-ui → perf/caching-api | Open for review |
-| [#40 — report/evidence](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/40) | docs/caching-report → perf/caching-ui | Open; this branch contains the complete feature |
-
-Share the tracker **with its child links** for assignment review. The tracker
-alone does not yet contain the implementation. Review/integrate the children
-before final integration into main; no merge or deployment has been performed.
-At publication readback all four PRs were open with the intended bases/heads,
-no reported CI checks and no approval decision. GitHub's clean merge state is
-not a substitute for review or a passing CI run.
+| [#37 — integration](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37) | feature/caching-optimisation → main | Merged |
+| [#38 — API](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/38) | perf/caching-api → feature/caching-optimisation | Merged |
+| [#39 — frontend](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/39) | perf/caching-ui → perf/caching-api | Merged |
+| [#40 — report/evidence](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/40) | docs/caching-report → perf/caching-ui | Merged |

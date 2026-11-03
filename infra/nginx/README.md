@@ -47,8 +47,8 @@ Operator VPS point: UI143.2MiB/512MiB, API72.36MiB/256MiB, zero OOM/restarts,
 unchanged .75/.25CPU caps. Brief observations are not load/capacity guarantees.
 Evidence: `/tmp/trackflow-tpd03-8xFtnx/{baseline.json,after-recreation.json,runtime-guard.py}`;
 remote `/var/log/trackflow-tpd03-8xFtnx` holds nonsecret config backups and
-UI/API/Nginx apply results. Final verification status belongs to the
-[feature task](../../odd/tasks/talent-pipeline-deployment.md).
+UI/API/Nginx apply results. [Deployment progress](../../memory-bank/progress.md)
+records the verification scope and remaining limits.
 
 Rollback source is **pre-Tracker** `trackflow-ui:ip-https-4ca733a`, not PA-05.
 Restore only the original nonsecret `https.override.yml` and installed Nginx

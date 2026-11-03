@@ -101,6 +101,16 @@ eduDev-companyContext/
 3. **Review** each relevant folder `README.md` before adding files.
 4. **Implement** milestone deliverables in the folder defined by the repository structure.
 
+### Local task notes
+
+`odd/` is local-only and ignored by Git. Keep conversation transcripts and agent
+working logs there; do not force-add them. Publish technical decisions, reports
+and reproducible evidence in the regular documentation instead.
+
+Existing Git history is unchanged. Before updating an older clone, back up its
+tracked `odd/` files if needed: Git may remove those copies when applying the
+tracking removal. The cleanup preserves the files in the originating checkout.
+
 ---
 
 ## Running locally

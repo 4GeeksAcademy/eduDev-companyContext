@@ -11,3 +11,6 @@ __pycache__/
 results.csv
 services/api/data/*.json
 /.coverage*
+
+# Local task notes and conversation logs (not public deliverables)
+/odd/

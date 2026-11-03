@@ -64,14 +64,13 @@ runtime during the separate HTTPS work.
 Accepted source reviews, focused regressions, production builds and bounded browser
 checks passed. See [navigation checks](uis/backoffice/README.md#pa-03-local-navigation-target-correction)
 and [status reuse checks](uis/backoffice/README.md#pa-04-shared-inventory-load-status)
-for exact commands and limitations; [task history](odd/tasks/frontend-performance-audit.md)
-retains the chronology. Full-document departure does not prove SPA unmount or server
+for exact commands and limitations. Full-document departure does not prove SPA unmount or server
 cancellation. Broad suites and all-four-route business writes were not repeated.
 This cleanup uses structural checks only, with no new runtime acceptance.
 
 Deferred in PA-05: corporate definition-list semantics, visible-label/name mismatch, favicon404, public HTTP/no HTTPS redirect (96 is not full accessibility); inventory meta description, unused JavaScript (~27KiB), legacy JavaScript (~14KiB), network dependency tree and render blocking (~260ms). Estimated savings overlap and are not proven gains. Loopback best-practices100 is not public HTTPS proof. No infrastructure/domain/TLS/dependency/API changes were added.
 
-Technical assignment evidence is complete. Verification and commit evidence are tracked in the [task](odd/tasks/frontend-performance-audit.md). The original audit was merged in [PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29). This documentation-only follow-up preserves its measurements and makes no new runtime acceptance claim.
+Technical assignment evidence is complete. Verification and commit evidence are summarized in the [audit](AUDIT.md#completion-and-limits). The original audit was merged in [PR #29](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/29). This documentation-only follow-up preserves its measurements and makes no new runtime acceptance claim.
 
 ## Separate IP-03 HTTPS follow-up — 2026-11-01
 

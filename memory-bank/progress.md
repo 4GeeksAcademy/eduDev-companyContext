@@ -1,50 +1,38 @@
 # Project Progress
 
-## Performance caching — implementation verified; review chain published
+## Repository documentation — local-only task notes
+
+- `odd/` is ignored and removed from Git tracking; local task files are retained.
+  Conversation transcripts and internal working logs are not public deliverables.
+- Documentation links now point to public technical reports and evidence rather
+  than task logs. Existing Git history is unchanged; this is not a historical purge.
+  Older clones should back up their tracked notes before updating (see the root README).
+- This cleanup changes no application, runtime configuration, dependencies or
+  retained measurement artifacts. Verification is limited to Git tracking,
+  ignore rules, local-file preservation, documentation links and whitespace.
+
+## Performance caching — implementation verified and merged
 
 - [Caching report](../CACHING_REPORT.md) retains all 31 endpoint assessments,
   two user/filter-scoped 30-second incident caches, synthetic measurements and
   the independently verified partial-write invalidation correction.
-- Separate lazy history/form boundaries now defer small chunks until session
-  validation; existing option elements are memoized on `[products]`. Larger
-  synthetic fixtures reduced script CPU, not meaningful frame latency. Builds,
-  TypeScript and focused checks passed; final seam passed 11 Python + 13 Node.
-  Four fixtures at 1440×900 and 390×900 preserved outputs and pre-auth isolation.
-- Existing browser tools were reused under explicit sandbox-disabled permission
-  for local fixtures only; [TESTING.md](../TESTING.md#existing-local-browser-tools--reuse-before-installing)
-  retains paths/security limits. No real-auth/production/global UI acceptance or
-  wider unchanged browser sweep is claimed. Earlier passive status updates reran
-  no runtime checks; the new middleware measurement is recorded below.
-  [Task L16–L17](../odd/tasks/performance-caching.md#log) records earlier evidence;
-  Local tracker `f2e6f14`, API `a631c3e` (372 changed lines) and UI `c29e88a`
-  (385 changed lines) form the user-selected feature-branch chain. Report/profiler
-  commit `5dbbd31` closes the final `docs/caching-report` child (339 changed lines
-  before its small closing tracking record). Only the two original untracked task
-  notes remain outside this work; no source changes are left uncommitted.
-  Authorized abandonment of wrong-scope lineage `review-b1100c476a226c92`
-  committed at `2026-11-02T23:42:05.545508278Z`, quarantining only review state.
-  No reviewers, captures, approval or acknowledgement occurred. Read-only INSPECT
-  returned ready/unrelated/not_replayable; no offered START, RESET/RECOVER or new
-  review followed. Correctly scoped review remains unperformed/deferred; the user
-  prohibited another automatic review. Checkout returned to `docs/caching-report@1e6ab91`;
-  task L23/L24 are reconciled and L25 records the actual outcome. The documentation
-  work unit changes no application behavior. Branches/PRs are published for review;
-  instructor link sharing and chain integration remain pending. No merge/deployment.
-- The missing seeded middleware evidence is now captured: one direct Python run
-  passed in 7s with 32 reads, identical 200 bodies, one cold scan and zero warm
-  scans per case; temporary stores cleaned. At 1,000 rows, list cold/warm-median
-  was 7.889/1.316ms and summary 7.541/0.663ms. These are actual final-code middleware
-  values, not historical uncached/TestClient timings. [Samples and protocol](../docs/evidence/caching-middleware.md)
-  retain provenance. No Pi restart, subagent, install or broad test rerun was needed;
-  one existing Starlette/httpx deprecation warning remains.
-- Published chain: [draft tracker #37](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37)
-  → [API #38](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/38)
-  → [frontend #39](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/39)
-  → [report/evidence #40](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/40).
-  Each child targets its immediate parent. The complete feature is on the final
-  branch; tracker/main integration awaits separate review and authorization.
-  Readback confirmed all four PRs open with intended heads/bases, only tracker
-  draft, no reported CI checks and no approval decision. No merge or deployment.
+- Separate lazy history/form boundaries defer chunks until session validation;
+  existing option elements are memoized on `[products]`. Larger synthetic fixtures
+  reduced script CPU, not meaningful frame latency. Builds, TypeScript and focused
+  checks passed; the final seam passed 11 Python + 13 Node tests. Four fixtures at
+  1440×900 and 390×900 preserved outputs and pre-auth isolation.
+- Seeded middleware measurement passed in 7s: 32 reads, identical 200 bodies,
+  one cold scan and zero warm scans per case; temporary stores cleaned. At 1,000
+  rows, list cold/warm-median was 7.889/1.316ms and summary 7.541/0.663ms.
+  [Samples and protocol](../docs/evidence/caching-middleware.md) retain provenance;
+  these are final-code middleware values, not historical uncached/TestClient timings.
+  Existing dependency warnings remain; no runtime checks were repeated for cleanup.
+- [PR #37](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37) integrates
+  API #38, frontend #39 and report/evidence #40. All four merged on 2026-11-03;
+  `main` commit `9982f3e` includes the complete feature through `22fa5ac`.
+  No deployment or instructor receipt is claimed. Local fixtures are not real-auth,
+  production or global UI acceptance. Native review remains unperformed/deferred;
+  functional checks are not native approval, and merges do not imply passing CI.
 
 ## Backend serialization audit — saved evidence published
 
@@ -412,9 +400,8 @@ the deployed measurement above.
   Formal own-fork and literal-screenshot acceptance caveats remain. A follow-up
   evidence [PR #28](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/28)
   is open from `docs/containerization-runtime-evidence`; no new fork or merge.
-- See [runtime outcome and historical attempt](../docs/evidence/containerization/api-db-runtime.txt),
-  [evidence guide](../docs/evidence/containerization/README.md) and
-  [parent-owned follow-up](../odd/tasks/monorepo-containerization.md).
+- See [runtime outcome and historical attempt](../docs/evidence/containerization/api-db-runtime.txt)
+  and the [evidence guide](../docs/evidence/containerization/README.md).
   First admin is absent; HTTP/noHTTPS and no sustained-load claim remain.
   Historical favicon404 was not observed in the later external browser run.
   Admin/HTTPS/mail/recovery are separate operational follow-ups, not added assignment
@@ -756,7 +743,7 @@ this passive documentation update.
 
 ## Inventory Backoffice — Implementation and Verification Complete
 
-- Work is tracked in `odd/tasks/inventory-backoffice.md` on `feat/inventory-backoffice`.
+- Implementation and verification are summarized below; see the [backoffice guide](../uis/backoffice/README.md).
 - T1 adds an authenticated SQLModel inventory API with Supabase/PostgreSQL runtime configuration, per-warehouse computed stock, attributed entries/exits, and an explicit rerunnable demo seed. Existing TinyDB authentication is reused; no SQL user table or stored stock total is introduced.
 - Writer verification: `uv run pytest tests/test_inventory_api.py tests/test_inventory_seed.py -q` passed 13 tests; adding `services/api/tests/test_auth_operational.py` passed 18 tests and 76 subtests. `uv lock`, `uv sync`, and `git diff --check` passed. Initial RED was missing dependencies/modules during collection, not a behavior assertion failure.
 - Independent focused execution also passed 18 tests and 76 subtests, plus `git diff --check`; its documentation-only worktree warning was traced to the parent's progress update. Native review `review-62c05b8c8695291b` approved and acknowledgement burned, with two informational advisories and no correction. User confirmed local work-unit commits without push or PR; T1 committed as `02b7d77`. T2 Next.js hosting/auth foundation passed 13 focused Node tests, TypeScript and owned-server HTTP smoke. Generated AGENTS.md/CLAUDE.md were removed with user approval and regeneration disabled. Only the new backoffice was updated to Next16.4.3; npm audit now reports zero vulnerabilities. Independent focused verification passed 13/13 with stable Git scope. Native four-lens review `review-df407c9d8728aa02` approved and acknowledgement burned; one informational React-gate coverage advisory remains for final browser verification. T2 committed as `6dc75f6`. T3's four inventory views and central API client are implemented; 16 focused tests, TypeScript and the app build passed. User approved the two build-generated next-env.d.ts imports. T3 independent verification passed 16/16 with unchanged scope; native four-lens review `review-34271c6025855046` approved and acknowledgement burned with informational advisories only. T3 committed as `ea2a091`. T4 isolated browser/API verification passed core login, stock entry/exit, real insufficient-stock400 and history, but failed products mobile containment (390px viewport,718px document width). T4a fixed the cause with a positioned table wrapper; rebuilt four-route layout checks passed at390/1440, including internal table scrolling and controls, with no browser errors. Independent mobile spot-check and remaining session/error/departure cases passed with zero unexpected browser errors. Supabase is now configured: read-only authentication/TLS/SELECT1 passed, then the user authorized minimal development initialization.
@@ -876,8 +863,7 @@ this passive documentation update.
   and [PR #12](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/12) opened
   against `main`. Instructor submission and merge remain pending. Future Supabase
   identity placement is a documented constraint, not an already-tested migration.
-- Full requirement evidence, review identities and known non-blocking limitations
-  are tracked in `odd/tasks/auth-api.md`.
+- Runtime setup and authentication boundaries are documented in the [API guide](../services/api/README.md).
 
 ## Tracker Authentication — AUTH-FE-01
 
@@ -1120,8 +1106,8 @@ this passive documentation update.
   secret inspection, actual API/password mutation or real email occurred.
 - Integrated native review `review-36e05904c97e1de3` was approved and acknowledged
   for the 23-file candidate; no blocking findings. This later passive verification
-  record is not a new source-review claim. Non-blocking follow-ups remain recorded
-  in `odd/tasks/password-reset.md` rather than expanding the assignment.
+  record is not a new source-review claim. Non-blocking follow-ups remain outside
+  this assignment; the verification limits below still apply.
 - Existing Starlette/httpx and Node module-type warnings are non-failing. The
   browser's expired-token response was simulated; actual expiry is covered by API
   tests, not by live mailbox acceptance. Real Resend delivery remains unverified.
@@ -1649,8 +1635,8 @@ PY
 - Focused GREEN: isolated collection38 (no execution), project tsc exit0, focused
   ESLint exit0, auth-service/helper Jest68/68 across2 suites (0.367s); diff-check
   passed. Existing AnyIO and Starlette/httpx warnings remain; uv implicitly rebuilt
-  the editable local project after pyproject changed. Detailed command history is
-  in odd/tasks/bullet-proof-tests.md; TESTING.md summarizes the final evidence.
+  the editable local project after pyproject changed. [TESTING.md](../TESTING.md)
+  summarizes the final evidence.
   No full suites/coverage/build/browser reruns in BP-06A; final BP-06 integration,
   task/mirror and native review remain parent-owned.
 
@@ -1703,8 +1689,7 @@ PY
   remain unchanged; no suites, coverage, build, browser, install or audit rerun here.
   AnyIO, Starlette/httpx and Node warnings, six new low dev-package findings and
   five high/one critical pre-existing findings remain disclosed, not resolved by
-  review approval. See the [testing guide](../TESTING.md) and
-  [task history](../odd/tasks/bullet-proof-tests.md).
+  review approval. See the [testing guide](../TESTING.md).
 - R5 documentation commit `b9e2106` received low-risk native approval under
   `review-9156c08b69d4f7a9`; acknowledgement remains blocked by the integration's
   committed-range selector handling. No authority consumption is claimed.
@@ -1815,5 +1800,5 @@ PY
   Compose down or volume removal. Third Compose file remains mandatory.
 - No new Lighthouse; prior corporate HTTPS scores remain pre-Tracker history.
   Real HTTPS login/registration/profile writes, email delivery and shared candidate
-  CRUD are unverified/not attempted; configuration is not delivery proof. Final
-  independent verification status is owned by the [feature task](../odd/tasks/talent-pipeline-deployment.md).
+  CRUD are unverified/not attempted; configuration is not delivery proof.
+  See the [deployment guide](../infra/nginx/README.md) for the operator snapshot and limits.

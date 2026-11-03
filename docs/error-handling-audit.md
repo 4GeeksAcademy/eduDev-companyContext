@@ -4,7 +4,7 @@ Functionally accepted on `feature/error-handling-audit`; native review `review-2
 This assignment improves existing failure boundaries, with no new features, technologies or dependencies.
 
 - [Assignment](https://github.com/4GeeksAcademy/ai-engineering-syllabus/blob/main/content/projects/ai-eng-error-handling/README.md)
-- [Task and historical evidence](../odd/tasks/error-handling-audit.md)
+- [Accepted verification evidence](#accepted-evidence-not-rerun-for-this-documentation)
 - [Progress](../memory-bank/progress.md) · [Tracker runbook](../uis/talent-pipeline-tracker/README.md)
 
 ## Scope and review order
