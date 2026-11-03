@@ -1,6 +1,6 @@
 # Project Progress
 
-## Performance caching — local implementation verified; delivery pending
+## Performance caching — implementation verified; review chain published
 
 - [Caching report](../CACHING_REPORT.md) retains all 31 endpoint assessments,
   two user/filter-scoped 30-second incident caches, synthetic measurements and
@@ -28,15 +28,23 @@
   review followed. Correctly scoped review remains unperformed/deferred; the user
   prohibited another automatic review. Checkout returned to `docs/caching-report@1e6ab91`;
   task L23/L24 are reconciled and L25 records the actual outcome. The documentation
-  work unit changes no application behavior. Push/PR/submission remain pending;
-  merge and deployment are not authorized.
+  work unit changes no application behavior. Branches/PRs are published for review;
+  instructor link sharing and chain integration remain pending. No merge/deployment.
 - The missing seeded middleware evidence is now captured: one direct Python run
   passed in 7s with 32 reads, identical 200 bodies, one cold scan and zero warm
   scans per case; temporary stores cleaned. At 1,000 rows, list cold/warm-median
   was 7.889/1.316ms and summary 7.541/0.663ms. These are actual final-code middleware
   values, not historical uncached/TestClient timings. [Samples and protocol](../docs/evidence/caching-middleware.md)
   retain provenance. No Pi restart, subagent, install or broad test rerun was needed;
-  one existing Starlette/httpx deprecation warning remains. GitHub delivery is next.
+  one existing Starlette/httpx deprecation warning remains.
+- Published chain: [draft tracker #37](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37)
+  → [API #38](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/38)
+  → [frontend #39](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/39)
+  → [report/evidence #40](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/40).
+  Each child targets its immediate parent. The complete feature is on the final
+  branch; tracker/main integration awaits separate review and authorization.
+  Readback confirmed all four PRs open with intended heads/bases, only tracker
+  draft, no reported CI checks and no approval decision. No merge or deployment.
 
 ## Backend serialization audit — saved evidence published
 

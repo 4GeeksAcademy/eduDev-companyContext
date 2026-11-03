@@ -1,6 +1,6 @@
-# Caching report — local implementation verified; delivery pending
+# Caching report — implementation verified; review chain published
 
-**Frontend and backend implementation and scoped local checks passed.** This report covers T2 / S1, S2, S3 and S5 of the [assignment task](odd/tasks/performance-caching.md). Work is organized in a local feature-branch chain; the wrong-scope native review was abandoned with authorization, correctly scoped review remains unperformed/deferred, and publication remains pending. This is not full submission, production or real-authenticated UI acceptance.
+**Frontend and backend implementation and scoped local checks passed.** This report covers T2 / S1, S2, S3 and S5 of the [assignment task](odd/tasks/performance-caching.md). Work is published in the user-selected feature-branch chain; the wrong-scope native review was abandoned with authorization, correctly scoped native review remains unperformed/deferred, and human review/integration remain pending. This is not full submission, production or real-authenticated UI acceptance.
 
 ## Frontend decisions
 
@@ -185,4 +185,20 @@ User-specific keys intentionally reduce hit sharing for privacy even though acti
 
 ## Remaining delivery and limits
 
-S2/S3 implementation and scoped local verification passed; this report supplies S5 decisions and the complete endpoint assessment within S1's authorized scope. S4 now includes both the historical synthetic TestClient comparison and the separately captured final-code middleware medians after seeding; neither establishes production performance. Local delivery follows `feature/caching-optimisation` → `perf/caching-api` → `perf/caching-ui` → `docs/caching-report`; each future child PR targets its immediate parent. API `a631c3e` and UI `c29e88a` are committed. After the scope-selection incident, authorized abandonment of wrong-scope lineage `review-b1100c476a226c92` committed at `2026-11-02T23:42:05.545508278Z`; only native review state was quarantined. No reviewers, captures, approval or acknowledgement occurred. Subsequent read-only INSPECT returned ready/unrelated/not_replayable; its offered START was not followed. No RESET/RECOVER or new review occurred. Correctly scoped review remains unperformed/deferred under the user's prohibition on another automatic review. The checkout returned to `docs/caching-report@1e6ab91`; L23/L24 are reconciled in the task, with the actual outcome in L25. Both unrelated untracked notes remain untouched. This documentation-only work unit records the reconciliation; it changes no application behavior. S6 push/PR/submission remain pending; merge and deployment are not authorized. Local fixture acceptance does not establish real-authenticated, production or global UI acceptance.
+S2/S3 implementation and scoped local verification passed; this report supplies S5 decisions and the complete endpoint assessment within S1's authorized scope. S4 now includes both the historical synthetic TestClient comparison and the separately captured final-code middleware medians after seeding; neither establishes production performance. Published delivery follows `feature/caching-optimisation` → `perf/caching-api` → `perf/caching-ui` → `docs/caching-report`; each child PR targets its immediate parent. API `a631c3e` and UI `c29e88a` are committed. After the scope-selection incident, authorized abandonment of wrong-scope lineage `review-b1100c476a226c92` committed at `2026-11-02T23:42:05.545508278Z`; only native review state was quarantined. No reviewers, captures, approval or acknowledgement occurred. Subsequent read-only INSPECT returned ready/unrelated/not_replayable; its offered START was not followed. No RESET/RECOVER or new review occurred. Correctly scoped review remains unperformed/deferred under the user's prohibition on another automatic review. The checkout returned to `docs/caching-report@1e6ab91`; L23/L24 are reconciled in the task, with the actual outcome in L25. Both unrelated untracked notes remain untouched. This documentation-only work unit records the reconciliation; it changes no application behavior. S6 branches and PRs are now published for review; instructor link sharing and chain integration remain pending. Merge and deployment are not authorized. Local fixture acceptance does not establish real-authenticated, production or global UI acceptance.
+
+## Published review chain
+
+| PR | Head → base | Status at publication |
+|---|---|---|
+| [#37 — tracker](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/37) | feature/caching-optimisation → main | Draft; planning only until children are integrated |
+| [#38 — API](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/38) | perf/caching-api → feature/caching-optimisation | Open for review |
+| [#39 — frontend](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/39) | perf/caching-ui → perf/caching-api | Open for review |
+| [#40 — report/evidence](https://github.com/4GeeksAcademy/eduDev-companyContext/pull/40) | docs/caching-report → perf/caching-ui | Open; this branch contains the complete feature |
+
+Share the tracker **with its child links** for assignment review. The tracker
+alone does not yet contain the implementation. Review/integrate the children
+before final integration into main; no merge or deployment has been performed.
+At publication readback all four PRs were open with the intended bases/heads,
+no reported CI checks and no approval decision. GitHub's clean merge state is
+not a substitute for review or a passing CI run.
