@@ -1,0 +1,142 @@
+# Builds and deploys the services a merge to main changed. Setup: infra/deploy/README.md
+name: Deploy production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      service:
+        description: Service to build and deploy from the selected branch
+        type: choice
+        options: [ui, api, both]
+        required: true
+
+permissions:
+  contents: read
+
+# Deploys run one at a time and are never cancelled halfway.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # The key can only run infra/deploy/deploy.sh on the VPS (forced command).
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          umask 077
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" >~/.ssh/trackflow_deploy
+          printf '%s\n' "$KNOWN_HOSTS" >~/.ssh/known_hosts
+          cat >~/.ssh/config <<'EOF'
+          Host trackflow
+            HostName 162.243.69.7
+            User root
+            IdentityFile ~/.ssh/trackflow_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+            ServerAliveInterval 30
+          EOF
+
+      # Diff from the commit each service runs, not from the previous push:
+      # GitHub drops a pending run when a newer one queues, and its changes must not be lost.
+      - name: Select services
+        id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT: ${{ inputs.service }}
+        run: |
+          ui=false api=false
+          status=$(ssh trackflow status)
+          changed() {
+            local sha
+            sha=$(sed -n "s/^$1: gh-\([0-9a-f]*\)$/\1/p" <<<"$status")
+            if [[ -z $sha ]] || ! git merge-base --is-ancestor "$sha" "$GITHUB_SHA" 2>/dev/null; then
+              echo "::notice::$1 runs no pipeline release from this history; deploying it."
+              return 0
+            fi
+            grep -qE "$2" < <(git diff --name-only "$sha" "$GITHUB_SHA")
+          }
+          if [[ $EVENT == workflow_dispatch ]]; then
+            if [[ $INPUT == ui || $INPUT == both ]]; then ui=true; fi
+            if [[ $INPUT == api || $INPUT == both ]]; then api=true; fi
+          else
+            if changed ui '^uis/'; then ui=true; fi
+            if changed api '^(services|shared|packages/shared)/'; then api=true; fi
+          fi
+          echo "ui=$ui api=$api"
+          {
+            echo "ui=$ui"
+            echo "api=$api"
+            echo "any=$([[ $ui == true || $api == true ]] && echo true || echo false)"
+            echo "tag=gh-${GITHUB_SHA::12}"
+          } >>"$GITHUB_OUTPUT"
+
+      # Cached layers keep their digests, so the VPS stores and loads only changed layers.
+      - uses: docker/setup-buildx-action@v3
+        if: steps.select.outputs.any == 'true'
+
+      - name: Build API image
+        if: steps.select.outputs.api == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services
+          file: services/Dockerfile
+          build-contexts: |
+            shared=./shared
+            packages_shared=./packages/shared
+          tags: trackflow-api:${{ steps.select.outputs.tag }}
+          load: true
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,scope=api,mode=max
+
+      - name: Build UI image
+        if: steps.select.outputs.ui == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./uis
+          file: uis/Dockerfile
+          build-args: |
+            TRACKFLOW_UI_MODE=production
+            TRACKFLOW_API_PROXY=1
+            TRACKFLOW_API_ORIGIN=http://api:8000
+          tags: trackflow-ui:${{ steps.select.outputs.tag }}
+          load: true
+          cache-from: type=gha,scope=ui
+          cache-to: type=gha,scope=ui,mode=max
+
+      - name: Deploy API
+        if: steps.select.outputs.api == 'true'
+        env:
+          TAG: ${{ steps.select.outputs.tag }}
+        run: |
+          docker save "trackflow-api:$TAG" | gzip -1 | ssh trackflow load api "$TAG"
+          ssh trackflow deploy api "$TAG"
+
+      - name: Deploy UI
+        if: steps.select.outputs.ui == 'true'
+        env:
+          TAG: ${{ steps.select.outputs.tag }}
+        run: |
+          docker save "trackflow-ui:$TAG" | gzip -1 | ssh trackflow load ui "$TAG"
+          ssh trackflow deploy ui "$TAG"
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/trackflow_deploy
