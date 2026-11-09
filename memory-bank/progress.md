@@ -1,14 +1,15 @@
 # Project Progress
 
-## Automatic deploy on merge to main — local source only
+## Automatic deploy on merge to main — installed, not yet run
 
 - [`deploy.yml`](../.github/workflows/deploy.yml) builds changed UI/API images on
   GitHub and streams them over a forced-command SSH key to
   [`infra/deploy/deploy.sh`](../infra/deploy/deploy.sh), which pins tags in a fourth
   Compose file, recreates one service, health-checks public routes and rolls back.
-- `node --test tests/deploy-script.test.mjs` passes with fake Docker/curl. Not yet
-  installed on the VPS, no GitHub run, no live deploy: one-time setup is in
-  [`infra/deploy/README.md`](../infra/deploy/README.md).
+- `node --test tests/deploy-script.test.mjs` passes with fake Docker/curl.
+  `deploy.sh` and the restricted key are installed on the VPS (`status` verified)
+  and both repository secrets are set. No GitHub run or live deploy yet; the
+  first run is a manual `api` dispatch ([setup](../infra/deploy/README.md)).
 
 ## Repository documentation — local-only task notes
 
