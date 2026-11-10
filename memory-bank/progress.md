@@ -1,6 +1,17 @@
 # Project Progress
 
-## Control Room inventory link — PR open
+## Inventory inside the Control Room frame — PR open
+
+- The inventory layout now imports the Control Room `styles.css` and renders the same
+  header, sidebar (Inventory current, query string kept on every link) and footer as
+  the static pages; the four inventory views become tabs inside the page.
+- The session gate only validates the session; navigation and sign out moved to the frame.
+- `node --test uis/backoffice/tests/*.test.mjs` passes 52/52 (`inventory-shell.test.mjs`
+  observed failing first) and `tsc --noEmit` passes. A synthetic `next start` check with a
+  fixture API showed the four views at 1440 and 390 px without horizontal overflow or
+  console errors.
+
+## Control Room inventory link — merged (PR #44) and deployed
 
 - The four Control Room pages now link **Inventory** (`/backoffice/inventory/products`)
   in their sidebar, right after Operations overview, so inventory is reachable by

@@ -8,8 +8,11 @@ local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
 The Control Room sidebar links every section, including **Inventory**
-(`/backoffice/inventory/products`); the inventory views link back through
-"Operations overview". `tests/control-room-navigation.test.mjs` pins the sidebar.
+(`/backoffice/inventory/products`). `tests/control-room-navigation.test.mjs` pins the sidebar.
+The inventory views render inside the same frame: the inventory layout imports
+`styles.css` and draws the Control Room header, sidebar (`components/control-room-sidebar.tsx`,
+Inventory current) and footer, with the four views as tabs; `tests/inventory-shell.test.mjs`
+pins that frame.
 
 ## Container versus local hosting
 
@@ -160,6 +163,9 @@ above is earlier evidence, not rerun by the correction; neither check proves bro
 authentication or complete T2 acceptance.
 
 ## PA-03 local navigation target correction
+
+> Superseded by the shared Control Room frame: the skip link and the sidebar now come
+> from `styles.css`, and the 44px target rule applies to the inventory tabs.
 
 The session gate's skip and Operations overview links sit outside `.inventory`.
 Their dedicated class now declares padded inline-flex targets with a 44px minimum
