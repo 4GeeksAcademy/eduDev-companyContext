@@ -7,6 +7,9 @@ The overview uses local sample data; the incident and supplier pages connect to 
 local FastAPI service. Public `login.html` provides sign-in. All four private
 pages hide their complete shell until shared `/auth/me` validation succeeds;
 incident and supplier operations use bearer requests through `auth.js`.
+The Control Room sidebar links every section, including **Inventory**
+(`/backoffice/inventory/products`); the inventory views link back through
+"Operations overview". `tests/control-room-navigation.test.mjs` pins the sidebar.
 
 ## Container versus local hosting
 
