@@ -1,5 +1,15 @@
 # Project Progress
 
+## Control Room inventory link — PR open
+
+- The four Control Room pages now link **Inventory** (`/backoffice/inventory/products`)
+  in their sidebar, right after Operations overview, so inventory is reachable by
+  navigation instead of typing its URL.
+- `node --test uis/backoffice/tests/*.test.mjs` passes 48/48, including the new
+  `control-room-navigation.test.mjs` (observed failing before the change).
+- Production shows the link only after the PR is merged to `main` and the automatic
+  deploy finishes.
+
 ## Automatic deploy on merge to main — live
 
 - [`deploy.yml`](../.github/workflows/deploy.yml) builds changed UI/API images on
