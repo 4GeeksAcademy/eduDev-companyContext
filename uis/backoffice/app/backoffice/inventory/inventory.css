@@ -1,27 +1,27 @@
-.inventory-session-link { display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; min-width: 24px; max-width: 100%; padding: .5rem .75rem; overflow-wrap: anywhere; color: #154e85; text-underline-offset: .2em; }
-.inventory-session-link:focus-visible { outline: 3px solid #215bbb; outline-offset: 3px; }
-.inventory { font: 1rem/1.5 system-ui, sans-serif; color: #172b40; background: #f4f7fa; padding: clamp(1rem, 3vw, 2.5rem); }
-.inventory *, .inventory *::before, .inventory *::after { box-sizing: border-box; }
-.inventory header, .inventory main, .inventory footer { max-width: 90rem; margin: 0 auto 1.5rem; }
-.inventory nav { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; }
-.inventory a { color: #154e85; text-underline-offset: .2em; }
-.inventory a[aria-current] { font-weight: bold; text-decoration-thickness: .2em; }
-.inventory section { background: white; border: 1px solid #c6d1dc; border-radius: .5rem; padding: clamp(.75rem, 2vw, 1.5rem); }
-.inventory h1, .inventory h2 { line-height: 1.2; }
+/* Inventory content inside the shared Control Room frame; tokens come from ../../../styles.css. */
+.inventory { min-width: 0; }
+.inventory-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1.5rem; }
+.inventory-tabs a { display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; max-width: 100%; padding: .5rem .9rem; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: .4rem; color: var(--ink); background: var(--surface); font-size: .85rem; font-weight: 700; text-decoration: none; }
+.inventory-tabs a:hover { background: var(--blue-soft); }
+.inventory-tabs a[aria-current="page"] { color: #1948bd; border-color: #b9c9ef; background: var(--blue-soft); }
+.inventory section { margin-bottom: 1.5rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); box-shadow: 0 4px 18px rgba(27, 40, 57, .04); }
+.inventory h2 { margin-bottom: 1rem; font-size: 1.35rem; }
 /* Keep absolutely positioned accessible labels inside the table's scroll container. */
 .inventory .table-scroll { position: relative; overflow-x: auto; }
-.inventory table { width: 100%; border-collapse: collapse; text-align: left; }
-.inventory th, .inventory td { padding: .75rem; border-bottom: 1px solid #c6d1dc; vertical-align: top; }
-.inventory caption { text-align: left; padding-bottom: .75rem; }
-.inventory td a { display: block; margin-bottom: .5rem; }
-.inventory .uuid { overflow-wrap: anywhere; min-width: 10rem; }
+/* The shared table style keeps cells on one line; inventory columns (UUIDs, details) need to wrap. */
+.inventory th, .inventory td { white-space: normal; }
+.inventory caption { padding-bottom: .75rem; color: var(--muted); font-size: .78rem; text-align: left; }
+.inventory td a { display: block; margin-bottom: .5rem; color: var(--blue); font-weight: 700; }
+.inventory .uuid { min-width: 10rem; overflow-wrap: anywhere; white-space: normal; }
 .inventory .stock-low { color: #963c05; font-weight: bold; }
 .inventory .stock-healthy { color: #17613b; font-weight: bold; }
 .inventory form { max-width: 36rem; }
-.inventory fieldset { min-width: 0; border: 1px solid #c6d1dc; padding: 1rem; }
-.inventory label { display: block; font-weight: 600; margin-top: 1rem; }
-.inventory input, .inventory select { display: block; width: 100%; padding: .65rem; margin: .3rem 0; font: inherit; color: inherit; background: white; border: 1px solid #687e92; border-radius: .25rem; }
-.inventory button { font: inherit; padding: .6rem .9rem; margin-top: .75rem; cursor: pointer; }
+.inventory fieldset { min-width: 0; margin: 0; padding: 1rem; border: 1px solid var(--line); border-radius: .4rem; }
+.inventory legend { color: var(--muted); font-size: .75rem; font-weight: 700; }
+.inventory label { display: block; margin-top: 1rem; color: var(--muted); font-size: .78rem; font-weight: 700; }
+.inventory input, .inventory select { display: block; width: 100%; min-height: 2.75rem; margin: .3rem 0; padding: .55rem .65rem; border: 1px solid #8a97a8; border-radius: .4rem; color: var(--ink); background: var(--surface); font: inherit; }
+.inventory button { min-height: 2.75rem; margin-top: .75rem; padding: .65rem 1rem; border: 0; border-radius: .4rem; color: white; background: var(--blue); font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; }
+.inventory button:hover { background: #1948bd; }
 .inventory :disabled { opacity: .65; cursor: not-allowed; }
 .inventory [role="alert"] { color: #a51e24; overflow-wrap: anywhere; }
 .inventory :focus-visible { outline: 3px solid #215bbb; outline-offset: 3px; }
